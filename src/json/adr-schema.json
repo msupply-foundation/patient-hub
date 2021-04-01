@@ -1,0 +1,277 @@
+{
+  "type": "object",
+  "title": "Adverse Drug Reaction",
+  "required": ["reporter"],
+  "properties": {
+    "reporter": {
+      "title": "Reporter",
+      "description": "Details of the person reporting this adverse reaction",
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "description": "The name of the reporter",
+          "type": "string",
+          "maxLength": 100
+        },
+        "title": {
+          "title": "Title",
+          "description": "The title of the reporter",
+          "type": "string",
+          "enum": ["Dr", "Nurse", "Pharmacist", "Patient", "Other"]
+        },
+        "facility": {
+          "title": "Facility",
+          "description": "The facility or workplace where this reaction is being reported",
+          "type": "string",
+          "maxLength": 50
+        },
+        "date": {
+          "title": "Reporting date",
+          "type": "string",
+          "format": "date"
+        },
+        "time": {
+          "title": "Reporting time",
+          "type": "string",
+          "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+          "errorMessage": "Needs to match the format hh:mm, for example 11:59 or 23:59"
+        }
+      }
+    },
+    "aefi": {
+      "title": "Adverse Effects",
+      "type": "object",
+      "properties": {
+        "lymphadenopathy": {
+          "type": "boolean",
+          "default": false,
+          "title": "Lymphadenopathy"
+        },
+        "fever": {
+          "type": "string",
+          "enum": ["None", "≥ 38°c", "≥ 40°c"],
+          "default": "None",
+          "title": "Fever"
+        },
+        "fluLikeIllness": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Flu-like illness"
+        },
+        "chills": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Chills"
+        },
+        "fatigue": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Fatigue"
+        },
+        "headache": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Headache"
+        },
+        "myalgia": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Myalgia"
+        },
+        "arthralgia": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Arthralgia"
+        },
+        "dyspnoea": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Dyspnoea"
+        },
+        "diarrhoea": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Diarrhoea"
+        },
+        "nausea": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Nausea"
+        },
+        "vomiting": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Vomiting"
+        },
+        "paraesthesiaNumbness": {
+          "type": "boolean",
+          "default": false,
+          "title": "Paraesthesia / Numbness"
+        },
+        "rash": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Rash"
+        },
+        "pruritusItching": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Pruritus/Itching"
+        },
+        "tightThroat": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Throat tight"
+        },
+        "wheeze": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Wheeze"
+        },
+        "angioedema": {
+          "type": "boolean",
+          "default": false,
+          "title": "Angioedema"
+        },
+        "urticaria": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Urticaria/Hives"
+        },
+        "seizures": {
+          "type": "string",
+          "enum": ["None", "Febrile", "Afebrile", "Unknown"],
+          "default": "None",
+          "title": "Seizures"
+        },
+        "neurologicalEvent": {
+          "type": "boolean",
+          "default": false,
+          "title": "Neurological event"
+        },
+        "thrombocytopenia": {
+          "type": "boolean",
+          "default": false,
+          "title": "Thrombocytopenia"
+        },
+        "vasovagalSyncope": {
+          "type": "boolean",
+          "default": false,
+          "title": "Vasovagal/Syncope"
+        },
+        "dizziness": {
+          "type": "boolean",
+          "default": false,
+          "title": "Dizziness"
+        },
+        "tachycardiaPalpitations": {
+          "type": "boolean",
+          "default": false,
+          "title": "Tachycardia/Palpitations"
+        },
+        "localReaction": {
+          "type": "object",
+          "title": "Local Reaction",
+          "properties": {
+            "observed": {
+              "type": "boolean",
+              "default": false,
+              "title": "Patient has a local reaction"
+            }
+          },
+          "dependencies": {
+            "observed": {
+              "oneOf": [
+                { "properties": { "observed": { "enum": [false] } } },
+                {
+                  "properties": {
+                    "observed": { "enum": [true] },
+                    "size": { "type": "number", "title": "Size in cm" },
+                    "moreThan3Days": {
+                      "type": "boolean",
+                      "title": "Persisting >3 days",
+                      "default": false
+                    },
+                    "abscess": {
+                      "type": "boolean",
+                      "title": "Abscess",
+                      "default": false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "anaphylaxis": {
+          "type": "object",
+          "title": "Anaphylaxis",
+          "properties": {
+            "observed": {
+              "type": "boolean",
+              "default": false,
+              "title": "Anaphylaxis observed in patient"
+            }
+          },
+          "dependencies": {
+            "observed": {
+              "oneOf": [
+                { "properties": { "observed": { "enum": [false] } } },
+                {
+                  "properties": {
+                    "observed": { "enum": [true] },
+                    "tryptase": {
+                      "type": "boolean",
+                      "title": "Tryptase taken",
+                      "default": false
+                    },
+                    "positive": {
+                      "type": "boolean",
+                      "title": "Positive",
+                      "default": false
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "other": {
+          "type": "string",
+          "maxLength": 100,
+          "title": "Other",
+          "description": "Any other signs or symptoms to report?"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "description": "Describe AEFI (signs and symptoms)"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["Low", "High", "Life threatening"],
+          "title": "Severity"
+        }
+      }
+    }
+  },
+  "errorMessage": {
+    "properties": { "time": "please enter using the format hh:mm" }
+  }
+}

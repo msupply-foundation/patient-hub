@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "title": "Patient Details",
+  "description": "Please enter the following details",
+  "properties": {
+    "patientContactData": {
+      "title": "General Details",
+      "type": "object",
+      "required": ["firstName", "lastName"],
+      "properties": {
+        "firstName": {
+          "title": "First Name",
+          "description": "The first name of the patient",
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastName": {
+          "title": "Last Name",
+          "description": "The last name of the patient",
+          "type": "string",
+          "maxLength": 50
+        },
+        "DOB": {
+          "title": "Day of Birth",
+          "description": "The day of birth of the patient",
+          "type": "string",
+          "format": "date"
+        },
+        "address": {
+          "title": "Address",
+          "description": "Address of the patient",
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    }
+  }
+}

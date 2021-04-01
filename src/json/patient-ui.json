@@ -1,0 +1,7 @@
+{
+    "patientContactData": {
+        "date": {
+            "ui:widget": "DateWidget"
+        }
+    }
+}

@@ -1,0 +1,468 @@
+{
+  "type": "object",
+  "title": "Extra information",
+  "required": ["patientDemographicData"],
+  "properties": {
+    "patientDemographicData": {
+      "title": "Patient Demographic Data",
+      "type": "object",
+      "minProperties": 6,
+      "properties": {
+        "patientID": {
+          "title": "Patient ID",
+          "errorMessage": "Please enter the patient ID",
+          "type": "string"
+        },
+        "patientIDType": {
+          "title": "Patient ID Type",
+          "errorMessage": "Please select the patient ID type",
+          "type": "string",
+          "enum": ["National ID", "Drivers License", "Passport", "Other"]
+        },
+        "occupation": {
+          "title": "Occupation",
+          "errorMessage": "Please select an occupation",
+          "type": "string",
+          "enum": [
+            "Health care workers",
+            "Teacher",
+            "Police",
+            "HMAS",
+            "Fire brigade",
+            "Airport Workers",
+            "Sea Port Workers",
+            "Unemployed",
+            "Other"
+          ]
+        },
+        "employer": {
+          "title": "Employer",
+          "errorMessage": "Please select an employer",
+          "type": "string",
+          "enum": ["Government", "Non-Government", "Self Employed", "Unemployed"]
+        },
+        "island": {
+          "title": "Island",
+          "errorMessage": "Please select an island where the patient lives",
+          "type": "string",
+          "enum": ["Tongatapu", "Vava'u", "Ha'apai", "Eua", "Niuatoputapu", "Niuafo'ou"]
+        }
+      },
+      "required": ["island", "patientID", "patientIDType", "employer", "occupation"],
+      "dependencies": {
+        "island": {
+          "oneOf": [
+            {
+              "properties": {
+                "island": { "enum": ["Tongatapu"] },
+                "village": {
+                  "title": "Village",
+                  "errorMessage": "Please select a village where the patient lives",
+                  "type": "string",
+                  "enum": [
+                    "Afa",
+                    "Ahau",
+                    "Ahononou",
+                    "Alaki",
+                    "Alele",
+                    "Amaile",
+                    "Anana",
+                    "Api Polisi (Longolongo)",
+                    "Atata",
+                    "Eueiki",
+                    "Faama",
+                    "Fahefa",
+                    "Fanga",
+                    "Fangaloto",
+                    "Fasi",
+                    "Fatai",
+                    "Fatumu",
+                    "Fo'ui",
+                    "Folaha",
+                    "Fua'amotu",
+                    "Fungasia",
+                    "Ha'akame",
+                    "Ha'alalo",
+                    "Ha'asini",
+                    "Ha'atafu",
+                    "Ha'ateiho",
+                    "Ha'avakatolo",
+                    "Ha'utu",
+                    "Hala Lelue",
+                    "Hala'ovave",
+                    "Halaano",
+                    "Halafo'ou",
+                    "Halaleva",
+                    "Halaloto",
+                    "Halatu'i",
+                    "Hamula",
+                    "Hauloto",
+                    "Haveluliku",
+                    "Haveluloto",
+                    "Hofoa",
+                    "Hoi",
+                    "Holonga",
+                    "Houma",
+                    "Houmakelikao",
+                    "Isileli",
+                    "Kahoua",
+                    "Kala'au",
+                    "Kanokupolu",
+                    "Kapeta",
+                    "Kolofo'ou",
+                    "Kolomotu'a",
+                    "Kolonga",
+                    "Kolovai",
+                    "Lakepa",
+                    "Lapaha",
+                    "Lavengamalie",
+                    "Lavengatonga",
+                    "Liahona",
+                    "Lomaiviti",
+                    "Lomanlinita",
+                    "Longolongo",
+                    "Longoteme",
+                    "Loto Ha'apai",
+                    "Ma'ufanga",
+                    "Makaunga",
+                    "Mala'evakapuna",
+                    "Malapo",
+                    "Manili",
+                    "Manuka",
+                    "Mapelu moe Lau",
+                    "Masilamea",
+                    "Matafonua",
+                    "Matahau",
+                    "Mataika",
+                    "Mataliku Fisi",
+                    "Matangiake",
+                    "Maui",
+                    "Mu'a",
+                    "Nakolo",
+                    "Navutoka",
+                    "Ngele'ia",
+                    "Niutoua",
+                    "Nualei",
+                    "Nuku'alofa",
+                    "Nukuhetulu",
+                    "Nukuleka",
+                    "Nukunuku",
+                    "Pahu",
+                    "Patangata",
+                    "Pea",
+                    "Pelehake",
+                    "Pili",
+                    "Piula",
+                    "Popua",
+                    "Puke",
+                    "Sia 'a Tevolo",
+                    "Sia'atoutai",
+                    "Sopu",
+                    "Talafo'ou",
+                    "Talasiu",
+                    "Tatakamotonga",
+                    "Te'ekiu",
+                    "Teufaiva",
+                    "Tofoa",
+                    "Tokomololo",
+                    "Tolitoli",
+                    "Toloa",
+                    "Tongataeapa",
+                    "Touliki",
+                    "Tu'atakilangi",
+                    "Tufuenga",
+                    "Umusi",
+                    "Utulau",
+                    "Vaini",
+                    "Vaololoa",
+                    "Vaotu'u",
+                    "Veitongo"
+                  ],
+                  "default": "Afa"
+                }
+              },
+              "required": ["village"]
+            },
+            {
+              "properties": {
+                "island": { "enum": ["Vava'u"] },
+                "village": {
+                  "title": "Village",
+                  "errorMessage": "Please select a village where the patient lives",
+                  "type": "string",
+                  "enum": [
+                    "Fa'okula",
+                    "Falaleu",
+                    "Falevai",
+                    "Fangatongo",
+                    "Feletoa",
+                    "Fungamisi",
+                    "Ha'akio",
+                    "Ha'alaufuli",
+                    "Ha'alefo",
+                    "Holeva",
+                    "Holonga",
+                    "Houma",
+                    "Houmalei",
+                    "Hunga",
+                    "Kameli",
+                    "Kapa",
+                    "Koloa",
+                    "Lape",
+                    "Leimatu'a",
+                    "Longomapu",
+                    "Makave",
+                    "Mangia",
+                    "Masilamea",
+                    "Mataika",
+                    "Matamaka",
+                    "Neiafu Tahi",
+                    "Noapapu",
+                    "Ofu",
+                    "Okoa",
+                    "Oloua",
+                    "Otea",
+                    "Otumapa",
+                    "Ovaka",
+                    "Pangaimotu",
+                    "Sailoame",
+                    "Saineai",
+                    "Ta'anea",
+                    "Talau",
+                    "Talihau",
+                    "Taoa",
+                    "Taunga",
+                    "Tefisi",
+                    "Toula",
+                    "Tu'anekivale",
+                    "Tu'anuku",
+                    "Utulangivaka",
+                    "Utulei",
+                    "Utungake",
+                    "Vaimalo",
+                    "Vaipua"
+                  ],
+                  "default": "Fa'okula"
+                }
+              },
+              "required": ["village"]
+            },
+            {
+              "properties": {
+                "island": { "enum": ["Ha'apai"] },
+                "village": {
+                  "title": "Village",
+                  "errorMessage": "Please select a village where the patient lives",
+                  "type": "string",
+                  "enum": [
+                    "Fakakai",
+                    "Faleloa",
+                    "Fangale'ounga",
+                    "Felemea",
+                    "Fonoi",
+                    "Fotua",
+                    "Fotuha",
+                    "Ha'afakahenga",
+                    "Ha'afeva",
+                    "Ha'ano",
+                    "Ha'ateiho si'i",
+                    "Ha'ato'u",
+                    "Hihifo",
+                    "Holopeka",
+                    "Kotu",
+                    "Koulo",
+                    "Lifuka",
+                    "Lofanga",
+                    "Lotofoa",
+                    "Mango",
+                    "Matuku",
+                    "Mo'unga'one",
+                    "Muitoa",
+                    "Nomuka",
+                    "O'ua",
+                    "Pangai",
+                    "Pokotala",
+                    "Tungua",
+                    "Uiha"
+                  ],
+                  "default": "Fakakai"
+                }
+              },
+              "required": ["village"]
+            },
+            {
+              "properties": {
+                "island": { "enum": ["Eua"] },
+                "village": {
+                  "title": "Village",
+                  "errorMessage": "Please select a village where the patient lives",
+                  "type": "string",
+                  "enum": [
+                    "Angaha",
+                    "Esia",
+                    "Fata'ulua",
+                    "Futu",
+                    "Hatu'a",
+                    "Houma",
+                    "Mata'aho",
+                    "Mu'a",
+                    "Ohonua",
+                    "Pangai",
+                    "Petani",
+                    "Sapa'ata",
+                    "Ta'anga",
+                    "Tongamama'o",
+                    "Tufuvai"
+                  ],
+                  "default": "Angaha"
+                }
+              },
+              "required": ["village"]
+            },
+            {
+              "properties": {
+                "island": { "enum": ["Niuatoputapu"] },
+                "village": {
+                  "title": "Village",
+                  "errorMessage": "Please select a village where the patient lives",
+                  "type": "string",
+                  "enum": ["Falehau", "Hihifo", "Tafahi", "Vaipoa"],
+                  "default": "Falehau"
+                }
+              },
+              "required": ["village"]
+            },
+            {
+              "properties": {
+                "island": { "enum": ["Niuafo'ou"] },
+                "village": {
+                  "title": "Village",
+                  "errorMessage": "Please select a village where the patient lives",
+                  "type": "string",
+                  "enum": [
+                    "Alele",
+                    "Angaha Niua",
+                    "Esia Niua",
+                    "Fataulua Niua",
+                    "Futu Niua",
+                    "Mata'aho Niua",
+                    "Mu'a Niua",
+                    "Petani Niua",
+                    "Sapa'ata Niua",
+                    "Tongamama'o Niua"
+                  ],
+                  "default": "Alele"
+                }
+              },
+              "required": ["village"]
+            }
+          ]
+        }
+      }
+    },
+    "respondentContactData": {
+      "title": "Respondent Contact Data",
+      "description": "Contact data of the respondent if the respondent is not the patient.",
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "title": "First Name",
+          "description": "The first name of the respondent",
+          "type": "string",
+          "maxLength": 50
+        },
+        "lastName": {
+          "title": "Last Name",
+          "description": "The last name of the respondent",
+          "type": "string",
+          "maxLength": 50
+        },
+        "relationshipToPatient": {
+          "title": "Relationship to patient",
+          "description": "The relationship between the respondent and patient",
+          "type": "string",
+          "enum": [
+            "Mother",
+            "Father",
+            "Sister",
+            "Brother",
+            "Aunty",
+            "Uncle",
+            "Grandmother",
+            "Grandfather",
+            "Friend/Neighbour",
+            "Other"
+          ]
+        }
+      }
+    },
+    "patientClinicalData": {
+      "title": "Patient Clinical Data",
+      "description": "The patient's clinical data",
+      "type": "object",
+      "properties": {
+        "comorbiditiesImmunocompromised": {
+          "title": "Comorbidities/Immunocompromised",
+          "description": "Does the patient have any comorbidities or immunocompromised status?",
+          "type": "string",
+          "enum": [
+            "Diabetes",
+            "Hypertension",
+            "Asthma",
+            "Cancer(all types)",
+            "Cerebral Vascular Accident",
+            "Chronic Kidney Disease",
+            "Chronic Obstructive Airway Disease",
+            "Immunocompromised",
+            "Rheumatic Heart Disease",
+            "Ischemic Heart Disease",
+            "Other"
+          ]
+        },
+        "previousSeriousAllergicReactions": {
+          "title": "Previous serious allergic reactions",
+          "description": "Has the patient had any serious allergic reactions in the past?",
+          "type": "boolean",
+          "default": false
+        },
+        "previousAdverseEventsFollowingImmunisation": {
+          "title": "Previous adverse events following immunisation",
+          "description": "Has the patient had any adverse effects following an immunisation in the past?",
+          "type": "boolean",
+          "default": false
+        },
+        "currentlyPregnant": {
+          "title": "Currently Pregnant",
+          "description": "Is the patient currently pregnant?",
+          "type": "boolean",
+          "default": false
+        },
+        "currentlyLactating": {
+          "title": "Currently Lactating",
+          "description": "Is the patient currently lactating?",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "covidStatus": {
+      "title": "Covid 19 Status",
+      "type": "object",
+      "properties": {
+        "everTestedPositiveForCOVID19": {
+          "type": "boolean",
+          "default": false,
+          "description": "Has the patient ever tested positive for COVID-19?",
+          "title": "Ever tested positive for COVID-19"
+        },
+        "dateOfDiagnosis": {
+          "title": "Date of diagnosis",
+          "errorMessage": "Must be a valid date in the format DD/MM/YYYY",
+          "description": "If yes, date of diagnosis",
+          "format": "date",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

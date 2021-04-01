@@ -1,0 +1,12 @@
+{
+  "respondentContactData": {
+    "relationshipToPatient": { "ui:placeholder": "Select a relationship" }
+  },
+  "patientClinicalData": {
+    "comorbiditiesImmunocompromised": { "ui:placeholder": "Please select, if applicable" }
+  },
+  "patientDemographicData": {
+    "island": { "ui:placeholder": "Select an island" },
+    "village": { "ui:placeholder": "Select a village" }
+  }
+}

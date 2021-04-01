@@ -1,0 +1,11 @@
+{
+  "reporter": {
+    "title": { "ui:placeholder": "Select a title" },
+    "date": { "ui:widget": "DateWidget" },
+    "time": { "ui:widget": "TimeWidget" }
+  },
+  "aefi": {
+    "description": { "ui:widget": "TextareaWidget", "ui:numberOfLines": 10 },
+    "severity": { "ui:placeholder": "Select a severity level" }
+  }
+}
