@@ -1,9 +1,9 @@
 import { useState } from "react";
-import patientSchema from "../json/patient-schema.json";
-import patientUI from "../json/patient-ui.json";
+import patientSchema from "../../json/patient-schema.json";
+import patientUI from "../../json/patient-ui.json";
 import { Backdrop, CircularProgress, Paper } from "@material-ui/core";
-import ConfirmationDialog from "./ConfirmationDialog";
-import JsonSchemaForm from "./JsonSchemaForm";
+import ConfirmationDialog from "../dialog/ConfirmationDialog";
+import JsonSchemaForm from "../components/JsonSchemaForm";
 
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 

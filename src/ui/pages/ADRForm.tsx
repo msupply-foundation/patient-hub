@@ -1,8 +1,8 @@
 import React from "react";
-import adrSchema from "../json/adr-schema.json";
-import adrUI from "../json/adr-ui.json";
+import adrSchema from "../../json/adr-schema.json";
+import adrUI from "../../json/adr-ui.json";
 import { Paper } from "@material-ui/core";
-import JsonSchemaForm from "./JsonSchemaForm";
+import JsonSchemaForm from "../components/JsonSchemaForm";
 
 const SubmitForm = ({ formData }: { formData: any }, e: any) => {
   console.log("Data submitted: ", formData);
