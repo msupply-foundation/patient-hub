@@ -1,7 +1,7 @@
 import "@fontsource/raleway";
 import ReactDOM from "react-dom";
 import { App } from "./App";
-import { DependencyContainer } from "./ui/containers/DependencyContainer";
+import { DependencyContainer } from "./shared/containers/DependencyContainer";
 
 ReactDOM.render(
   <DependencyContainer>

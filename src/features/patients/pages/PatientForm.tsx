@@ -1,10 +1,10 @@
 import { FC, useState } from "react";
 import { Backdrop, CircularProgress, Paper } from "@material-ui/core";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { ConfirmationDialog } from "../dialog";
-import { JsonSchemaForm } from "../components";
-import patientSchema from "../../json/patient-schema.json";
-import patientUI from "../../json/patient-ui.json";
+import { ConfirmationDialog } from "../../../shared/dialog";
+import { JsonSchemaForm } from "../../../shared/components";
+import patientSchema from "../../../json/patient-schema.json";
+import patientUI from "../../../json/patient-ui.json";
 
 const useStyles = makeStyles(() =>
   createStyles({

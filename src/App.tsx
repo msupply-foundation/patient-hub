@@ -2,11 +2,12 @@
 
 import { Switch, Route } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
-
-import { AppBar, Footer, AccountStatus } from "./ui/components";
-import { PatientForm, ADRForm, Home } from "./ui/pages";
-import { LoginPromptingRoute } from "./ui/containers";
-import { useTranslations } from "./ui/hooks";
+import { AppBar, Footer, AccountStatus } from "./shared/components";
+import { useTranslations } from "./shared/hooks";
+import { LoginPromptingRoute } from "./features/auth/components/LoginPromptingRoute";
+import { PatientForm } from "./features/patients/pages/PatientForm";
+import { ADRForm } from "./features/adr/pages/ADRForm";
+import { Home } from "./features/app/pages/Home";
 
 export const App = () => {
   const { messages } = useTranslations();

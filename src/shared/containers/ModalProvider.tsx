@@ -1,5 +1,5 @@
 import { createContext, FC, useState } from "react";
-import { LoginDialog } from "../dialog/LoginDialog";
+import { LoginDialog } from "../../features/auth/components/LoginDialog";
 import { useToggle } from "../hooks/useToggle";
 
 export enum ModalKey {

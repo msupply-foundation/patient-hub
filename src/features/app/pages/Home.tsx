@@ -12,7 +12,7 @@ import BrandingWatermarkIcon from "@material-ui/icons/BrandingWatermark";
 import { ChevronRight } from "@material-ui/icons";
 
 import { useHistory } from "react-router-dom";
-import { useTranslations } from "../hooks/useTranslations";
+import { useTranslations } from "../../../shared/hooks/useTranslations";
 
 const useStyles = makeStyles(() =>
   createStyles({

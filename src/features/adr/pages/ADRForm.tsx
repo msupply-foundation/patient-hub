@@ -1,7 +1,7 @@
-import adrSchema from "../../json/adr-schema.json";
-import adrUI from "../../json/adr-ui.json";
+import adrSchema from "../../../json/adr-schema.json";
+import adrUI from "../../../json/adr-ui.json";
 import { Paper } from "@material-ui/core";
-import { JsonSchemaForm } from "../components";
+import { JsonSchemaForm } from "../../../shared/components";
 import { FC } from "react";
 
 const SubmitForm = ({ formData }: { formData: any }, e: any) => {

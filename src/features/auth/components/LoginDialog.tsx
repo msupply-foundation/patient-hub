@@ -4,10 +4,10 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { Box, Grid, TextField } from "@material-ui/core";
 import { ChevronRight } from "@material-ui/icons";
-import { useTranslations } from "../hooks/useTranslations";
-import { AppBar } from "../components/AppBar";
-import { useAuth } from "../hooks/useAuth";
 import { LoadingButton } from "@material-ui/lab";
+import { useTranslations } from "../../../shared/hooks/useTranslations";
+import { AppBar } from "../../../shared/components/AppBar";
+import { useAuth } from "../hooks/useAuth";
 
 interface LoginDialogProps {
   open: boolean;

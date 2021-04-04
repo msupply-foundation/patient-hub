@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { HashRouter } from "react-router-dom";
 
-import { AuthProvider } from "./AuthProvider";
+import { AuthProvider } from "../../features/auth/AuthProvider";
 import { ModalProvider } from "./ModalProvider";
 import { TranslationProvider } from "./TranslationProvider";
 import { ThemeProvider } from "./ThemeProvider";
