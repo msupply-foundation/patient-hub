@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useQuery } from "react-query";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import { Box, Grid, TextField } from "@material-ui/core";
@@ -6,6 +7,7 @@ import { ChevronRight } from "@material-ui/icons";
 import { useTranslations } from "../hooks/useTranslations";
 import { AppBar } from "../components/AppBar";
 import { useAuth } from "../hooks/useAuth";
+import { LoadingButton } from "@material-ui/lab";
 
 interface LoginDialogProps {
   open: boolean;
@@ -17,6 +19,17 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
   const [password, setPassword] = useState("");
   const { login, guestLogin } = useAuth();
   const { messages } = useTranslations();
+
+  const { isLoading, isFetching, error, data, refetch } = useQuery(
+    "login",
+    () =>
+      window
+        .fetch(
+          "https://t2ytl2iqse.execute-api.ap-southeast-2.amazonaws.com/default/login"
+        )
+        .then((resp) => console.log(resp)),
+    { enabled: false }
+  );
 
   return (
     <Dialog fullWidth open={open}>
@@ -50,25 +63,30 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
               />
             </Box>
             <Grid item xs={12}>
-              <Button
+              <LoadingButton
+                pending={isFetching}
                 disabled={!(username && password)}
                 fullWidth
                 endIcon={<ChevronRight />}
                 variant="contained"
                 color="primary"
-                onClick={() => {
+                onClick={async () => {
+                  await refetch();
                   login(username, password);
                   handleClose();
+                  setPassword("");
+                  setUsername("");
                 }}
               >
                 {messages.signIn}
-              </Button>
+              </LoadingButton>
             </Grid>
           </Grid>
 
           <Grid item xs={12}>
             <Box mt={1} />
             <Button
+              disabled={isFetching}
               fullWidth
               endIcon={<ChevronRight />}
               variant="contained"
