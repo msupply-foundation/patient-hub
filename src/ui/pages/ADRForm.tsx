@@ -1,14 +1,14 @@
-import React from "react";
 import adrSchema from "../../json/adr-schema.json";
 import adrUI from "../../json/adr-ui.json";
 import { Paper } from "@material-ui/core";
-import JsonSchemaForm from "../components/JsonSchemaForm";
+import { JsonSchemaForm } from "../components";
+import { FC } from "react";
 
 const SubmitForm = ({ formData }: { formData: any }, e: any) => {
   console.log("Data submitted: ", formData);
 };
 
-export default function ADRForm() {
+export const ADRForm: FC = () => {
   return (
     <Paper
       style={{
@@ -25,4 +25,4 @@ export default function ADRForm() {
       />
     </Paper>
   );
-}
+};

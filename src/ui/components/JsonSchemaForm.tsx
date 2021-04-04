@@ -1,16 +1,19 @@
-import React from "react";
 import Form from "@rjsf/material-ui";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
-  KeyboardTimePicker,
 } from "@material-ui/pickers";
-
+import MuiTimePicker from "@material-ui/lab/TimePicker";
+import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
+import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
 import DateFnsUtils from "@date-io/date-fns";
 import { format, isValid } from "date-fns";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { TextField, TextFieldProps } from "@material-ui/core";
+import { FC, useState } from "react";
+import { WidgetProps } from "@rjsf/core";
 
-const DatePicker = (props: any) => (
+const DatePicker: FC<WidgetProps> = (props: any) => (
   <MuiPickersUtilsProvider utils={DateFnsUtils}>
     <KeyboardDatePicker
       disableToolbar
@@ -30,26 +33,34 @@ const DatePicker = (props: any) => (
   </MuiPickersUtilsProvider>
 );
 
-const TimePicker = (props: any) => (
-  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-    <KeyboardTimePicker
-      margin="normal"
-      KeyboardButtonProps={{
-        "aria-label": "change time",
-      }}
-      onChange={(date) => date && props.onChange(`${format(date, "hh:mm")}`)}
-      value={props.value}
-      autoOk
-    />
-  </MuiPickersUtilsProvider>
-);
+const TimePicker: FC<WidgetProps> = (props) => {
+  const { onChange, value } = props;
+  const [time, setTime] = useState(value);
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <MuiTimePicker
+        allowKeyboardControl={true}
+        ampm={false}
+        onChange={(date: Date | null) => {
+          if (date && isValid(date)) {
+            onChange(format(date, "hh:mm"));
+            setTime(date);
+          }
+        }}
+        value={time}
+        renderInput={(params: TextFieldProps) => <TextField {...params} />}
+      />
+    </LocalizationProvider>
+  );
+};
 
 const widgets = {
   DateWidget: DatePicker,
   TimeWidget: TimePicker,
 };
 
-const JsonSchemaForm = ({
+export const JsonSchemaForm = ({
   schema,
   uiSchema,
   onSubmit,
@@ -64,7 +75,5 @@ const JsonSchemaForm = ({
     onSubmit={onSubmit}
     liveValidate
     widgets={widgets}
-  ></Form>
+  />
 );
-
-export default JsonSchemaForm;

@@ -1,3 +1,15 @@
 {
-  "test": "test"
+  "test": "test",
+  "signIn": "sign in",
+  "signOut": "sign out",
+  "continueGuest": "Continue as a guest",
+  "username": "User name",
+  "password": "Password",
+  "from": "From",
+  "with": "with",
+  "andSponsorshipBy": "and sponsorship by",
+  "yourLogo": "Your logo",
+  "recordAnADR": "Record an adverse drug effect",
+  "registerPatient": "Register a new patient",
+  "pageNotFound": "Page Not Found"
 }

@@ -12,7 +12,7 @@ interface ConfirmationDialogProps {
   title: string;
 }
 
-const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
+export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
   open,
   handleClose,
   title,
@@ -30,5 +30,3 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
     </DialogActions>
   </Dialog>
 );
-
-export default ConfirmationDialog;

@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { FC, useState } from "react";
+import { Backdrop, CircularProgress, Paper } from "@material-ui/core";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { ConfirmationDialog } from "../dialog";
+import { JsonSchemaForm } from "../components";
 import patientSchema from "../../json/patient-schema.json";
 import patientUI from "../../json/patient-ui.json";
-import { Backdrop, CircularProgress, Paper } from "@material-ui/core";
-import ConfirmationDialog from "../dialog/ConfirmationDialog";
-import JsonSchemaForm from "../components/JsonSchemaForm";
-
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -18,11 +17,13 @@ const useStyles = makeStyles(() =>
       marginRight: "auto",
       maxWidth: 600,
       padding: 50,
+      overflow: "scroll",
+      height: "calc(100% - 100px)",
     },
   })
 );
 
-const PatientForm = () => {
+export const PatientForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const classes = useStyles();
@@ -58,5 +59,3 @@ const PatientForm = () => {
     </Paper>
   );
 };
-
-export default PatientForm;

@@ -9,12 +9,20 @@ const theme = {
     primary: {
       main: "rgba(233,92,48,1)",
     },
+    secondary: {
+      main: "#ecf3fc",
+    },
   },
 
   typography: {
+    fontFamily: "Raleway",
     h3: {
       color: "#333333",
     },
+    body2: {
+      color: "#ecf3fc",
+    },
+    button: {},
   },
 
   divider: "#333333",
