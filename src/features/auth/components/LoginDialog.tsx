@@ -55,7 +55,7 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
                 variant="contained"
                 color="primary"
                 onClick={async () => {
-                  const authenticated = await tryLogin({ username, password });
+                  const authenticated = await tryLogin();
 
                   if (authenticated) {
                     login(username, password);
