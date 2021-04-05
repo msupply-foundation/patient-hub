@@ -16,24 +16,24 @@ export const App = () => {
     <>
       <AppBar RightComponent={<AccountStatus />} />
 
-      <Box height="30px" />
-
-      <Switch>
-        <LoginPromptingRoute path="/adverse-drug-reactions">
-          <ADRForm />
-        </LoginPromptingRoute>
-        <LoginPromptingRoute path="/patients">
-          <PatientForm />
-        </LoginPromptingRoute>
-        <Route path="/">
-          <Home />
-        </Route>
-        <Route path="*">
-          <Typography>{messages.pageNotFound}</Typography>
-        </Route>
-      </Switch>
-
-      <Box height="30px" />
+      <Box bgcolor="#f8fbfe">
+        <Box height="30px" />
+        <Switch>
+          <LoginPromptingRoute path="/adverse-drug-reactions">
+            <ADRForm />
+          </LoginPromptingRoute>
+          <LoginPromptingRoute path="/patients">
+            <PatientForm />
+          </LoginPromptingRoute>
+          <Route path="/">
+            <Home />
+          </Route>
+          <Route path="*">
+            <Typography>{messages.pageNotFound}</Typography>
+          </Route>
+        </Switch>
+        <Box height="30px" />
+      </Box>
 
       <Footer />
     </>

@@ -11,5 +11,6 @@
   "yourLogo": "Your logo",
   "recordAnADR": "Record an adverse drug effect",
   "registerPatient": "Register a new patient",
-  "pageNotFound": "Page Not Found"
+  "pageNotFound": "Page Not Found",
+  "invalidUsernameOrPassword": "Invalid username or password"
 }

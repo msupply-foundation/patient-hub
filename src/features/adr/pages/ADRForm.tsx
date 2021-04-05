@@ -1,14 +1,15 @@
-import adrSchema from "../../../json/adr-schema.json";
-import adrUI from "../../../json/adr-ui.json";
-import { Paper } from "@material-ui/core";
+import { Box, CircularProgress, Paper } from "@material-ui/core";
 import { JsonSchemaForm } from "../../../shared/components";
 import { FC } from "react";
+import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
 
 const SubmitForm = ({ formData }: { formData: any }, e: any) => {
   console.log("Data submitted: ", formData);
 };
 
 export const ADRForm: FC = () => {
+  const { isLoading, data } = useADRSchemaQuery();
+
   return (
     <Paper
       style={{
@@ -18,11 +19,23 @@ export const ADRForm: FC = () => {
         padding: 50,
       }}
     >
-      <JsonSchemaForm
-        schema={adrSchema}
-        uiSchema={adrUI}
-        onSubmit={SubmitForm}
-      />
+      {!isLoading ? (
+        <JsonSchemaForm
+          schema={data?.jsonSchema ?? {}}
+          uiSchema={data?.uiSchema ?? {}}
+          onSubmit={SubmitForm}
+        />
+      ) : (
+        <Box
+          height="50vh"
+          justifyContent="center"
+          alignItems="center"
+          flex={1}
+          display="flex"
+        >
+          <CircularProgress />
+        </Box>
+      )}
     </Paper>
   );
 };

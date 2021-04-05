@@ -1,13 +1,13 @@
 import { FC, useState } from "react";
-import { useQuery } from "react-query";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import { Box, Grid, TextField } from "@material-ui/core";
+import { Box, Grid, TextField, Snackbar } from "@material-ui/core";
 import { ChevronRight } from "@material-ui/icons";
 import { LoadingButton } from "@material-ui/lab";
 import { useTranslations } from "../../../shared/hooks/useTranslations";
 import { AppBar } from "../../../shared/components/AppBar";
 import { useAuth } from "../hooks/useAuth";
+import { useLogin } from "../hooks/useLoginQuery";
 
 interface LoginDialogProps {
   open: boolean;
@@ -20,29 +20,13 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
   const { login, guestLogin } = useAuth();
   const { messages } = useTranslations();
 
-  const { isLoading, isFetching, error, data, refetch } = useQuery(
-    "login",
-    () =>
-      window
-        .fetch(
-          "https://t2ytl2iqse.execute-api.ap-southeast-2.amazonaws.com/default/login"
-        )
-        .then((resp) => console.log(resp)),
-    { enabled: false }
-  );
+  const { tryLogin, isLoading, error } = useLogin();
 
   return (
     <Dialog fullWidth open={open}>
       <Grid container direction="column">
         <Grid item xs={12}>
-          <AppBar
-            RightComponent={
-              // <IconButton onClick={handleClose}>
-              //   <Cancel />
-              // </IconButton>
-              null
-            }
-          />
+          <AppBar RightComponent={null} />
         </Grid>
 
         <Grid container direction="row">
@@ -64,18 +48,21 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
             </Box>
             <Grid item xs={12}>
               <LoadingButton
-                pending={isFetching}
+                pending={isLoading}
                 disabled={!(username && password)}
                 fullWidth
                 endIcon={<ChevronRight />}
                 variant="contained"
                 color="primary"
                 onClick={async () => {
-                  await refetch();
-                  login(username, password);
-                  handleClose();
-                  setPassword("");
-                  setUsername("");
+                  const authenticated = await tryLogin({ username, password });
+
+                  if (authenticated) {
+                    login(username, password);
+                    handleClose();
+                    setPassword("");
+                    setUsername("");
+                  }
                 }}
               >
                 {messages.signIn}
@@ -86,7 +73,7 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
           <Grid item xs={12}>
             <Box mt={1} />
             <Button
-              disabled={isFetching}
+              disabled={isLoading}
               fullWidth
               endIcon={<ChevronRight />}
               variant="contained"
@@ -101,6 +88,16 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
           </Grid>
         </Grid>
       </Grid>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        open={!!error}
+        autoHideDuration={6000}
+        message={messages.invalidUsernameOrPassword}
+        disableWindowBlurListener
+      />
     </Dialog>
   );
 };
