@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "title": "Extra information",
   "required": ["patientDemographicData"],
   "properties": {
     "patientDemographicData": {

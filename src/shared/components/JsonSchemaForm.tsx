@@ -61,10 +61,12 @@ const widgets = {
 };
 
 export const JsonSchemaForm = ({
+  children,
   schema,
   uiSchema,
   onSubmit,
 }: {
+  children?: JSX.Element;
   schema: any;
   uiSchema: any;
   onSubmit: any;
@@ -75,5 +77,6 @@ export const JsonSchemaForm = ({
     onSubmit={onSubmit}
     liveValidate
     widgets={widgets}
+    children={children}
   />
 );

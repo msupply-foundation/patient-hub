@@ -1,7 +1,7 @@
 {
   "type": "object",
-  "title": "Patient Details",
-  "description": "Please enter the following details",
+  "title": "COVID19 Immunisation: Pre-Registration",
+  "description": "Thank you for filling out this pre-registration form for the COVID19 Immunisation Campaign. This information will be used to fast track the process on the day of vaccination. Please only fill out this form once per patient. Please fill out this form at least 48 hours prior to getting vaccinated.\n We appreciate your effort in filling out this form and doing your part to stop the spread of COVID19. If you have any questions regarding this form please contact the COVID19 Vaccine hotline on: 0800800800",
   "properties": {
     "patientContactData": {
       "title": "General Details",
