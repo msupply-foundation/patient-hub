@@ -103,7 +103,7 @@ export const PatientForm: FC = () => {
       {!patientSchemaIsLoading ? (
         <JsonSchemaForm
           id="patient"
-          schema={patientSchema?.jsonSchema ?? {}}
+          jsonSchema={patientSchema?.jsonSchema ?? {}}
           uiSchema={patientSchema?.uiSchema ?? {}}
           onChange={handlePatientChange}
         >
@@ -124,7 +124,7 @@ export const PatientForm: FC = () => {
       {!patientSurveySchemaIsLoading ? (
         <JsonSchemaForm
           id="patientSurvey"
-          schema={patientSurveySchema?.jsonSchema ?? {}}
+          jsonSchema={patientSurveySchema?.jsonSchema ?? {}}
           uiSchema={patientSurveySchema?.uiSchema ?? {}}
           onChange={handleSurveyChange}
         >
