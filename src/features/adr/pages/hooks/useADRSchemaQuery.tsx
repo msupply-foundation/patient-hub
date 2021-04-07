@@ -7,18 +7,22 @@ interface ADRResponseData {
   json_schema: JSONSchema7;
 }
 
-export const getAdrSchema = () =>
-  axios
-    .get<ADRResponseData>(
-      "https://7jj66vzhdk.execute-api.ap-southeast-2.amazonaws.com/default/form_schema?type=ADR"
-      // "http://localhost:2048/api/v4/form_schema?type=ADR",
-      // { withCredentials: true }
-    )
+export const getAdrSchema = () => {
+  const url =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:2048"
+      : window.location.href;
+
+  return axios
+    .get<ADRResponseData[]>(`${url}/api/v4/patient_hub/form_schema?type=ADR`, {
+      withCredentials: true,
+    })
     .then(({ data }) => {
-      const { ui_schema: uiSchema, json_schema: jsonSchema } = data;
+      const { ui_schema: uiSchema, json_schema: jsonSchema } = data[0] ?? {};
 
       return { uiSchema, jsonSchema };
     });
+};
 
 export const useADRSchemaQuery = () => {
   const { isLoading, data } = useQuery("adrSchema", getAdrSchema);
