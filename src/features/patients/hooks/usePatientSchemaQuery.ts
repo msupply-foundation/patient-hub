@@ -7,7 +7,7 @@ interface PatientSchemaResponseData {
   json_schema: JSONSchema7;
 }
 
-export const getPatientSurveySchema = () => {
+export const getPatientSchema = () => {
   const url =
     process.env.NODE_ENV === "development"
       ? "http://localhost:2048"
@@ -15,7 +15,7 @@ export const getPatientSurveySchema = () => {
 
   return axios
     .get<PatientSchemaResponseData[]>(
-      `${url}/api/v4/patient_hub/form_schema?type=PatientSurvey`,
+      `${url}/api/v4/patient_hub/form_schema?type=Patient`,
       { withCredentials: true }
     )
     .then(({ data }) => {
@@ -25,11 +25,8 @@ export const getPatientSurveySchema = () => {
     });
 };
 
-export const usePatientSurveySchemaQuery = () => {
-  const { isLoading, data } = useQuery(
-    "patientSurveySchema",
-    getPatientSurveySchema
-  );
+export const usePatientSchemaQuery = () => {
+  const { isLoading, data } = useQuery("patientSchema", getPatientSchema);
 
-  return { isLoading, patientSurveySchema: data };
+  return { isLoading, patientSchema: data };
 };
