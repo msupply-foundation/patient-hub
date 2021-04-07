@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useQuery } from "react-query";
 import { JSONSchema7 } from "json-schema";
+import { useAuth } from "../../../auth/hooks/useAuth";
 
 interface ADRResponseData {
   ui_schema: Record<string, string>;
@@ -25,7 +26,12 @@ export const getAdrSchema = () => {
 };
 
 export const useADRSchemaQuery = () => {
-  const { isLoading, data } = useQuery("adrSchema", getAdrSchema);
+  const { username } = useAuth();
+  const { isLoading, data } = useQuery("adrSchema", getAdrSchema, {
+    enabled: !!username,
+    refetchInterval: false,
+    staleTime: Infinity,
+  });
 
   return { isLoading, data };
 };

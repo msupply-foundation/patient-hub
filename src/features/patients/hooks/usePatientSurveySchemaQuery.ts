@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import axios from "axios";
 import { JSONSchema7 } from "json-schema";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 interface PatientSchemaResponseData {
   ui_schema: Record<string, string>;
@@ -26,9 +27,11 @@ export const getPatientSurveySchema = () => {
 };
 
 export const usePatientSurveySchemaQuery = () => {
+  const { username } = useAuth();
   const { isLoading, data } = useQuery(
     "patientSurveySchema",
-    getPatientSurveySchema
+    getPatientSurveySchema,
+    { enabled: !!username, refetchInterval: false, staleTime: Infinity }
   );
 
   return { isLoading, patientSurveySchema: data };
