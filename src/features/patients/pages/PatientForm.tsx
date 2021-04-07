@@ -115,9 +115,7 @@ export const PatientForm: FC = () => {
           uiSchema={patientSurveySchema?.uiSchema ?? {}}
           onChange={handleSurveyChange}
         >
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
-            Submit
-          </Button>
+          <div />
         </JsonSchemaForm>
       ) : (
         <Box
