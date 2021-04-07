@@ -12,6 +12,7 @@ import { JsonSchemaForm } from "../../../shared/components";
 import { usePatientSurveySchemaQuery } from "../hooks/usePatientSurveySchemaQuery";
 import { usePatientSchemaQuery } from "../hooks/usePatientSchemaQuery";
 import { usePatientApi } from "../hooks/usePatientApi";
+import { usePatientEvent } from "../hooks/usePatientEvent";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -35,6 +36,8 @@ const useStyles = makeStyles(() =>
 );
 
 export const PatientForm: FC = () => {
+  const { patientEvent } = usePatientEvent();
+
   const {
     isLoading: patientSurveySchemaIsLoading,
     patientSurveySchema,
@@ -84,6 +87,7 @@ export const PatientForm: FC = () => {
 
       {!patientSchemaIsLoading ? (
         <JsonSchemaForm
+          id="patient"
           schema={patientSchema?.jsonSchema ?? {}}
           uiSchema={patientSchema?.uiSchema ?? {}}
           onChange={handlePatientChange}
@@ -106,6 +110,7 @@ export const PatientForm: FC = () => {
 
       {!patientSurveySchemaIsLoading ? (
         <JsonSchemaForm
+          id="patientSurvey"
           schema={patientSurveySchema?.jsonSchema ?? {}}
           uiSchema={patientSurveySchema?.uiSchema ?? {}}
           onChange={handleSurveyChange}

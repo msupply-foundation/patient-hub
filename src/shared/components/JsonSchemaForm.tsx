@@ -61,6 +61,7 @@ const widgets = {
 };
 
 export type Props = {
+  id?: string;
   children?: JSX.Element;
   schema: any;
   uiSchema: any;
@@ -74,8 +75,10 @@ export const JsonSchemaForm = ({
   uiSchema,
   onSubmit,
   onChange,
+  id,
 }: Props) => (
   <Form
+    id={id}
     schema={schema}
     uiSchema={uiSchema}
     onSubmit={onSubmit}

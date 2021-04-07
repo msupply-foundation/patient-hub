@@ -1,6 +1,7 @@
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import { getUrl } from '../../../shared/utils';
+import { useQuery } from "react-query";
+import axios from "axios";
+import { getUrl } from "../../../shared/utils";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 interface PatientSchemaResponseData {
   ID: string;
@@ -11,14 +12,25 @@ interface PatientSchemaResponseData {
 }
 
 const getPatientEvent = (code: string) => () =>
-  axios.get<PatientSchemaResponseData[]>(getUrl(`patient_event?code=${code}`)).then(({ data }) => {
-    const { ID: id, description } = data[0] ?? {};
+  axios
+    .get<PatientSchemaResponseData[]>(getUrl(`patient_event?code=${code}`))
+    .then(({ data }) => {
+      const { ID: id, description } = data[0] ?? {};
 
-    return { id, description };
-  });
+      return { id, description };
+    });
 
-export const usePatientEvent = (code: string = 'PCD') => {
-  const { isLoading, data: patientEvent } = useQuery('patientSchema', getPatientEvent(code));
+export const usePatientEvent = (code: string = "PCD") => {
+  const { username } = useAuth();
+  const { isLoading, data: patientEvent } = useQuery(
+    "patientSchema",
+    getPatientEvent(code),
+    {
+      enabled: !!username,
+      refetchInterval: false,
+      staleTime: Infinity,
+    }
+  );
 
   return { isLoading, patientEvent };
 };
