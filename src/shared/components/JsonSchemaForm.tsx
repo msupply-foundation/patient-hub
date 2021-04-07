@@ -15,7 +15,6 @@ import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { TextField, TextFieldProps } from "@material-ui/core";
 import { FormValidation, WidgetProps } from "@rjsf/core";
 import { SelectWidget } from "./SelectWidget";
-import { FieldTemplate } from "./FieldTemplate";
 
 const ajvErrors = require("ajv-errors");
 
@@ -103,7 +102,6 @@ export const JsonSchemaForm: FC<Props> = ({
   return (
     <Form
       id={id}
-      FieldTemplate={FieldTemplate}
       ErrorList={() => null}
       schema={jsonSchema}
       uiSchema={uiSchema}
