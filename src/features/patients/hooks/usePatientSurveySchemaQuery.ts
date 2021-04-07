@@ -12,7 +12,7 @@ export const getPatientSurveySchema = () => {
   const url =
     process.env.NODE_ENV === "development"
       ? "http://localhost:2048"
-      : window.location.href;
+      : `${window.location.protocol}//${window.location.host}`;
 
   return axios
     .get<PatientSchemaResponseData[]>(
