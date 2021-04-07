@@ -65,13 +65,16 @@ export const JsonSchemaForm = ({
   schema,
   uiSchema,
   onSubmit,
+  id,
 }: {
   children?: JSX.Element;
   schema: any;
   uiSchema: any;
   onSubmit: any;
+  id?: string;
 }) => (
   <Form
+    id={id}
     schema={schema}
     uiSchema={uiSchema}
     onSubmit={onSubmit}
