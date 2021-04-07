@@ -29,6 +29,7 @@ const DatePicker: FC<WidgetProps> = (props: any) => (
       }
       value={props.value}
       autoOk
+      label={props.label}
     />
   </MuiPickersUtilsProvider>
 );
@@ -50,6 +51,7 @@ const TimePicker: FC<WidgetProps> = (props) => {
         }}
         value={time}
         renderInput={(params: TextFieldProps) => <TextField {...params} />}
+        label={props.label}
       />
     </LocalizationProvider>
   );

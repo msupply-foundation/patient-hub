@@ -35,6 +35,11 @@ const useStyles = makeStyles(() =>
   })
 );
 
+type onChangeProps = {
+  formData: any;
+  errors: string[];
+};
+
 export const PatientForm: FC = () => {
   const { patientEvent } = usePatientEvent();
 
@@ -55,11 +60,17 @@ export const PatientForm: FC = () => {
     setShowConfirmation(false);
   };
 
-  const patientFormRef = useRef({});
-  const surveyFormRef = useRef({});
+  const patientFormRef = useRef({ formData: {}, isValid: false });
+  const surveyFormRef = useRef({ formData: {}, isValid: false });
   const { createPatient, createNameNote } = usePatientApi();
 
   const handleSubmit = () => {
+    if (
+      !(patientFormRef?.current?.isValid && patientFormRef?.current?.isValid)
+    ) {
+      return;
+    }
+
     setIsSubmitting(true);
     createPatient(patientFormRef?.current)
       .then(({ data }) =>
@@ -71,19 +82,23 @@ export const PatientForm: FC = () => {
       });
   };
 
-  const handlePatientChange = ({ formData }: { formData: any }) => {
+  const handlePatientChange = ({ formData, errors }: onChangeProps) => {
     if (patientFormRef?.current) {
-      patientFormRef.current = formData;
+      const isValid = errors.length === 0;
+      patientFormRef.current = { formData, isValid };
     }
   };
-  const handleSurveyChange = ({ formData }: { formData: any }) => {
+
+  const handleSurveyChange = ({ formData, errors }: onChangeProps) => {
     if (surveyFormRef?.current) {
-      surveyFormRef.current = formData;
+      const isValid = errors.length === 0;
+      surveyFormRef.current = { formData, isValid };
     }
   };
+
   return (
     <Paper className={classes.paper}>
-      <img className={classes.img} src="logo.png" />
+      <img className={classes.img} alt="logo" src="/patients/logo.png" />
 
       {!patientSchemaIsLoading ? (
         <JsonSchemaForm
