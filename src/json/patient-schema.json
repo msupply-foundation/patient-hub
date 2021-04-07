@@ -6,27 +6,27 @@
     "patientContactData": {
       "title": "General Details",
       "type": "object",
-      "required": ["firstName", "lastName"],
+      "required": ["first", "last"],
       "properties": {
-        "firstName": {
+        "first": {
           "title": "First Name",
           "description": "The first name of the patient",
           "type": "string",
           "maxLength": 50
         },
-        "lastName": {
+        "last": {
           "title": "Last Name",
           "description": "The last name of the patient",
           "type": "string",
           "maxLength": 50
         },
-        "DOB": {
+        "date_of_birth": {
           "title": "Day of Birth",
           "description": "The day of birth of the patient",
           "type": "string",
           "format": "date"
         },
-        "address": {
+        "postal_address_1": {
           "title": "Address",
           "description": "Address of the patient",
           "type": "string",

@@ -1,3 +1,4 @@
+import { FC, useState } from "react";
 import Form from "@rjsf/material-ui";
 import {
   MuiPickersUtilsProvider,
@@ -10,7 +11,6 @@ import DateFnsUtils from "@date-io/date-fns";
 import { format, isValid } from "date-fns";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { TextField, TextFieldProps } from "@material-ui/core";
-import { FC, useState } from "react";
 import { WidgetProps } from "@rjsf/core";
 
 const DatePicker: FC<WidgetProps> = (props: any) => (
@@ -60,19 +60,23 @@ const widgets = {
   TimeWidget: TimePicker,
 };
 
+export type Props = {
+  id?: string;
+  children?: JSX.Element;
+  schema: any;
+  uiSchema: any;
+  onSubmit?: any;
+  onChange?: any;
+};
+
 export const JsonSchemaForm = ({
   children,
   schema,
   uiSchema,
   onSubmit,
+  onChange,
   id,
-}: {
-  children?: JSX.Element;
-  schema: any;
-  uiSchema: any;
-  onSubmit: any;
-  id?: string;
-}) => (
+}: Props) => (
   <Form
     id={id}
     schema={schema}
@@ -81,5 +85,6 @@ export const JsonSchemaForm = ({
     liveValidate
     widgets={widgets}
     children={children}
+    onChange={onChange}
   />
 );
