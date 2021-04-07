@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import { JSONSchema7 } from "json-schema";
 import { useAuth } from "../../auth/hooks/useAuth";
-import { getUrl } from '../../../shared/utils';
+import { getUrl } from "../../../shared/utils";
 
 interface PatientSchemaResponseData {
   ui_schema: Record<string, string>;
@@ -11,14 +11,13 @@ interface PatientSchemaResponseData {
 
 export const getPatientSchema = () =>
   axios
-    .get<PatientSchemaResponseData[]>(getUrl('form_schema?type=PatientSurvey'), {
+    .get<PatientSchemaResponseData[]>(getUrl("form_schema?type=Patient"), {
       withCredentials: true,
     })
     .then(({ data }) => {
       const { ui_schema: uiSchema, json_schema: jsonSchema } = data[0] ?? {};
       return { uiSchema, jsonSchema };
     });
-};
 
 export const usePatientSchemaQuery = () => {
   const { username } = useAuth();

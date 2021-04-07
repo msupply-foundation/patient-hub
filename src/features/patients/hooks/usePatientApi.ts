@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { getUrl } from '../../../shared/utils';
+import axios from "axios";
+import { getUrl } from "../../../shared/utils";
 interface PatientResponseData {
   ID: string;
   name: string;
@@ -13,17 +13,25 @@ interface PatientResponseData {
 }
 
 const createPatient = ({ patientContactData }: { patientContactData?: any }) =>
-  axios.post<PatientResponseData>(getUrl('patient'), patientContactData).then(({ data }) => {
-    return { data };
-  });
+  axios
+    .post<PatientResponseData>(getUrl("patient"), patientContactData, {
+      withCredentials: true,
+    })
+    .then(({ data }) => {
+      return { data };
+    });
 
 const createNameNote = (nameId: string, patientEventId: string, data: any) =>
   axios
-    .post<PatientResponseData>(getUrl('name_note'), {
-      name_ID: nameId,
-      patient_event_ID: patientEventId,
-      data,
-    })
+    .post<PatientResponseData>(
+      getUrl("name_note"),
+      {
+        name_ID: nameId,
+        patient_event_ID: patientEventId,
+        data,
+      },
+      { withCredentials: true }
+    )
     .then(({ data }) => {
       return { data };
     });
