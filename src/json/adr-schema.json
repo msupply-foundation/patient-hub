@@ -8,17 +8,34 @@
       "description": "Details of the person reporting this adverse reaction",
       "type": "object",
       "properties": {
+        "title": {
+          "title": "Title",
+          "description": "The title of the reporter",
+          "type": "string",
+          "enum": ["Dr", "Nurse", "Pharmacist", "Patient", "Other"]
+        },
         "name": {
           "title": "Name",
           "description": "The name of the reporter",
           "type": "string",
           "maxLength": 100
         },
-        "title": {
-          "title": "Title",
-          "description": "The title of the reporter",
+        "institution": {
+          "title": "Institution",
+          "description": "The name of the institution which the reporter belongs to",
           "type": "string",
-          "enum": ["Dr", "Nurse", "Pharmacist", "Patient", "Other"]
+          "maxLength": 50
+        },
+        "department": {
+          "title": "Department",
+          "description": "The reporter's department",
+          "type": "string",
+          "maxLength": 50
+        },
+        "address": {
+          "title": "address",
+          "description": "The address of the institution",
+          "type": "string"
         },
         "facility": {
           "title": "Facility",
@@ -26,15 +43,11 @@
           "type": "string",
           "maxLength": 50
         },
-        "date": {
-          "title": "Reporting date",
-          "type": "string",
-          "format": "date"
-        },
+        "date": { "title": "Reporting date", "type": "string", "format": "date" },
         "time": {
           "title": "Reporting time",
           "type": "string",
-          "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+          "pattern": "^(0?[1-9]|1[0-2]):[0-5][0-9]$",
           "errorMessage": "Needs to match the format hh:mm, for example 11:59 or 23:59"
         }
       }
@@ -43,10 +56,43 @@
       "title": "Adverse Effects",
       "type": "object",
       "properties": {
-        "lymphadenopathy": {
-          "type": "boolean",
-          "default": false,
-          "title": "Lymphadenopathy"
+        "angioedema": { "type": "boolean", "default": false, "title": "Angioedema" },
+        "arthralgia": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Arthralgia"
+        },
+        "chills": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Chills"
+        },
+        "diarrhoea": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Diarrhoea"
+        },
+        "dizziness": { "type": "boolean", "default": false, "title": "Dizziness" },
+        "dyspnoea": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Dyspnoea"
+        },
+        "encephalopathy": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Encephalopathy"
+        },
+        "fatigue": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Fatigue"
         },
         "fever": {
           "type": "string",
@@ -60,47 +106,18 @@
           "default": "None",
           "title": "Flu-like illness"
         },
-        "chills": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Chills"
-        },
-        "fatigue": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Fatigue"
-        },
         "headache": {
           "type": "string",
           "enum": ["None", "Mild", "Severe"],
           "default": "None",
           "title": "Headache"
         },
+        "lymphadenopathy": { "type": "boolean", "default": false, "title": "Lymphadenopathy" },
         "myalgia": {
           "type": "string",
           "enum": ["None", "Mild", "Severe"],
           "default": "None",
           "title": "Myalgia"
-        },
-        "arthralgia": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Arthralgia"
-        },
-        "dyspnoea": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Dyspnoea"
-        },
-        "diarrhoea": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Diarrhoea"
         },
         "nausea": {
           "type": "string",
@@ -108,22 +125,11 @@
           "default": "None",
           "title": "Nausea"
         },
-        "vomiting": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Vomiting"
-        },
+        "neurologicalEvent": { "type": "boolean", "default": false, "title": "Neurological event" },
         "paraesthesiaNumbness": {
           "type": "boolean",
           "default": false,
           "title": "Paraesthesia / Numbness"
-        },
-        "rash": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Rash"
         },
         "pruritusItching": {
           "type": "string",
@@ -131,28 +137,11 @@
           "default": "None",
           "title": "Pruritus/Itching"
         },
-        "tightThroat": {
+        "rash": {
           "type": "string",
           "enum": ["None", "Mild", "Severe"],
           "default": "None",
-          "title": "Throat tight"
-        },
-        "wheeze": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Wheeze"
-        },
-        "angioedema": {
-          "type": "boolean",
-          "default": false,
-          "title": "Angioedema"
-        },
-        "urticaria": {
-          "type": "string",
-          "enum": ["None", "Mild", "Severe"],
-          "default": "None",
-          "title": "Urticaria/Hives"
+          "title": "Rash"
         },
         "seizures": {
           "type": "string",
@@ -160,30 +149,48 @@
           "default": "None",
           "title": "Seizures"
         },
-        "neurologicalEvent": {
-          "type": "boolean",
-          "default": false,
-          "title": "Neurological event"
-        },
-        "thrombocytopenia": {
-          "type": "boolean",
-          "default": false,
-          "title": "Thrombocytopenia"
-        },
-        "vasovagalSyncope": {
-          "type": "boolean",
-          "default": false,
-          "title": "Vasovagal/Syncope"
-        },
-        "dizziness": {
-          "type": "boolean",
-          "default": false,
-          "title": "Dizziness"
+        "sepsis": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Sepsis"
         },
         "tachycardiaPalpitations": {
           "type": "boolean",
           "default": false,
           "title": "Tachycardia/Palpitations"
+        },
+        "tightThroat": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Throat tight"
+        },
+        "thrombocytopenia": { "type": "boolean", "default": false, "title": "Thrombocytopenia" },
+        "toxicShockSyndrome": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Toxic Shock Syndrome"
+        },
+        "urticaria": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Urticaria/Hives"
+        },
+        "vasovagalSyncope": { "type": "boolean", "default": false, "title": "Vasovagal/Syncope" },
+        "vomiting": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Vomiting"
+        },
+        "wheeze": {
+          "type": "string",
+          "enum": ["None", "Mild", "Severe"],
+          "default": "None",
+          "title": "Wheeze"
         },
         "localReaction": {
           "type": "object",
@@ -208,11 +215,7 @@
                       "title": "Persisting >3 days",
                       "default": false
                     },
-                    "abscess": {
-                      "type": "boolean",
-                      "title": "Abscess",
-                      "default": false
-                    }
+                    "abscess": { "type": "boolean", "title": "Abscess", "default": false }
                   }
                 }
               ]
@@ -236,16 +239,8 @@
                 {
                   "properties": {
                     "observed": { "enum": [true] },
-                    "tryptase": {
-                      "type": "boolean",
-                      "title": "Tryptase taken",
-                      "default": false
-                    },
-                    "positive": {
-                      "type": "boolean",
-                      "title": "Positive",
-                      "default": false
-                    }
+                    "tryptase": { "type": "boolean", "title": "Tryptase taken", "default": false },
+                    "positive": { "type": "boolean", "title": "Positive", "default": false }
                   }
                 }
               ]
@@ -262,16 +257,104 @@
           "type": "string",
           "title": "Description",
           "description": "Describe AEFI (signs and symptoms)"
-        },
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "title": "Outcome",
+      "properties": {
         "severity": {
           "type": "string",
-          "enum": ["Low", "High", "Life threatening"],
+          "enum": [
+            "Congenital Anomaly",
+            "Death",
+            "Disability",
+            "High",
+            "Hospitalisation",
+            "Life threatening",
+            "Low",
+            "Other"
+          ],
           "title": "Severity"
+        },
+        "pastMedicalHistory": {
+          "type": "string",
+          "title": "Past medical history",
+          "description": "(including history of similar reaction or other allergies), concomitant medication and dates of administration (exclude those used to treat reaction) other relevant information (e.g. other cases)"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "Recovering",
+            "Recovered",
+            "Recovered with sequelae",
+            "Not Recovered",
+            "Unknown",
+            "Died"
+          ],
+          "title": "Outcome"
+        }
+      },
+      "dependencies": {
+        "outcome": {
+          "oneOf": [
+            {
+              "properties": {
+                "outcome": {
+                  "enum": [
+                    "Recovering",
+                    "Recovered",
+                    "Recovered with sequelae",
+                    "Not Recovered",
+                    "Unknown"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "outcome": { "enum": ["Died"] },
+                "dateOfDeath": { "type": "string", "format": "date", "title": "Date of death" },
+                "autopsyDone": {
+                  "type": "string",
+                  "enum": ["Yes", "No", "Unknown"],
+                  "title": "Autopsy done"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "firstDecision": {
+      "title": "First Decision",
+      "type": "object",
+      "properties": {
+        "investigationNeeded": {
+          "type": "boolean",
+          "default": false,
+          "title": "Investigation Needed"
+        }
+      },
+      "dependencies": {
+        "investigationNeeded": {
+          "oneOf": [
+            { "properties": { "investigationNeeded": { "enum": [false] } } },
+            {
+              "properties": {
+                "investigationNeeded": { "enum": [true] },
+                "plannedInvestigationDate": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Date investigation planned",
+                  "description": "Please enter the planned investigation date"
+                }
+              }
+            }
+          ]
         }
       }
     }
-  },
-  "errorMessage": {
-    "properties": { "time": "please enter using the format hh:mm" }
   }
 }

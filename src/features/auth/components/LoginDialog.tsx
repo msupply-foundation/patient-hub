@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import { Box, Grid, TextField, Snackbar } from "@material-ui/core";
+import { Box, Grid, TextField, Snackbar, Typography } from "@material-ui/core";
 import { ChevronRight } from "@material-ui/icons";
 import { LoadingButton } from "@material-ui/lab";
 import { useTranslations } from "../../../shared/hooks/useTranslations";
@@ -26,7 +26,7 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
     <Dialog fullWidth open={open}>
       <Grid container direction="column">
         <Grid item xs={12}>
-          <AppBar RightComponent={null} />
+          <AppBar RightComponent={<Typography>Login</Typography>} />
         </Grid>
 
         <Grid container direction="row">

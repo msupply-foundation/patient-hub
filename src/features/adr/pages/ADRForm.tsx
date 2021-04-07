@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Paper } from "@material-ui/core";
+import { Box, Button, CircularProgress, Paper } from "@material-ui/core";
 import { JsonSchemaForm } from "../../../shared/components";
 import { FC } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
@@ -24,7 +24,9 @@ export const ADRForm: FC = () => {
           schema={data?.jsonSchema ?? {}}
           uiSchema={data?.uiSchema ?? {}}
           onSubmit={SubmitForm}
-        />
+        >
+          <Button variant="contained" color="primary" type="submit">Submit</Button>
+        </JsonSchemaForm>
       ) : (
         <Box
           height="50vh"
