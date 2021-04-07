@@ -1,6 +1,7 @@
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import { JSONSchema7 } from 'json-schema';
+import { useQuery } from "react-query";
+import axios from "axios";
+import { JSONSchema7 } from "json-schema";
+import { useAuth } from "../../auth/hooks/useAuth";
 import { getUrl } from '../../../shared/utils';
 
 interface PatientSchemaResponseData {
@@ -15,12 +16,17 @@ export const getPatientSchema = () =>
     })
     .then(({ data }) => {
       const { ui_schema: uiSchema, json_schema: jsonSchema } = data[0] ?? {};
-
       return { uiSchema, jsonSchema };
     });
+};
 
-export const usePatientSchema = () => {
-  const { isLoading, data } = useQuery('patientSchema', getPatientSchema);
+export const usePatientSchemaQuery = () => {
+  const { username } = useAuth();
+  const { isLoading, data } = useQuery("patientSchema", getPatientSchema, {
+    enabled: !!username,
+    refetchInterval: false,
+    staleTime: Infinity,
+  });
 
-  return { isLoading, data };
+  return { isLoading, patientSchema: data };
 };
