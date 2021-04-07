@@ -98,7 +98,7 @@ export const PatientForm: FC = () => {
 
   return (
     <Paper className={classes.paper}>
-      <img className={classes.img} alt="logo" src="/patients/logo.png" />
+      <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
 
       {!patientSchemaIsLoading ? (
         <JsonSchemaForm
