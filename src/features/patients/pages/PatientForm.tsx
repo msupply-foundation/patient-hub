@@ -72,9 +72,9 @@ export const PatientForm: FC = () => {
     }
 
     setIsSubmitting(true);
-    createPatient(patientFormRef?.current)
+    createPatient(patientFormRef?.current?.formData || {})
       .then(({ data }) =>
-        createNameNote(data.ID, patientEvent?.id || "", surveyFormRef?.current)
+        createNameNote(data.ID, patientEvent?.id || "", surveyFormRef?.current?.formData)
       )
       .then(() => {
         setIsSubmitting(false);
