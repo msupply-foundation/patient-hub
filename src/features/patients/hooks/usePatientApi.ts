@@ -12,9 +12,9 @@ interface PatientResponseData {
   postal_address1: string;
 }
 
-const createPatient = ({ patientContactData }: { patientContactData?: any }) =>
+const createPatient = (patientData: any) =>
   axios
-    .post<PatientResponseData>(getUrl("patient"), patientContactData, {
+    .post<PatientResponseData>(getUrl("patient"), patientData, {
       withCredentials: true,
     })
     .then(({ data }) => {
