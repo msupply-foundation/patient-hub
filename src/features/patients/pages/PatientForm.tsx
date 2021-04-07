@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useRef } from 'react';
 import { Backdrop, Button, CircularProgress, Paper } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { ConfirmationDialog } from '../../../shared/dialog';
@@ -8,6 +8,7 @@ import patientDetailsSchema from '../../../json/patient-details-schema.json';
 import patientUI from '../../../json/patient-ui.json';
 import patientDetailsUI from '../../../json/patient-details-ui.json';
 import { usePatientSchema } from '../hooks/usePatientSchema';
+import { usePatientApi } from '../hooks/usePatientApi';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,7 +20,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       marginLeft: 'auto',
       marginRight: 'auto',
-      maxWidth: '100%', 
+      maxWidth: '100%',
     },
     paper: {
       marginLeft: 'auto',
@@ -36,32 +37,51 @@ export const PatientForm: FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const classes = useStyles();
-  const onSubmit = ({ formData }: { formData: any }, e: any) => {
-    setIsSubmitting(true);
-    console.log('Data submitted: ', formData);
-    window.setTimeout(() => {
-      setIsSubmitting(false);
-      setShowConfirmation(true);
-    }, 3000);
-  };
+
   const handleClose = () => {
     setShowConfirmation(false);
   };
 
+  const patientFormRef = useRef({});
+  const surveyFormRef = useRef({});
+  const {createPatient, createNameNote} = usePatientApi();
+  
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+    createPatient(patientFormRef?.current).then(({data}) => createNameNote(data.ID, surveyFormRef?.current))
+    .then(() => {setIsSubmitting(false); setShowConfirmation(true); })
+  };
+
+  const handlePatientChange = ({ formData }: { formData: any }) => {
+    if (patientFormRef?.current) {
+      patientFormRef.current = formData;
+    }
+  };
+  const handleSurveyChange = ({ formData }: { formData: any }) => {
+    if (surveyFormRef?.current) {
+      surveyFormRef.current = formData;
+    }
+  };
   return (
     <Paper className={classes.paper}>
       <img className={classes.img} src="logo.png" />
 
-      <JsonSchemaForm schema={patientSchema ?? {}} uiSchema={patientUI ?? {}} onSubmit={onSubmit} >
-        <div/>
+      <JsonSchemaForm
+        schema={patientSchema ?? {}}
+        uiSchema={patientUI ?? {}}
+        onChange={handlePatientChange}
+      >
+        <div />
       </JsonSchemaForm>
 
       <JsonSchemaForm
         schema={patientDetailsSchema ?? {}}
         uiSchema={patientDetailsUI ?? {}}
-        onSubmit={onSubmit}
+        onChange={handleSurveyChange}
       >
-        <Button variant="contained" color="primary" type="submit">Submit</Button>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          Submit
+        </Button>
       </JsonSchemaForm>
 
       <Backdrop className={classes.backdrop} open={isSubmitting}>
