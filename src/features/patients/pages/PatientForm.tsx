@@ -9,6 +9,7 @@ import patientUI from '../../../json/patient-ui.json';
 import patientDetailsUI from '../../../json/patient-details-ui.json';
 import { usePatientSchema } from '../hooks/usePatientSchema';
 import { usePatientApi } from '../hooks/usePatientApi';
+import { usePatientEvent } from '../hooks/usePatientEvent';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -33,6 +34,7 @@ const useStyles = makeStyles(() =>
 
 export const PatientForm: FC = () => {
   // const { isLoading, data } = usePatientSchema();
+  const { isLoading, patientEvent } = usePatientEvent();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -48,7 +50,7 @@ export const PatientForm: FC = () => {
   
   const handleSubmit = () => {
     setIsSubmitting(true);
-    createPatient(patientFormRef?.current).then(({data}) => createNameNote(data.ID, surveyFormRef?.current))
+    createPatient(patientFormRef?.current).then(({data}) => createNameNote(data.ID, patientEvent?.id ||'' , surveyFormRef?.current))
     .then(() => {setIsSubmitting(false); setShowConfirmation(true); })
   };
 

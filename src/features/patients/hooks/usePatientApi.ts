@@ -23,12 +23,12 @@ const createPatient = ({ patientContactData }: { patientContactData?: any }) =>
       return { data };
     });
 
-const createNameNote = (nameId: string, data: any) =>
+const createNameNote = (nameId: string, patientEventId: string, data: any) =>
   axios
     .post<PatientResponseData>(
       `${window.location.protocol}//${window.location.host}/api/v4/patient_hub/name_note`,
       // `http://localhost:2048/api/v4/patient_hub/name_note`,
-      { name_ID: nameId, patient_event_ID: 'B3DD72A976B74A2FA28D649E6BF247BA', data }
+      { name_ID: nameId, patient_event_ID: patientEventId, data }
     )
     .then(({ data }) => {
       return { data };
