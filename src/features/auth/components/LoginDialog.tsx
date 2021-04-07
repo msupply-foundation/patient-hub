@@ -55,7 +55,7 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
                 variant="contained"
                 color="primary"
                 onClick={async () => {
-                  const authenticated = await tryLogin();
+                  const authenticated = await tryLogin({ username, password });
 
                   if (authenticated) {
                     login(username, password);
@@ -78,9 +78,16 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
               endIcon={<ChevronRight />}
               variant="contained"
               color="primary"
-              onClick={() => {
-                guestLogin();
-                handleClose();
+              onClick={async () => {
+                const authenticated = await tryLogin({
+                  username: "guest",
+                  password: "tonga-guest-road-skin-frisk",
+                });
+
+                if (authenticated) {
+                  guestLogin();
+                  handleClose();
+                }
               }}
             >
               {messages.continueGuest}
