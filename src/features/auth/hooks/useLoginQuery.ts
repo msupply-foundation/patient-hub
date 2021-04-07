@@ -1,19 +1,19 @@
 import { useMutation } from "react-query";
 import axios from "axios";
 
-// export const login = ({ username, password }: LoginParams) =>
-//   axios
-//     .post(
-//       "http://localhost:2048/api/v4/login",
-//       { username, password, loginType: "user" },pre
-//       { withCredentials: true }
-//     )
-//     .then(({ status }) => status === 200);
-
-export const login = () =>
-  axios.get(
-    "https://t2ytl2iqse.execute-api.ap-southeast-2.amazonaws.com/default/login"
-  );
+export const login = ({ username, password }: LoginParams) => {
+  const url =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:2048"
+      : window.location.href;
+  return axios
+    .post(
+      `${url}/api/v4/login`,
+      { username, password, loginType: "user" },
+      { withCredentials: true }
+    )
+    .then(({ status }) => status === 200);
+};
 
 interface LoginParams {
   username: string;
