@@ -1,20 +1,11 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo } from "react";
 import Form from "@rjsf/material-ui";
 import Ajv from "ajv";
 import pointer from "json-pointer";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import MuiTimePicker from "@material-ui/lab/TimePicker";
-import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
-import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
-import DateFnsUtils from "@date-io/date-fns";
-import { format, isValid } from "date-fns";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { TextField, TextFieldProps } from "@material-ui/core";
-import { FormValidation, WidgetProps } from "@rjsf/core";
+import { FormValidation } from "@rjsf/core";
 import { SelectWidget } from "./SelectWidget";
+import { DateWidget } from "./DateWidget";
+import { TimeWidget } from "./TimeWidget";
 
 const ajvErrors = require("ajv-errors");
 
@@ -29,53 +20,9 @@ const ajv = new Ajv({
 
 ajvErrors(ajv);
 
-const DatePicker: FC<WidgetProps> = (props: any) => (
-  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-    <KeyboardDatePicker
-      disableToolbar
-      variant="inline"
-      format="dd/MM/yyyy"
-      margin="normal"
-      id="date-picker-inline"
-      KeyboardButtonProps={{
-        "aria-label": "change date",
-      }}
-      onChange={(date: MaterialUiPickersDate) =>
-        date && isValid(date) && props.onChange(format(date, "yyyy-MM-dd"))
-      }
-      value={props.value}
-      autoOk
-      label={props.label}
-    />
-  </MuiPickersUtilsProvider>
-);
-
-const TimePicker: FC<WidgetProps> = (props) => {
-  const { onChange, value } = props;
-  const [time, setTime] = useState(value);
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <MuiTimePicker
-        allowKeyboardControl={true}
-        ampm={false}
-        onChange={(date: Date | null) => {
-          if (date && isValid(date)) {
-            onChange(format(date, "hh:mm"));
-            setTime(date);
-          }
-        }}
-        value={time}
-        renderInput={(params: TextFieldProps) => <TextField {...params} />}
-        label={props.label}
-      />
-    </LocalizationProvider>
-  );
-};
-
 const widgets = {
-  DateWidget: DatePicker,
-  TimeWidget: TimePicker,
+  DateWidget,
+  TimeWidget,
   SelectWidget,
   ErrorList: () => null,
 };
@@ -100,15 +47,14 @@ export const JsonSchemaForm: FC<Props> = ({
   refresh,
 }: Props) => {
   const validator = useMemo(() => ajv.compile(jsonSchema), [jsonSchema]);
-  const JsonFormComponent = useMemo(
-    () => (
+  const JsonFormComponent = useMemo(() => {
+    return (
       <Form
         id={id}
         ErrorList={() => null}
         schema={jsonSchema}
         uiSchema={uiSchema}
         onSubmit={onSubmit}
-        liveValidate
         widgets={widgets}
         children={children}
         onChange={onChange}
@@ -163,9 +109,9 @@ export const JsonSchemaForm: FC<Props> = ({
           return errorHandlers;
         }}
       />
-    ),
-    [jsonSchema, uiSchema, refresh]
-  );
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uiSchema, jsonSchema, refresh]);
 
   return JsonFormComponent;
 };

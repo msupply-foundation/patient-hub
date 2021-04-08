@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
-
 import { WidgetProps } from "@rjsf/core";
 import { utils } from "@rjsf/core";
 
@@ -62,7 +60,6 @@ export const SelectWidget = ({
   const { enumOptions, enumDisabled } = options;
 
   let emptyValue = multiple ? [] : "";
-
   const { placeholder = "" } = getUiOptions(uiSchema) ?? {};
 
   const _onChange = ({
@@ -79,17 +76,9 @@ export const SelectWidget = ({
   const _getValue = () => {
     let val = value;
     if (typeof val === "undefined") val = emptyValue;
-    if (!val && placeholder) val = placeholder;
 
     return val;
   };
-
-  useEffect(() => {
-    if (!(enumOptions as any)?.find((o: any) => o.value === value)) {
-      const { default: defaultValue } = schema;
-      onChange(defaultValue);
-    }
-  });
 
   const menuItems = (enumOptions as any).map(
     ({ value, label }: any, i: number) => {
@@ -103,12 +92,10 @@ export const SelectWidget = ({
     }
   );
 
+  const usingPlaceholder = placeholder && _getValue() === emptyValue;
+
   menuItems.unshift(
-    <MenuItem
-      key={(enumOptions as any).length}
-      value={String(placeholder)}
-      disabled={false}
-    >
+    <MenuItem key={(enumOptions as any).length} value={""} disabled={true}>
       {placeholder}
     </MenuItem>
   );
@@ -126,11 +113,15 @@ export const SelectWidget = ({
       onChange={_onChange}
       onBlur={_onBlur}
       onFocus={_onFocus}
+      InputProps={{
+        style: { color: usingPlaceholder ? "#CDCDCD" : "black" },
+      }}
       InputLabelProps={{
         shrink: true,
       }}
       SelectProps={{
         multiple: typeof multiple === "undefined" ? false : multiple,
+        displayEmpty: true,
       }}
     >
       {menuItems}
