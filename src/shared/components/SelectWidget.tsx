@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
-
 import { WidgetProps } from "@rjsf/core";
 import { utils } from "@rjsf/core";
 
@@ -79,7 +77,6 @@ export const SelectWidget = ({
   const _getValue = () => {
     let val = value;
     if (typeof val === "undefined") val = emptyValue;
-    if (!val && placeholder) val = placeholder;
 
     return val;
   };
@@ -104,11 +101,7 @@ export const SelectWidget = ({
   );
 
   menuItems.unshift(
-    <MenuItem
-      key={(enumOptions as any).length}
-      value={String(placeholder)}
-      disabled={false}
-    >
+    <MenuItem key={(enumOptions as any).length} value={""} disabled={true}>
       {placeholder}
     </MenuItem>
   );
@@ -118,6 +111,7 @@ export const SelectWidget = ({
       id={id}
       label={label || schema.title}
       select
+      placeholder={String(placeholder)}
       value={_getValue()}
       required={required}
       disabled={disabled || readonly}
@@ -131,6 +125,7 @@ export const SelectWidget = ({
       }}
       SelectProps={{
         multiple: typeof multiple === "undefined" ? false : multiple,
+        displayEmpty: true,
       }}
     >
       {menuItems}
