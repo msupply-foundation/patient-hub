@@ -1,13 +1,24 @@
 import { Box, Typography } from "@material-ui/core";
 import { useTranslations } from "../hooks";
 import { Icon } from "./icons";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { Theme } from "../../shared/containers/ThemeProvider";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      backgroundColor: theme.palette.menubar.main,
+    },
+  })
+);
 
 export const Footer = () => {
   const { messages } = useTranslations();
+  const classes = useStyles();
 
   return (
     <Box
-      bgcolor="secondary.main"
+      className={classes.root}
       height="30px"
       marginTop="auto"
       flexDirection="row"
