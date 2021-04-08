@@ -21,11 +21,13 @@ export const ADRForm: FC = () => {
     >
       {!isLoading ? (
         <JsonSchemaForm
-          schema={data?.jsonSchema ?? {}}
+          jsonSchema={data?.jsonSchema ?? {}}
           uiSchema={data?.uiSchema ?? {}}
           onSubmit={SubmitForm}
         >
-          <Button variant="contained" color="primary" type="submit">Submit</Button>
+          <Button variant="contained" color="primary" type="submit">
+            Submit
+          </Button>
         </JsonSchemaForm>
       ) : (
         <Box

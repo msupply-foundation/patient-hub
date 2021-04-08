@@ -21,8 +21,11 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
+    "ajv": "6.12.6",
+    "ajv-errors": "1.0.1",
     "axios": "^0.21.1",
     "date-fns": "^2.19.0",
+    "json-pointer": "^0.6.1",
     "json-schema": "^0.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -57,5 +60,9 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "patient_hub"
+  "homepage": "patient_hub",
+  "devDependencies": {
+    "@types/ajv-errors": "^1.0.3",
+    "@types/json-pointer": "^1.0.30"
+  }
 }
