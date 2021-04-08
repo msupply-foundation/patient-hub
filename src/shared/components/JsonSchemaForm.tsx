@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import Form from "@rjsf/material-ui";
 import {
   MuiPickersUtilsProvider,
@@ -78,15 +78,22 @@ export const JsonSchemaForm = ({
   onSubmit,
   onChange,
   id,
-}: Props) => (
-  <Form
-    id={id}
-    schema={schema}
-    uiSchema={uiSchema}
-    onSubmit={onSubmit}
-    liveValidate
-    widgets={widgets}
-    children={children}
-    onChange={onChange}
-  />
-);
+}: Props) => {
+  const JsonFormComponent = useMemo(
+    () => (
+      <Form
+        id={id}
+        schema={schema}
+        uiSchema={uiSchema}
+        onSubmit={onSubmit}
+        liveValidate
+        widgets={widgets}
+        children={children}
+        onChange={onChange}
+      />
+    ),
+    [schema, uiSchema]
+  );
+
+  return JsonFormComponent;
+};
