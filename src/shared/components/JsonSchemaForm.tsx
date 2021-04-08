@@ -164,6 +164,7 @@ export const JsonSchemaForm: FC<Props> = ({
         }}
       />
     ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [jsonSchema, uiSchema, refresh]
   );
 
