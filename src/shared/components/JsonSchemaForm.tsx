@@ -69,6 +69,7 @@ export type Props = {
   uiSchema: any;
   onSubmit?: any;
   onChange?: any;
+  refresh?: boolean;
 };
 
 export const JsonSchemaForm = ({
@@ -78,6 +79,7 @@ export const JsonSchemaForm = ({
   onSubmit,
   onChange,
   id,
+  refresh,
 }: Props) => {
   const JsonFormComponent = useMemo(
     () => (
@@ -92,7 +94,7 @@ export const JsonSchemaForm = ({
         onChange={onChange}
       />
     ),
-    [schema, uiSchema]
+    [schema, uiSchema, refresh]
   );
 
   return JsonFormComponent;

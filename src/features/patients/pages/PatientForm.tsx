@@ -55,9 +55,11 @@ export const PatientForm: FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [refreshForms, setRefreshForms] = useState(false);
   const classes = useStyles();
   const handleClose = () => {
     setShowConfirmation(false);
+    setRefreshForms(!refreshForms);
   };
 
   const patientFormRef = useRef({ formData: {}, isValid: false });
@@ -106,6 +108,7 @@ export const PatientForm: FC = () => {
           schema={patientSchema?.jsonSchema ?? {}}
           uiSchema={patientSchema?.uiSchema ?? {}}
           onChange={handlePatientChange}
+          refresh={refreshForms}
         >
           <div />
         </JsonSchemaForm>
@@ -127,6 +130,7 @@ export const PatientForm: FC = () => {
           schema={patientSurveySchema?.jsonSchema ?? {}}
           uiSchema={patientSurveySchema?.uiSchema ?? {}}
           onChange={handleSurveyChange}
+          refresh={refreshForms}
         >
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
