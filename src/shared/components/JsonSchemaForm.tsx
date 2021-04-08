@@ -12,7 +12,7 @@ import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
 import DateFnsUtils from "@date-io/date-fns";
 import { format, isValid } from "date-fns";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { TextField, TextFieldProps } from "@material-ui/core";
+import { TextField, TextFieldProps, Typography } from "@material-ui/core";
 import { FormValidation, WidgetProps } from "@rjsf/core";
 import { SelectWidget } from "./SelectWidget";
 
@@ -73,11 +73,45 @@ const TimePicker: FC<WidgetProps> = (props) => {
   );
 };
 
+type FieldProps = {
+  description?: string;
+  id?: string;
+};
+
+const DescriptionField = (props: FieldProps) => {
+  const { description = "" } = props;
+  if (!description) return null;
+
+  const lines = description.split("\n");
+  if (lines.length === 1)
+    return <Typography variant="subtitle2">{description}</Typography>;
+
+  return (
+    <>
+      {props.description
+        ?.split("\n")
+        .map((description: string, index: number) => (
+          <Typography
+            variant="subtitle2"
+            style={{ marginBottom: 7 }}
+            key={index}
+          >
+            {description}
+          </Typography>
+        ))}
+    </>
+  );
+};
+
 const widgets = {
   DateWidget: DatePicker,
   TimeWidget: TimePicker,
   SelectWidget,
   ErrorList: () => null,
+};
+
+const fields = {
+  DescriptionField: DescriptionField,
 };
 
 export type Props = {
@@ -108,6 +142,7 @@ export const JsonSchemaForm: FC<Props> = ({
       onSubmit={onSubmit}
       liveValidate
       widgets={widgets}
+      fields={fields}
       children={children}
       onChange={onChange}
       transformErrors={() => {
