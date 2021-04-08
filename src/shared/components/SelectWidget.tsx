@@ -60,7 +60,6 @@ export const SelectWidget = ({
   const { enumOptions, enumDisabled } = options;
 
   let emptyValue = multiple ? [] : "";
-
   const { placeholder = "" } = getUiOptions(uiSchema) ?? {};
 
   const _onChange = ({
@@ -81,13 +80,6 @@ export const SelectWidget = ({
     return val;
   };
 
-  useEffect(() => {
-    if (!(enumOptions as any)?.find((o: any) => o.value === value)) {
-      const { default: defaultValue } = schema;
-      onChange(defaultValue);
-    }
-  });
-
   const menuItems = (enumOptions as any).map(
     ({ value, label }: any, i: number) => {
       const disabled: any =
@@ -100,6 +92,8 @@ export const SelectWidget = ({
     }
   );
 
+  const usingPlaceholder = placeholder && _getValue() === emptyValue;
+
   menuItems.unshift(
     <MenuItem key={(enumOptions as any).length} value={""} disabled={true}>
       {placeholder}
@@ -111,7 +105,6 @@ export const SelectWidget = ({
       id={id}
       label={label || schema.title}
       select
-      placeholder={String(placeholder)}
       value={_getValue()}
       required={required}
       disabled={disabled || readonly}
@@ -120,6 +113,9 @@ export const SelectWidget = ({
       onChange={_onChange}
       onBlur={_onBlur}
       onFocus={_onFocus}
+      InputProps={{
+        style: { color: usingPlaceholder ? "#CDCDCD" : "black" },
+      }}
       InputLabelProps={{
         shrink: true,
       }}
