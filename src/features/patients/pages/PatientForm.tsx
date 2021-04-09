@@ -5,6 +5,7 @@ import {
   Button,
   CircularProgress,
   Paper,
+  useMediaQuery,
 } from "@material-ui/core";
 import Ajv from "ajv";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
@@ -139,8 +140,15 @@ export const PatientForm: FC = () => {
   // click on the first forms button, to trigger the on submit function for that form.
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
+  const isSmallScreen = useMediaQuery((theme: any) =>
+    theme.breakpoints.down("sm")
+  );
+
   return (
-    <Paper className={classes.paper}>
+    <Paper
+      className={classes.paper}
+      style={{ padding: isSmallScreen ? 20 : 50 }}
+    >
       <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
 
       {!patientSchemaIsLoading ? (
