@@ -24,6 +24,7 @@ export const DescriptionField = (props: FieldProps) => {
       bgcolor="rgb(236, 243, 252)"
       p={isSmallScreen ? 1 : 2}
       m={isSmallScreen ? 1 : 2}
+      style={{borderRadius: 5}}
     >
       {props.description
         ?.split("\n")
