@@ -6,11 +6,12 @@ import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
 import { format, isValid } from "date-fns";
 import { WidgetProps } from "@rjsf/core";
 import { TextWidget } from "./TextWidget";
+import enLocale from 'date-fns/locale/en-NZ';
 
 // TODO: Fix typings for TextWidget
 export const DateWidget: FC<WidgetProps> = (props: any) => {
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
       <MuiDatePicker
         label={props.label || props.schema.title}
         value={props.value ?? null}
