@@ -13,7 +13,9 @@ interface PatientSchemaResponseData {
 
 const getPatientEvent = (code: string) => () =>
   axios
-    .get<PatientSchemaResponseData[]>(getUrl(`patient_event?code=${code}`))
+    .get<PatientSchemaResponseData[]>(getUrl(`patient_event?code=${code}`), {
+      withCredentials: true,
+    })
     .then(({ data }) => {
       const { ID: id, description } = data[0] ?? {};
 
@@ -23,7 +25,7 @@ const getPatientEvent = (code: string) => () =>
 export const usePatientEvent = (code: string = "PCD") => {
   const { username } = useAuth();
   const { isLoading, data: patientEvent } = useQuery(
-    "patientSchema",
+    "patientEvent",
     getPatientEvent(code),
     {
       enabled: !!username,
