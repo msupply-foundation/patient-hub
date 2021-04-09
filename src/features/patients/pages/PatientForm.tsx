@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Paper,
 } from "@material-ui/core";
+import Ajv from "ajv";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { ConfirmationDialog } from "../../../shared/dialog";
 import { JsonSchemaForm } from "../../../shared/components";
@@ -13,6 +14,19 @@ import { usePatientSurveySchemaQuery } from "../hooks/usePatientSurveySchemaQuer
 import { usePatientSchemaQuery } from "../hooks/usePatientSchemaQuery";
 import { usePatientApi } from "../hooks/usePatientApi";
 import { usePatientEvent } from "../hooks/usePatientEvent";
+
+const ajvErrors = require("ajv-errors");
+
+const ajv = new Ajv({
+  errorDataPath: "property",
+  allErrors: true,
+  multipleOfPrecision: 8,
+  schemaId: "auto",
+  unknownFormats: "ignore",
+  jsonPointers: true,
+});
+
+ajvErrors(ajv);
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -53,6 +67,20 @@ export const PatientForm: FC = () => {
     patientSchema,
   } = usePatientSchemaQuery();
 
+  const jsonPatientSchemaValidator = () => {
+    if (patientSchema?.jsonSchema) {
+      return ajv.compile(patientSchema?.jsonSchema);
+    }
+    return () => false;
+  };
+
+  const jsonPatientSurveySchemaValidator = () => {
+    if (patientSurveySchema?.uiSchema) {
+      return ajv.compile(patientSurveySchema?.jsonSchema);
+    }
+    return () => false;
+  };
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [refreshForms, setRefreshForms] = useState(false);
@@ -67,21 +95,26 @@ export const PatientForm: FC = () => {
   const { createPatient, createNameNote } = usePatientApi();
 
   const handleSubmit = () => {
-    if (
-      !(patientFormRef?.current?.isValid && patientFormRef?.current?.isValid)
-    ) {
-      return;
-    }
+    const patientValidator = jsonPatientSchemaValidator();
+    const surveyValidator = jsonPatientSurveySchemaValidator();
+    const patientIsValid = patientValidator(patientFormRef.current?.formData);
+    const surveyIsValid = surveyValidator(surveyFormRef.current?.formData);
 
-    setIsSubmitting(true);
-    createPatient(patientFormRef?.current?.formData || {})
-      .then(({ data }) =>
-        createNameNote(data.ID, patientEvent?.id || "", surveyFormRef?.current?.formData)
-      )
-      .then(() => {
-        setIsSubmitting(false);
-        setShowConfirmation(true);
-      });
+    if (surveyIsValid && patientIsValid) {
+      setIsSubmitting(true);
+      createPatient(patientFormRef?.current?.formData || {})
+        .then(({ data }) =>
+          createNameNote(
+            data.ID,
+            patientEvent?.id || "",
+            surveyFormRef?.current?.formData
+          )
+        )
+        .then(() => {
+          setIsSubmitting(false);
+          setShowConfirmation(true);
+        });
+    }
   };
 
   const handlePatientChange = ({ formData, errors }: onChangeProps) => {
@@ -98,6 +131,14 @@ export const PatientForm: FC = () => {
     }
   };
 
+  // The on submit function of the form which handles events such as focusing
+  // fields which are not filled is triggered by clicking a button which has a
+  // type of 'submit' as a child of the form. Since we have two form components
+  // and we want each one to be validated with a single button, there is a
+  // button child for each form. Where the second form is triggering a simulated
+  // click on the first forms button, to trigger the on submit function for that form.
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
   return (
     <Paper className={classes.paper}>
       <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
@@ -110,7 +151,16 @@ export const PatientForm: FC = () => {
           onChange={handlePatientChange}
           refresh={refreshForms}
         >
-          <div />
+          <Button
+            ref={buttonRef}
+            variant="contained"
+            color="primary"
+            type="submit"
+            onClick={() => "submit!"}
+            style={{ display: "none" }}
+          >
+            Submit
+          </Button>
         </JsonSchemaForm>
       ) : (
         <Box
@@ -126,13 +176,22 @@ export const PatientForm: FC = () => {
 
       {!patientSurveySchemaIsLoading ? (
         <JsonSchemaForm
+          onSubmit={handleSubmit}
           id="patientSurvey"
           jsonSchema={patientSurveySchema?.jsonSchema ?? {}}
           uiSchema={patientSurveySchema?.uiSchema ?? {}}
           onChange={handleSurveyChange}
           refresh={refreshForms}
         >
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            onClick={() => {
+              buttonRef.current?.click();
+              handleSubmit();
+            }}
+          >
             Submit
           </Button>
         </JsonSchemaForm>
