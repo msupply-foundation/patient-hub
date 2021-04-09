@@ -12,9 +12,17 @@ interface PatientResponseData {
   postal_address1: string;
 }
 
+const mapPatientData = (patientData: any) => {
+  const { gender } = patientData;
+  return {
+    ...patientData,
+    female: /female/i.test(gender),
+  };
+};
+
 const createPatient = (patientData: any) =>
   axios
-    .post<PatientResponseData>(getUrl("patient"), patientData, {
+    .post<PatientResponseData>(getUrl("patient"), mapPatientData(patientData), {
       withCredentials: true,
     })
     .then(({ data }) => {
