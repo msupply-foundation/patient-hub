@@ -1,4 +1,3 @@
-import { Box } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 
 type FieldProps = {
