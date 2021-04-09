@@ -6,6 +6,7 @@ import { FormValidation } from "@rjsf/core";
 import { SelectWidget } from "./SelectWidget";
 import { DateWidget } from "./DateWidget";
 import { TimeWidget } from "./TimeWidget";
+import { Typography } from "@material-ui/core";
 
 const ajvErrors = require("ajv-errors");
 
@@ -20,11 +21,45 @@ const ajv = new Ajv({
 
 ajvErrors(ajv);
 
+type FieldProps = {
+  description?: string;
+  id?: string;
+};
+
+const DescriptionField = (props: FieldProps) => {
+  const { description = "" } = props;
+  if (!description) return null;
+
+  const lines = description.split("\n");
+  if (lines.length === 1)
+    return <Typography variant="subtitle2">{description}</Typography>;
+
+  return (
+    <>
+      {props.description
+        ?.split("\n")
+        .map((description: string, index: number) => (
+          <Typography
+            variant="subtitle2"
+            style={{ marginBottom: 7 }}
+            key={index}
+          >
+            {description}
+          </Typography>
+        ))}
+    </>
+  );
+};
+
 const widgets = {
   DateWidget,
   TimeWidget,
   SelectWidget,
   ErrorList: () => null,
+};
+
+const fields = {
+  DescriptionField: DescriptionField,
 };
 
 export type Props = {
@@ -56,6 +91,7 @@ export const JsonSchemaForm: FC<Props> = ({
         uiSchema={uiSchema}
         onSubmit={onSubmit}
         widgets={widgets}
+        fields={fields}
         children={children}
         onChange={onChange}
         transformErrors={() => {
