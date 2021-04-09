@@ -1,15 +1,34 @@
 import { FC, ReactNode } from "react";
 import {
   createMuiTheme,
-  ThemeProvider as MuiThemeProvider,
+  Theme as MuiTheme,
+  Palette as MuiPalette,
+  PaletteColor,
 } from "@material-ui/core/styles";
+import { ThemeProvider as MuiThemeProvider,  } from "@material-ui/styles";
+
+declare module "@material-ui/core/styles/createPalette" {
+  interface Palette {
+    menubar: Palette["primary"];
+  }
+  interface PaletteOptions {
+    menubar: PaletteOptions["primary"];
+  }
+}
+
+export interface Palette extends MuiPalette {
+  menubar: PaletteColor,
+}
+export interface Theme extends MuiTheme {
+  palette: Palette;
+}
 
 const theme = {
   palette: {
     primary: {
       main: "rgba(233,92,48,1)",
     },
-    secondary: {
+    menubar: {
       main: "#ecf3fc",
     },
   },

@@ -83,7 +83,7 @@ export const SelectWidget = ({
   const menuItems = (enumOptions as any).map(
     ({ value, label }: any, i: number) => {
       const disabled: any =
-        enumDisabled && (enumDisabled as any).indexOf(value) != -1;
+        enumDisabled && (enumDisabled as any).indexOf(value) !== -1;
       return (
         <MenuItem key={i} value={value} disabled={disabled}>
           {label}

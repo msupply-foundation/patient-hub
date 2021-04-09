@@ -8,16 +8,30 @@ import {
 import { FC, ReactElement } from "react";
 import { useHistory } from "react-router-dom";
 import { Icon } from "./icons";
-
+import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { Theme } from "../../shared/containers/ThemeProvider";
 interface AppBarProps {
   RightComponent?: ReactElement | null;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      backgroundColor: theme.palette.menubar.main,
+    },
+  })
+);
+
 export const AppBar: FC<AppBarProps> = ({ RightComponent = null }) => {
   const history = useHistory();
+  const classes = useStyles();
 
   return (
-    <MuiAppBar position="static" color="secondary">
+    <MuiAppBar
+      position="static"
+      style={{ backgroundColor: "#ecf3fc" }}
+      className={classes.root}
+    >
       <Toolbar>
         <IconButton
           aria-controls="fade-menu"
