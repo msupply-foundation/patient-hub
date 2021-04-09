@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import { WidgetProps } from "@rjsf/core";
 import { utils } from "@rjsf/core";
+import { DescriptionField } from "./DescriptionField";
+import { Box } from "@material-ui/core";
 
 const { getUiOptions } = utils;
 
@@ -86,7 +88,9 @@ export const SelectWidget = ({
         enumDisabled && (enumDisabled as any).indexOf(value) !== -1;
       return (
         <MenuItem key={i} value={value} disabled={disabled}>
-          {label}
+          <Box alignItems="flex-start">
+            <DescriptionField description={value} />
+          </Box>
         </MenuItem>
       );
     }

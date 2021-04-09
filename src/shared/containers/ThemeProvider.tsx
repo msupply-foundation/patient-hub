@@ -5,7 +5,7 @@ import {
   Palette as MuiPalette,
   PaletteColor,
 } from "@material-ui/core/styles";
-import { ThemeProvider as MuiThemeProvider,  } from "@material-ui/styles";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/styles";
 
 declare module "@material-ui/core/styles/createPalette" {
   interface Palette {
@@ -17,7 +17,7 @@ declare module "@material-ui/core/styles/createPalette" {
 }
 
 export interface Palette extends MuiPalette {
-  menubar: PaletteColor,
+  menubar: PaletteColor;
 }
 export interface Theme extends MuiTheme {
   palette: Palette;
@@ -42,6 +42,7 @@ const theme = {
       color: "#ecf3fc",
     },
     button: {},
+    caption: { color: "#9E9E9E" },
   },
 
   divider: "#333333",
