@@ -189,7 +189,6 @@ export const PatientForm: FC = () => {
             type="submit"
             onClick={() => {
               buttonRef.current?.click();
-              handleSubmit();
             }}
           >
             Submit
