@@ -29,6 +29,7 @@ export const DescriptionField = (props: FieldProps) => {
         ?.split("\n")
         .map((description: string, index: number) => (
           <Typography
+            display="block"
             variant={variant}
             style={{
               marginBottom: 7,
