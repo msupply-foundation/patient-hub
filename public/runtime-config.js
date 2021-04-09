@@ -1,6 +1,6 @@
 window["patientHubConfig"] = {
   autologin: {
     adverseDrugReactions: false,
-    patients: true,
+    patients: false,
   },
 };
