@@ -89,7 +89,7 @@ export const SelectWidget = ({
       return (
         <MenuItem key={i} value={value} disabled={disabled}>
           <Box alignItems="flex-start">
-            <DescriptionField description={value} />
+            <DescriptionField description={label} />
           </Box>
         </MenuItem>
       );
