@@ -26,9 +26,8 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
     <Dialog fullWidth open={open}>
       <Grid container direction="column">
         <Grid item xs={12}>
-          <AppBar RightComponent={<Typography>Login</Typography>} />
+          <AppBar RightComponent={<Typography style={{color: '#4d4d4d'}}>Login</Typography>} />
         </Grid>
-
         <Grid container direction="row">
           <Grid item xs={12}>
             <Box flexDirection="column" display="flex" m={5}>

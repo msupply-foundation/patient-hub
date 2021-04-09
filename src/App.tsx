@@ -3,15 +3,26 @@
 import { Switch, Route } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
 import { AppBar, Footer, AccountStatus } from "./shared/components";
-import { useTranslations } from "./shared/hooks";
+import { useConfig, useTranslations } from "./shared/hooks";
 import { LoginPromptingRoute } from "./features/auth/components/LoginPromptingRoute";
+import { AutoLoginRoute } from "./features/auth/components/AutoLoginRoute";
 import { PatientForm } from "./features/patients/pages/PatientForm";
 import { ADRForm } from "./features/adr/pages/ADRForm";
 import { Home } from "./features/app/pages/Home";
 
 export const App = () => {
   const { messages } = useTranslations();
-
+  const config = useConfig();
+  const { autologin = { patients: false } } = config;
+  const patients = autologin.patients ? (
+    <AutoLoginRoute path="/patients">
+      <PatientForm />
+    </AutoLoginRoute>
+  ) : (
+    <LoginPromptingRoute path="/patients">
+      <PatientForm />
+    </LoginPromptingRoute>
+  );
   return (
     <>
       <AppBar RightComponent={<AccountStatus />} />
@@ -22,9 +33,7 @@ export const App = () => {
           <LoginPromptingRoute path="/adverse-drug-reactions">
             <ADRForm />
           </LoginPromptingRoute>
-          <LoginPromptingRoute path="/patients">
-            <PatientForm />
-          </LoginPromptingRoute>
+          {patients}
           <Route path="/">
             <Home />
           </Route>
