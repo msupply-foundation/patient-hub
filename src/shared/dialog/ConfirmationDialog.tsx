@@ -4,10 +4,9 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import { AppBar } from "../components";
-import { Box, createStyles, makeStyles } from "@material-ui/core";
+import { Box, createStyles, makeStyles, Typography } from "@material-ui/core";
 import { Theme } from "../containers/ThemeProvider";
 
 const useStyles = makeStyles((theme: Theme) =>

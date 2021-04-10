@@ -78,7 +78,7 @@ export const PatientForm: FC = () => {
   };
 
   const jsonPatientSurveySchemaValidator = () => {
-    if (patientSurveySchema?.uiSchema) {
+    if (patientSurveySchema?.jsonSchema) {
       return ajv.compile(patientSurveySchema?.jsonSchema);
     }
     return () => false;
