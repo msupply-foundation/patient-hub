@@ -4,9 +4,11 @@ import {
   LoginDialog,
   LoginDialogProps,
 } from "../../features/auth/components/LoginDialog";
+import { ConfirmationDialog } from "../dialog";
 
 export enum ModalKey {
   login = "MODAL_KEY/login",
+  confirm = "MODAL_KEY/confirm",
 }
 
 export type ModalPropShape = LoginDialogProps | {};
@@ -115,6 +117,12 @@ export const ModalProvider: FC = (props) => {
       {props.children}
       <LoginDialog
         open={modalKey === ModalKey.login && isOpen}
+        handleClose={closeModal}
+        {...modalProps}
+      />
+      <ConfirmationDialog
+        open={modalKey === ModalKey.confirm && isOpen}
+        title="Success!"
         handleClose={closeModal}
         {...modalProps}
       />
