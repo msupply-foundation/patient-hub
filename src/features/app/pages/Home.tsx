@@ -28,7 +28,7 @@ const useStyles = makeStyles(() =>
       display: "flex",
       marginLeft: "auto",
       marginRight: "auto",
-      maxWidth: "100%",
+      maxWidth: "50%",
     },
   })
 );
