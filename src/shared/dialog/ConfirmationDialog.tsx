@@ -37,8 +37,11 @@ export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
 
   return (
     <Dialog fullWidth open={open}>
-      <AppBar LeftComponent={null}></AppBar>
-      <DialogTitle>{title}</DialogTitle>
+      <AppBar
+        LeftComponent={
+          <Typography style={{ color: "#4d4d4d" }}>{title}</Typography>
+        }
+      ></AppBar>
       <DialogContent>
         <Box display="flex" justifyContent="center" mb={2}>
           <ThumbUpIcon
