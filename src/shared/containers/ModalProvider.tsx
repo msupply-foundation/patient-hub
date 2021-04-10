@@ -1,49 +1,122 @@
-import { createContext, FC, useState } from "react";
-import { LoginDialog } from "../../features/auth/components/LoginDialog";
-import { useToggle } from "../hooks/useToggle";
+import { createContext, FC, useCallback, useEffect, useReducer } from "react";
+import { useHistory } from "react-router-dom";
+import {
+  LoginDialog,
+  LoginDialogProps,
+} from "../../features/auth/components/LoginDialog";
 
 export enum ModalKey {
   login = "MODAL_KEY/login",
 }
 
+export type ModalPropShape = LoginDialogProps | {};
 interface ModalContextStateShape {
   modalKey: string;
   isOpen: boolean;
-  openModal: (modalKey: string) => void;
+  openModal: (modalKey: ModalKey, modalProps?: ModalPropShape) => void;
   closeModal: () => void;
 }
 
-const modalContextState: ModalContextStateShape = {
+const initialModalContextState = (): ModalContextStateShape => ({
   modalKey: "",
   isOpen: false,
-  openModal: () => {},
+  openModal: (modalKey: ModalKey, modalProps?: ModalPropShape) => {},
   closeModal: () => {},
+});
+
+export const ModalContext = createContext(initialModalContextState());
+
+interface ModalContextInternalStateShape {
+  modalKey: ModalKey | "";
+  isOpen: boolean;
+  modalProps: ModalPropShape;
+}
+
+enum ModalContextInternalActionType {
+  open = "MODAL_CONTEXT/open",
+  close = "MODAL_CONTEXT/close",
+}
+
+type ModalContextInternalAction =
+  | {
+      type: ModalContextInternalActionType.open;
+      payload: { modalKey: ModalKey; modalProps?: ModalPropShape };
+    }
+  | {
+      type: ModalContextInternalActionType.close;
+    };
+
+const openModalCreator = (
+  modalKey: ModalKey,
+  modalProps: ModalPropShape = {}
+): ModalContextInternalAction => ({
+  type: ModalContextInternalActionType.open,
+  payload: { modalKey, modalProps },
+});
+
+const closeModalCreator = (): ModalContextInternalAction => ({
+  type: ModalContextInternalActionType.close,
+});
+
+const initialState = (): ModalContextInternalStateShape => ({
+  modalKey: "",
+  isOpen: false,
+  modalProps: {},
+});
+
+const reducer = (
+  state: ModalContextInternalStateShape = initialState(),
+  action: ModalContextInternalAction
+): ModalContextInternalStateShape => {
+  switch (action.type) {
+    case ModalContextInternalActionType.open: {
+      const { payload } = action;
+      const { modalKey, modalProps = {} } = payload;
+
+      return { ...state, modalKey, modalProps, isOpen: true };
+    }
+    case ModalContextInternalActionType.close: {
+      return { ...state, modalKey: "", modalProps: {}, isOpen: false };
+    }
+    default: {
+      return state;
+    }
+  }
 };
 
-export const ModalContext = createContext(modalContextState);
-
 export const ModalProvider: FC = (props) => {
-  const [modalKey, setModalKey] = useState("");
-  const { isToggled, turnOn, turnOff } = useToggle(false);
+  const [{ isOpen, modalKey, modalProps }, dispatch] = useReducer(
+    reducer,
+    initialState()
+  );
 
-  const openModal = (modalKey: string) => {
-    setModalKey(modalKey);
-    turnOn();
-  };
+  const history = useHistory();
 
-  const closeModal = () => {
-    setModalKey("");
-    turnOff();
-  };
+  const openModal = useCallback(
+    (modalKey: ModalKey, modalProps?: ModalPropShape) => {
+      dispatch(openModalCreator(modalKey, modalProps));
+    },
+    []
+  );
+
+  const closeModal = useCallback(() => {
+    dispatch(closeModalCreator());
+  }, []);
+
+  useEffect(() => {
+    const unregister = history.listen(({ pathname }) => {
+      if (pathname === "/") closeModal();
+    });
+    return unregister;
+  }, [closeModal, history]);
 
   return (
-    <ModalContext.Provider
-      value={{ modalKey, isOpen: isToggled, closeModal, openModal }}
-    >
+    <ModalContext.Provider value={{ modalKey, isOpen, closeModal, openModal }}>
       {props.children}
       <LoginDialog
-        open={modalKey === ModalKey.login && isToggled}
+        open={modalKey === ModalKey.login && isOpen}
         handleClose={closeModal}
+        {...modalProps}
       />
     </ModalContext.Provider>
   );
