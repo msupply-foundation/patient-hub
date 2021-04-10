@@ -6,9 +6,7 @@ import {
   Grid,
   Hidden,
   makeStyles,
-  Typography,
 } from "@material-ui/core";
-import BrandingWatermarkIcon from "@material-ui/icons/BrandingWatermark";
 import { ChevronRight } from "@material-ui/icons";
 
 import { useHistory } from "react-router-dom";
@@ -26,6 +24,12 @@ const useStyles = makeStyles(() =>
       display: "flex",
       alignItems: "center",
     },
+    img: {
+      display: "flex",
+      marginLeft: "auto",
+      marginRight: "auto",
+      maxWidth: "100%",
+    },
   })
 );
 
@@ -38,8 +42,11 @@ export const Home = () => {
     <Box height="calc(100vh - 30px - 72px - 30px - 30px)">
       <Grid container className={styles.mainContainer}>
         <Grid item sm={5} xs={12} className={styles.itemContainer}>
-          <BrandingWatermarkIcon fontSize="large" />
-          <Typography variant="h2">{messages.yourLogo}</Typography>
+          <img
+            alt="logo"
+            className={styles.img}
+            src="/patient_hub/main_page.png"
+          />
         </Grid>
 
         <Hidden smDown>
