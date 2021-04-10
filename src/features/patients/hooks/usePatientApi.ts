@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getUrl } from "../../../shared/utils";
+import { format, parse } from "date-fns";
 interface PatientResponseData {
   ID: string;
   name: string;
@@ -12,9 +13,18 @@ interface PatientResponseData {
   postal_address1: string;
 }
 
+const mapPatientData = (patientData: any) => {
+  const { date_of_birth } = patientData;
+  const dob = parse(date_of_birth, "dd/MM/yyyy", new Date());
+  return {
+    ...patientData,
+    date_of_birth: format(dob, "yyyy-MM-dd"),
+  };
+};
+
 const createPatient = (patientData: any) =>
   axios
-    .post<PatientResponseData>(getUrl("patient"), patientData, {
+    .post<PatientResponseData>(getUrl("patient"), mapPatientData(patientData), {
       withCredentials: true,
     })
     .then(({ data }) => {
