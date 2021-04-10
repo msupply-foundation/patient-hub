@@ -12,6 +12,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Theme } from "../../shared/containers/ThemeProvider";
 interface AppBarProps {
   RightComponent?: ReactElement | null;
+  LeftComponent?: ReactElement;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,7 +23,20 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const AppBar: FC<AppBarProps> = ({ RightComponent = null }) => {
+const Msupply: FC = () => (
+  <Box>
+    <Box flexDirection="row" display="flex">
+      <Typography color="primary">m</Typography>
+      <Typography>Supply</Typography>
+    </Box>
+    <Typography variant="caption">Patient Hub</Typography>
+  </Box>
+);
+
+export const AppBar: FC<AppBarProps> = ({
+  RightComponent = null,
+  LeftComponent = <Msupply />,
+}) => {
   const history = useHistory();
   const classes = useStyles();
 
@@ -40,13 +54,7 @@ export const AppBar: FC<AppBarProps> = ({ RightComponent = null }) => {
         >
           <Icon.MsupplyMan />
           <Box m={1} />
-          <Box>
-            <Box flexDirection="row" display="flex">
-              <Typography color="primary">m</Typography>
-              <Typography>Supply</Typography>
-            </Box>
-            <Typography variant="caption">Patient Hub</Typography>
-          </Box>
+          {LeftComponent}
         </IconButton>
 
         <div style={{ marginLeft: "auto" }} />

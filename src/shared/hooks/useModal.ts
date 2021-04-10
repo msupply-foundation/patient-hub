@@ -1,5 +1,9 @@
 import { useContext } from "react";
-import { ModalContext, ModalKey } from "../containers/ModalProvider";
+import {
+  ModalContext,
+  ModalKey,
+  ModalPropShape,
+} from "../containers/ModalProvider";
 
 export const useModal = (modalKey: ModalKey) => {
   const { modalKey: openModalKey, isOpen, closeModal, openModal } = useContext(
@@ -9,6 +13,6 @@ export const useModal = (modalKey: ModalKey) => {
   return {
     isOpen: modalKey === openModalKey && isOpen,
     close: closeModal,
-    open: () => openModal(modalKey),
+    open: (modalProps?: ModalPropShape) => openModal(modalKey, modalProps),
   };
 };

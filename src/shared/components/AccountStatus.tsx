@@ -15,7 +15,7 @@ export const AccountStatus: FC = () => {
   const { username, logout } = useAuth();
   const { messages } = useTranslations();
   const { open } = useModal(ModalKey.login);
-  const { isToggled, turnOff, turnOn } = useToggle(false);
+  const { isOn, turnOff, turnOn } = useToggle(false);
   const anchor = useRef<HTMLElement | null>(null);
   const history = useHistory();
 
@@ -29,7 +29,7 @@ export const AccountStatus: FC = () => {
       <IconButton
         aria-controls="fade-menu"
         aria-haspopup="true"
-        onClick={username ? handleClick : open}
+        onClick={username ? handleClick : () => open({ canExit: true })}
       >
         <Typography>{username}</Typography>
         <AccountCircle />
@@ -38,7 +38,7 @@ export const AccountStatus: FC = () => {
         id="fade-menu"
         anchorEl={anchor.current}
         keepMounted
-        open={isToggled}
+        open={isOn}
         onClose={turnOff}
         TransitionComponent={Fade}
       >

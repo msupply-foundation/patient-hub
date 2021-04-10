@@ -1,20 +1,32 @@
 import { FC, useState } from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import { Box, Grid, TextField, Snackbar, Typography } from "@material-ui/core";
-import { ChevronRight } from "@material-ui/icons";
+import {
+  Box,
+  Grid,
+  TextField,
+  Snackbar,
+  Typography,
+  IconButton,
+} from "@material-ui/core";
+import { ChevronRight, Close } from "@material-ui/icons";
 import { LoadingButton } from "@material-ui/lab";
 import { useTranslations } from "../../../shared/hooks/useTranslations";
 import { AppBar } from "../../../shared/components/AppBar";
 import { useAuth } from "../hooks/useAuth";
 import { useLogin } from "../hooks/useLoginQuery";
 
-interface LoginDialogProps {
+export interface LoginDialogProps {
   open: boolean;
   handleClose: () => void;
+  canExit?: boolean;
 }
 
-export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
+export const LoginDialog: FC<LoginDialogProps> = ({
+  open,
+  handleClose,
+  canExit = false,
+}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login, guestLogin } = useAuth();
@@ -23,10 +35,25 @@ export const LoginDialog: FC<LoginDialogProps> = ({ open, handleClose }) => {
   const { tryLogin, isLoading, error } = useLogin();
 
   return (
-    <Dialog fullWidth open={open}>
+    <Dialog
+      fullWidth
+      open={open}
+      onBackdropClick={canExit ? handleClose : undefined}
+    >
       <Grid container direction="column">
         <Grid item xs={12}>
-          <AppBar RightComponent={<Typography style={{color: '#4d4d4d'}}>Login</Typography>} />
+          <AppBar
+            LeftComponent={
+              <Typography style={{ color: "#4d4d4d" }}>Login</Typography>
+            }
+            RightComponent={
+              canExit ? (
+                <IconButton onClick={handleClose}>
+                  <Close />
+                </IconButton>
+              ) : null
+            }
+          />
         </Grid>
         <Grid container direction="row">
           <Grid item xs={12}>
