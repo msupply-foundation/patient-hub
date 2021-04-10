@@ -30,7 +30,7 @@ export const DateWidget: FC<WidgetProps> = (props: any) => {
       <MuiDatePicker
         label={label || schema.title}
         value={getDateValue()}
-        onChange={(date) => handleDateChange(date)}
+        onChange={handleDateChange}
         renderInput={(params: TextFieldProps) => (
           <TextWidget {...params} {...props} />
         )}
