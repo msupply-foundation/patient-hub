@@ -28,6 +28,9 @@ const theme = {
     primary: {
       main: "rgba(233,92,48,1)",
     },
+    success: {
+      main: "#73B55B",
+    },
     menubar: {
       main: "#ecf3fc",
     },

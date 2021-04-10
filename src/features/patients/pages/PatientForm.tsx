@@ -9,12 +9,13 @@ import {
 } from "@material-ui/core";
 import Ajv from "ajv";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { ConfirmationDialog } from "../../../shared/dialog";
 import { JsonSchemaForm } from "../../../shared/components";
 import { usePatientSurveySchemaQuery } from "../hooks/usePatientSurveySchemaQuery";
 import { usePatientSchemaQuery } from "../hooks/usePatientSchemaQuery";
 import { usePatientApi } from "../hooks/usePatientApi";
 import { usePatientEvent } from "../hooks/usePatientEvent";
+import { useModal } from "../../../shared/hooks";
+import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 const ajvErrors = require("ajv-errors");
 
@@ -57,6 +58,7 @@ type onChangeProps = {
 
 export const PatientForm: FC = () => {
   const { patientEvent } = usePatientEvent();
+  const { open, close } = useModal(ModalKey.confirm);
 
   const {
     isLoading: patientSurveySchemaIsLoading,
@@ -83,12 +85,12 @@ export const PatientForm: FC = () => {
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const [refreshForms, setRefreshForms] = useState(false);
   const classes = useStyles();
+
   const handleClose = () => {
-    setShowConfirmation(false);
-    setRefreshForms(!refreshForms);
+    close();
+    setRefreshForms((state) => !state);
   };
 
   const patientFormRef = useRef({ formData: {}, isValid: false });
@@ -112,8 +114,12 @@ export const PatientForm: FC = () => {
           )
         )
         .then(() => {
+          open({
+            handleClose,
+            content:
+              "Thank you for submitting your details and helping in the fight against COVID-19!",
+          });
           setIsSubmitting(false);
-          setShowConfirmation(true);
         });
     }
   };
@@ -217,13 +223,6 @@ export const PatientForm: FC = () => {
       <Backdrop className={classes.backdrop} open={isSubmitting}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <ConfirmationDialog
-        open={showConfirmation}
-        title="Success!"
-        handleClose={handleClose}
-      >
-        Patient created successfully
-      </ConfirmationDialog>
     </Paper>
   );
 };
