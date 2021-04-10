@@ -52,7 +52,7 @@ export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
         <DialogContentText>{content}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary" autoFocus>
+        <Button onClick={handleClose} color="primary" autoFocus variant="outlined">
           {confirmButtonText}
         </Button>
       </DialogActions>
