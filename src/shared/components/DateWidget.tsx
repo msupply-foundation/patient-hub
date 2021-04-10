@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { TextFieldProps } from "@material-ui/core";
 import MuiDatePicker from "@material-ui/lab/DatePicker";
 import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
@@ -11,6 +11,7 @@ import enLocale from "date-fns/locale/en-NZ";
 // TODO: Fix typings for TextWidget
 export const DateWidget: FC<WidgetProps> = (props: any) => {
   const { label, schema, value } = props;
+
   const handleDateChange = (date: Date | null) => {
     if (isValid(date)) {
       const validDate = date || new Date();
@@ -20,9 +21,7 @@ export const DateWidget: FC<WidgetProps> = (props: any) => {
 
   const getDateValue = () => {
     const asDate = parse(value, "dd/mm/yyyy", new Date());
-
     return isValid(asDate) ? asDate : null;
-    }
   };
 
   return (
