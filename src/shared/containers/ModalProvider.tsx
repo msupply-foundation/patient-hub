@@ -1,4 +1,5 @@
-import { createContext, FC, useState } from "react";
+import { createContext, FC, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { LoginDialog } from "../../features/auth/components/LoginDialog";
 import { useToggle } from "../hooks/useToggle";
 
@@ -25,6 +26,14 @@ export const ModalContext = createContext(modalContextState);
 export const ModalProvider: FC = (props) => {
   const [modalKey, setModalKey] = useState("");
   const { isToggled, turnOn, turnOff } = useToggle(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    const unregister = history.listen(({ pathname }) => {
+      if (pathname === "/") turnOff();
+    });
+    return unregister;
+  }, [turnOff, history]);
 
   const openModal = (modalKey: string) => {
     setModalKey(modalKey);
