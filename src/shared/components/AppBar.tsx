@@ -12,7 +12,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Theme } from "../../shared/containers/ThemeProvider";
 interface AppBarProps {
   RightComponent?: ReactElement | null;
-  LeftComponent?: ReactElement;
+  LeftComponent?: ReactElement | null;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
