@@ -1,30 +1,35 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { TextFieldProps } from "@material-ui/core";
 import MuiDatePicker from "@material-ui/lab/DatePicker";
 import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
 import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
-import { format, isValid } from "date-fns";
+import { parse, format, isValid } from "date-fns";
 import { WidgetProps } from "@rjsf/core";
 import { TextWidget } from "./TextWidget";
 import enLocale from "date-fns/locale/en-NZ";
 
 // TODO: Fix typings for TextWidget
 export const DateWidget: FC<WidgetProps> = (props: any) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const { label, schema, value } = props;
+
   const handleDateChange = (date: Date | null) => {
     if (isValid(date)) {
       const validDate = date || new Date();
       props.onChange(format(validDate, "dd/MM/yyyy"));
-      setSelectedDate(validDate);
     }
+  };
+
+  const getDateValue = () => {
+    const asDate = parse(value, "dd/mm/yyyy", new Date());
+    return isValid(asDate) ? asDate : null;
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
       <MuiDatePicker
-        label={props.label || props.schema.title}
-        value={selectedDate}
-        onChange={(date) => handleDateChange(date)}
+        label={label || schema.title}
+        value={getDateValue()}
+        onChange={handleDateChange}
         renderInput={(params: TextFieldProps) => (
           <TextWidget {...params} {...props} />
         )}
