@@ -29,7 +29,7 @@ export const AccountStatus: FC = () => {
       <IconButton
         aria-controls="fade-menu"
         aria-haspopup="true"
-        onClick={username ? handleClick : open}
+        onClick={username ? handleClick : () => open({ canExit: true })}
       >
         <Typography>{username}</Typography>
         <AccountCircle />
