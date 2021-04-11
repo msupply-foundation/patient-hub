@@ -1,16 +1,13 @@
 import { Box, Typography } from "@material-ui/core";
 import { useTranslations } from "../hooks";
 import { Icon } from "./icons";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { Theme } from "../../shared/containers/ThemeProvider";
+import { stylesFactory } from "../utils";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.menubar.main,
-    },
-  })
-);
+const useStyles = stylesFactory((theme) => ({
+  root: {
+    backgroundColor: theme.palette.menubar.main,
+  },
+}));
 
 export const Footer = () => {
   const { messages } = useTranslations();

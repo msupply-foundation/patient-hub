@@ -1,7 +1,6 @@
 import { FC, useState, useRef } from "react";
 import { Box, Button, CircularProgress, Paper } from "@material-ui/core";
 import Ajv, { ValidateFunction } from "ajv";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { JsonSchemaForm } from "../../../shared/components";
 import { usePatientSurveySchemaQuery } from "../hooks/usePatientSurveySchemaQuery";
 import { usePatientSchemaQuery } from "../hooks/usePatientSchemaQuery";
@@ -13,6 +12,7 @@ import {
   useModal,
 } from "../../../shared/hooks";
 import { ModalKey } from "../../../shared/containers/ModalProvider";
+import { stylesFactory } from "../../../shared/utils";
 
 const ajvErrors = require("ajv-errors");
 
@@ -32,21 +32,19 @@ const ajv = new Ajv({
 
 ajvErrors(ajv);
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    img: {
-      display: "flex",
-      marginLeft: "auto",
-      marginRight: "auto",
-      maxWidth: "100%",
-    },
-    paper: {
-      marginLeft: "auto",
-      marginRight: "auto",
-      maxWidth: 600,
-    },
-  })
-);
+const useStyles = stylesFactory({
+  img: {
+    display: "flex",
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: "100%",
+  },
+  paper: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: 600,
+  },
+});
 
 type onChangeProps = {
   formData: any;
