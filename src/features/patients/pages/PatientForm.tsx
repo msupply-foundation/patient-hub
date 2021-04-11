@@ -1,12 +1,5 @@
 import { FC, useState, useRef } from "react";
-import {
-  Backdrop,
-  Box,
-  Button,
-  CircularProgress,
-  Paper,
-  useMediaQuery,
-} from "@material-ui/core";
+import { Box, Button, CircularProgress, Paper } from "@material-ui/core";
 import Ajv, { ValidateFunction } from "ajv";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { JsonSchemaForm } from "../../../shared/components";
@@ -14,7 +7,11 @@ import { usePatientSurveySchemaQuery } from "../hooks/usePatientSurveySchemaQuer
 import { usePatientSchemaQuery } from "../hooks/usePatientSchemaQuery";
 import { usePatientApi } from "../hooks/usePatientApi";
 import { usePatientEvent } from "../hooks/usePatientEvent";
-import { useModal } from "../../../shared/hooks";
+import {
+  useIsSmallScreen,
+  useLoadingSpinner,
+  useModal,
+} from "../../../shared/hooks";
 import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 const ajvErrors = require("ajv-errors");
@@ -37,10 +34,6 @@ ajvErrors(ajv);
 
 const useStyles = makeStyles(() =>
   createStyles({
-    backdrop: {
-      zIndex: 100,
-      color: "#fff",
-    },
     img: {
       display: "flex",
       marginLeft: "auto",
@@ -51,7 +44,6 @@ const useStyles = makeStyles(() =>
       marginLeft: "auto",
       marginRight: "auto",
       maxWidth: 600,
-      padding: 50,
     },
   })
 );
@@ -61,9 +53,25 @@ type onChangeProps = {
   errors: string[];
 };
 
+interface FormRef {
+  formData: any;
+  hasValidator: Boolean;
+  validator: ValidateFunction;
+}
+
+const initialRefState: FormRef = {
+  formData: {},
+  hasValidator: false,
+  validator: () => false,
+};
+
 export const PatientForm: FC = () => {
   const { patientEvent } = usePatientEvent();
   const { open, close } = useModal(ModalKey.confirm);
+  const { toggleLoading } = useLoadingSpinner();
+  const [refreshForms, setRefreshForms] = useState(false);
+  const classes = useStyles();
+  const isSmallScreen = useIsSmallScreen();
 
   const {
     isLoading: patientSurveySchemaIsLoading,
@@ -89,26 +97,11 @@ export const PatientForm: FC = () => {
     return () => false;
   };
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [refreshForms, setRefreshForms] = useState(false);
-  const classes = useStyles();
-
   const handleClose = () => {
     close();
     setRefreshForms((state) => !state);
   };
 
-  interface FormRef {
-    formData: any;
-    hasValidator: Boolean;
-    validator: ValidateFunction;
-  }
-
-  const initialRefState: FormRef = {
-    formData: {},
-    hasValidator: false,
-    validator: () => false,
-  };
   const patientFormRef = useRef({ ...initialRefState });
   const surveyFormRef = useRef({ ...initialRefState });
   const { createPatient, createNameNote } = usePatientApi();
@@ -122,7 +115,7 @@ export const PatientForm: FC = () => {
     );
 
     if (surveyIsValid && patientIsValid) {
-      setIsSubmitting(true);
+      toggleLoading();
       createPatient(patientFormRef?.current?.formData || {})
         .then(({ data }) =>
           createNameNote(
@@ -137,7 +130,7 @@ export const PatientForm: FC = () => {
             content:
               "Thank you for submitting your details and helping in the fight against COVID-19!",
           });
-          setIsSubmitting(false);
+          toggleLoading();
         });
     }
   };
@@ -175,10 +168,6 @@ export const PatientForm: FC = () => {
   // button child for each form. Where the second form is triggering a simulated
   // click on the first forms button, to trigger the on submit function for that form.
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-
-  const isSmallScreen = useMediaQuery((theme: any) =>
-    theme.breakpoints.down("sm")
-  );
 
   return (
     <Paper
@@ -249,10 +238,6 @@ export const PatientForm: FC = () => {
           <CircularProgress />
         </Box>
       )}
-
-      <Backdrop className={classes.backdrop} open={isSubmitting}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </Paper>
   );
 };

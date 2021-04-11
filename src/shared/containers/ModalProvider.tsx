@@ -1,10 +1,11 @@
 import { createContext, FC, useCallback, useEffect, useReducer } from "react";
+
 import { useHistory } from "react-router-dom";
 import {
   LoginDialog,
   LoginDialogProps,
 } from "../../features/auth/components/LoginDialog";
-import { ConfirmationDialog } from "../dialog";
+import { LoadingSpinner, ConfirmationDialog } from "../modal";
 
 export enum ModalKey {
   login = "MODAL_KEY/login",
@@ -15,6 +16,8 @@ export type ModalPropShape = LoginDialogProps | {};
 interface ModalContextStateShape {
   modalKey: string;
   isOpen: boolean;
+  isLoading: boolean;
+  toggleLoading: () => void;
   openModal: (modalKey: ModalKey, modalProps?: ModalPropShape) => void;
   closeModal: () => void;
 }
@@ -22,8 +25,10 @@ interface ModalContextStateShape {
 const initialModalContextState = (): ModalContextStateShape => ({
   modalKey: "",
   isOpen: false,
+  isLoading: false,
   openModal: (modalKey: ModalKey, modalProps?: ModalPropShape) => {},
   closeModal: () => {},
+  toggleLoading: () => {},
 });
 
 export const ModalContext = createContext(initialModalContextState());
@@ -31,12 +36,14 @@ export const ModalContext = createContext(initialModalContextState());
 interface ModalContextInternalStateShape {
   modalKey: ModalKey | "";
   isOpen: boolean;
+  isLoading: boolean;
   modalProps: ModalPropShape;
 }
 
 enum ModalContextInternalActionType {
   open = "MODAL_CONTEXT/open",
   close = "MODAL_CONTEXT/close",
+  toggleLoading = "MODAL_CONTEXT/toggle_loading",
 }
 
 type ModalContextInternalAction =
@@ -46,7 +53,8 @@ type ModalContextInternalAction =
     }
   | {
       type: ModalContextInternalActionType.close;
-    };
+    }
+  | { type: ModalContextInternalActionType.toggleLoading };
 
 const openModalCreator = (
   modalKey: ModalKey,
@@ -60,8 +68,13 @@ const closeModalCreator = (): ModalContextInternalAction => ({
   type: ModalContextInternalActionType.close,
 });
 
+const toggleLoading = (): ModalContextInternalAction => ({
+  type: ModalContextInternalActionType.toggleLoading,
+});
+
 const initialState = (): ModalContextInternalStateShape => ({
   modalKey: "",
+  isLoading: false,
   isOpen: false,
   modalProps: {},
 });
@@ -80,6 +93,11 @@ const reducer = (
     case ModalContextInternalActionType.close: {
       return { ...state, modalKey: "", modalProps: {}, isOpen: false };
     }
+
+    case ModalContextInternalActionType.toggleLoading: {
+      const { isLoading } = state;
+      return { ...state, isLoading: !isLoading };
+    }
     default: {
       return state;
     }
@@ -87,7 +105,7 @@ const reducer = (
 };
 
 export const ModalProvider: FC = (props) => {
-  const [{ isOpen, modalKey, modalProps }, dispatch] = useReducer(
+  const [{ isOpen, modalKey, modalProps, isLoading }, dispatch] = useReducer(
     reducer,
     initialState()
   );
@@ -105,6 +123,10 @@ export const ModalProvider: FC = (props) => {
     dispatch(closeModalCreator());
   }, []);
 
+  const toggleLoadingIndicator = useCallback(() => {
+    dispatch(toggleLoading());
+  }, []);
+
   useEffect(() => {
     const unregister = history.listen(({ pathname }) => {
       if (pathname === "/") closeModal();
@@ -113,7 +135,16 @@ export const ModalProvider: FC = (props) => {
   }, [closeModal, history]);
 
   return (
-    <ModalContext.Provider value={{ modalKey, isOpen, closeModal, openModal }}>
+    <ModalContext.Provider
+      value={{
+        modalKey,
+        isOpen,
+        closeModal,
+        openModal,
+        isLoading,
+        toggleLoading: toggleLoadingIndicator,
+      }}
+    >
       {props.children}
       <LoginDialog
         open={modalKey === ModalKey.login && isOpen}
@@ -126,6 +157,7 @@ export const ModalProvider: FC = (props) => {
         handleClose={closeModal}
         {...modalProps}
       />
+      <LoadingSpinner open={isLoading} />
     </ModalContext.Provider>
   );
 };
