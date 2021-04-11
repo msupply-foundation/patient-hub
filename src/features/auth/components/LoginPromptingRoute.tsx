@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Route } from "react-router-dom";
-import { useLoginPrompt } from "../hooks/useLoginPrompt";
+import { useLoginPrompt } from "../hooks";
 
 export const LoginPromptingRoute: FC<{ path: string }> = ({
   path,

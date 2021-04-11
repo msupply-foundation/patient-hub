@@ -1,14 +1,16 @@
 import { FC, useState } from "react";
 import { Route } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { useLogin } from "../hooks/useLoginQuery";
+import { useLoginQuery, useAuth } from "../hooks";
 
 export const AutoLoginRoute: FC<{ path: string }> = ({ path, children }) => {
-  const { tryLogin } = useLogin();
+  const { tryLogin } = useLoginQuery();
   const [isLoading, setIsLoading] = useState(false);
   const { guestLogin, username } = useAuth();
   const login = async () => {
-    const authenticated = await tryLogin({ username: "guest", password: "tonga-guest-road-skin-frisk" });
+    const authenticated = await tryLogin({
+      username: "guest",
+      password: "tonga-guest-road-skin-frisk",
+    });
     if (authenticated) {
       guestLogin();
     }
@@ -19,9 +21,5 @@ export const AutoLoginRoute: FC<{ path: string }> = ({ path, children }) => {
     login();
   }
 
-  return (
-    <Route path={path}>
-      {username && children}
-    </Route>
-  );
+  return <Route path={path}>{username && children}</Route>;
 };

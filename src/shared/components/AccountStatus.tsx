@@ -8,8 +8,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { AccountCircle } from "@material-ui/icons";
-import { useAuth, useModal, useTranslations, useToggle } from "../hooks";
+import { useModal, useTranslations, useToggle } from "../hooks";
 import { ModalKey } from "../containers/ModalProvider";
+import { useAuth } from "../../features/auth/hooks";
 
 export const AccountStatus: FC = () => {
   const { username, logout } = useAuth();

@@ -21,8 +21,11 @@ interface LoginParams {
   password: string;
 }
 
-export const useLogin = () => {
+export const useLoginQuery = () => {
   const { isLoading, error, data, mutateAsync } = useMutation("login", login);
 
-  return { isLoading, error, data, tryLogin: mutateAsync };
+  const tryGuestLogin = () =>
+    mutateAsync({ username: "guest", password: "tonga-guest-road-skin-frisk" });
+
+  return { isLoading, error, data, tryLogin: mutateAsync, tryGuestLogin };
 };
