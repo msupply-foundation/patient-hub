@@ -7,7 +7,7 @@ import {
   Paper,
   useMediaQuery,
 } from "@material-ui/core";
-import Ajv from "ajv";
+import Ajv, { ValidateFunction } from "ajv";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { JsonSchemaForm } from "../../../shared/components";
 import { usePatientSurveySchemaQuery } from "../hooks/usePatientSurveySchemaQuery";
@@ -26,6 +26,11 @@ const ajv = new Ajv({
   schemaId: "auto",
   unknownFormats: "ignore",
   jsonPointers: true,
+  logger: {
+    log: console.log.bind(console),
+    warn: console.warn.bind(console),
+    error: console.warn.bind(console),
+  },
 });
 
 ajvErrors(ajv);
@@ -70,14 +75,14 @@ export const PatientForm: FC = () => {
     patientSchema,
   } = usePatientSchemaQuery();
 
-  const jsonPatientSchemaValidator = () => {
+  const jsonPatientSchemaValidator = (): ValidateFunction => {
     if (patientSchema?.jsonSchema) {
       return ajv.compile(patientSchema?.jsonSchema);
     }
     return () => false;
   };
 
-  const jsonPatientSurveySchemaValidator = () => {
+  const jsonPatientSurveySchemaValidator = (): ValidateFunction => {
     if (patientSurveySchema?.jsonSchema) {
       return ajv.compile(patientSurveySchema?.jsonSchema);
     }
@@ -93,15 +98,28 @@ export const PatientForm: FC = () => {
     setRefreshForms((state) => !state);
   };
 
-  const patientFormRef = useRef({ formData: {}, isValid: false });
-  const surveyFormRef = useRef({ formData: {}, isValid: false });
+  interface FormRef {
+    formData: any;
+    hasValidator: Boolean;
+    validator: ValidateFunction;
+  }
+
+  const initialRefState: FormRef = {
+    formData: {},
+    hasValidator: false,
+    validator: () => false,
+  };
+  const patientFormRef = useRef({ ...initialRefState });
+  const surveyFormRef = useRef({ ...initialRefState });
   const { createPatient, createNameNote } = usePatientApi();
 
   const handleSubmit = () => {
-    const patientValidator = jsonPatientSchemaValidator();
-    const surveyValidator = jsonPatientSurveySchemaValidator();
-    const patientIsValid = patientValidator(patientFormRef.current?.formData);
-    const surveyIsValid = surveyValidator(surveyFormRef.current?.formData);
+    const patientIsValid = patientFormRef.current?.validator(
+      patientFormRef.current?.formData
+    );
+    const surveyIsValid = surveyFormRef.current?.validator(
+      surveyFormRef.current?.formData
+    );
 
     if (surveyIsValid && patientIsValid) {
       setIsSubmitting(true);
@@ -124,17 +142,29 @@ export const PatientForm: FC = () => {
     }
   };
 
-  const handlePatientChange = ({ formData, errors }: onChangeProps) => {
+  const handlePatientChange = ({ formData }: onChangeProps) => {
     if (patientFormRef?.current) {
-      const isValid = errors.length === 0;
-      patientFormRef.current = { formData, isValid };
+      patientFormRef.current.formData = formData;
+      // at time of submit the patientSchema?.jsonSchema was randomly undefined
+      // resulting in the patientValidator always returning false
+      // this approach is to set the validator as a singleton instance
+      if (!patientFormRef?.current.hasValidator && patientSchema?.jsonSchema) {
+        patientFormRef.current.validator = jsonPatientSchemaValidator();
+        patientFormRef.current.hasValidator = true;
+      }
     }
   };
 
-  const handleSurveyChange = ({ formData, errors }: onChangeProps) => {
+  const handleSurveyChange = ({ formData }: onChangeProps) => {
     if (surveyFormRef?.current) {
-      const isValid = errors.length === 0;
-      surveyFormRef.current = { formData, isValid };
+      surveyFormRef.current.formData = formData;
+      if (
+        !surveyFormRef?.current.hasValidator &&
+        patientSurveySchema?.jsonSchema
+      ) {
+        surveyFormRef.current.validator = jsonPatientSurveySchemaValidator();
+        surveyFormRef.current.hasValidator = true;
+      }
     }
   };
 
