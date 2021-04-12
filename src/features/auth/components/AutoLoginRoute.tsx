@@ -3,7 +3,7 @@ import { Route } from "react-router-dom";
 import { useLoginQuery, useAuth } from "../hooks";
 
 export const AutoLoginRoute: FC<{ path: string }> = ({ path, children }) => {
-  const { tryLogin } = useLoginQuery();
+  const { tryGuestLogin } = useLoginQuery();
   const [isLoading, setIsLoading] = useState(false);
   const { guestLogin, username } = useAuth();
   const login = async () => {
