@@ -20,7 +20,7 @@ export const DateWidget: FC<WidgetProps> = (props: any) => {
   };
 
   const getDateValue = () => {
-    const asDate = parse(value, "dd/mm/yyyy", new Date());
+    const asDate = parse(value, "dd/MM/yyyy", new Date());
     return isValid(asDate) ? asDate : null;
   };
 
