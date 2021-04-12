@@ -2,6 +2,12 @@ import Ajv from "ajv";
 import { useCallback, useMemo } from "react";
 const ajvErrors = require("ajv-errors");
 
+const logger = {
+  log: console.log.bind(console),
+  warn: console.warn.bind(console),
+  error: console.warn.bind(console),
+};
+
 const ajv = new Ajv({
   errorDataPath: "property",
   allErrors: true,
@@ -10,6 +16,7 @@ const ajv = new Ajv({
   unknownFormats: "ignore",
   jsonPointers: true,
   async: false,
+  logger: process.env.NODE_ENV === "development" && logger,
 });
 
 ajvErrors(ajv);
