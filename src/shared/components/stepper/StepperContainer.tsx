@@ -9,6 +9,8 @@ const useStyles = stylesFactory({
 
 interface StepperContainerProps {
   canContinue: boolean;
+  onNextHook: () => boolean;
+  onSubmit: () => void;
 }
 
 const useStepper = () => {
@@ -19,10 +21,31 @@ const useStepper = () => {
 export const StepperContainer: FC<StepperContainerProps> = ({
   children,
   canContinue,
+  onNextHook,
+  onSubmit,
 }) => {
-  const { currentStep, next, back, labels } = useStepper();
+  const {
+    currentStep,
+    next,
+    back,
+    labels,
+    onFirstStep,
+    onLastStep,
+  } = useStepper();
 
   const classes = useStyles();
+
+  const onNext = () => {
+    if (onNextHook()) {
+      next();
+    }
+  };
+
+  const submitCallback = () => {
+    if (onNextHook()) {
+      onSubmit();
+    }
+  };
 
   return (
     <>
@@ -34,18 +57,25 @@ export const StepperContainer: FC<StepperContainerProps> = ({
 
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8}>
-          <Box display={{ xs: "none", md: "block" }} mt={2}>
+          <Box display={{ xs: "none", sm: "block" }} mt={2}>
             <Paper className={classes.paper} style={{ flex: 1 }}>
-              <Box justifyContent="space-between" display="flex">
-                <Button onClick={back} variant="outlined">
+              <Box
+                justifyContent={onFirstStep ? "flex-end" : "space-between"}
+                display="flex"
+              >
+                <Button
+                  onClick={back}
+                  variant="outlined"
+                  style={{ display: onFirstStep ? "none" : "block" }}
+                >
                   BACK
                 </Button>
                 <Button
                   disabled={!canContinue}
-                  onClick={next}
+                  onClick={onLastStep ? submitCallback : onNext}
                   variant="outlined"
                 >
-                  NEXT
+                  {onLastStep ? "SUBMIT" : "NEXT"}
                 </Button>
               </Box>
             </Paper>
@@ -53,18 +83,27 @@ export const StepperContainer: FC<StepperContainerProps> = ({
         </Grid>
       </Grid>
 
-      <Box display={{ md: "none" }}>
+      <Box display={{ sm: "none" }}>
         <MobileStepper
           steps={labels.length}
           position="bottom"
           activeStep={currentStep}
           nextButton={
-            <Button disabled={!canContinue} onClick={next} variant="outlined">
-              NEXT
+            <Button
+              type="submit"
+              disabled={!canContinue}
+              onClick={onLastStep ? submitCallback : onNext}
+              variant="outlined"
+            >
+              {onLastStep ? "SUBMIT" : "NEXT"}
             </Button>
           }
           backButton={
-            <Button onClick={back} variant="outlined">
+            <Button
+              style={{ display: onFirstStep ? "none" : "block" }}
+              onClick={back}
+              variant="outlined"
+            >
               BACK
             </Button>
           }
