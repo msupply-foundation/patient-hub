@@ -21,6 +21,7 @@ export const ADRForm: FC = () => {
     >
       {!isLoading ? (
         <JsonSchemaForm
+          formData={{}}
           jsonSchema={data?.jsonSchema ?? {}}
           uiSchema={data?.uiSchema ?? {}}
           onSubmit={SubmitForm}
