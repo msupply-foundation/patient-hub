@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, KeyboardEvent } from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import {
@@ -13,8 +13,7 @@ import { ChevronRight, Close } from "@material-ui/icons";
 import { LoadingButton } from "@material-ui/lab";
 import { useTranslations } from "../../../shared/hooks/useTranslations";
 import { AppBar } from "../../../shared/components/AppBar";
-import { useAuth } from "../hooks/useAuth";
-import { useLogin } from "../hooks/useLoginQuery";
+import { useLoginQuery, useLoginForm, useAuth } from "../hooks";
 
 export interface LoginDialogProps {
   open: boolean;
@@ -27,12 +26,45 @@ export const LoginDialog: FC<LoginDialogProps> = ({
   handleClose,
   canExit = false,
 }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    username,
+    password,
+    setUsername,
+    setPassword,
+    reset,
+    isFilled,
+  } = useLoginForm();
+  const { tryLogin, tryGuestLogin, isLoading, error } = useLoginQuery();
   const { login, guestLogin } = useAuth();
   const { messages } = useTranslations();
 
-  const { tryLogin, isLoading, error } = useLogin();
+  const onNormalLogin = async () => {
+    if (isFilled) {
+      const authenticated = await tryLogin({ username, password });
+
+      if (authenticated) {
+        login(username);
+        handleClose();
+        reset();
+      }
+    }
+  };
+
+  const onGuestLogin = async () => {
+    const authenticated = await tryGuestLogin();
+
+    if (authenticated) {
+      guestLogin();
+      handleClose();
+    }
+  };
+
+  const onKeyPress = (event: KeyboardEvent<HTMLDivElement> | undefined) => {
+    if (event?.key === "Enter") {
+      event.preventDefault();
+      onNormalLogin();
+    }
+  };
 
   return (
     <Dialog
@@ -43,9 +75,7 @@ export const LoginDialog: FC<LoginDialogProps> = ({
       <Grid container direction="column">
         <Grid item xs={12}>
           <AppBar
-            LeftComponent={
-              <Typography style={{ color: "#4d4d4d" }}>Login</Typography>
-            }
+            LeftComponent={<Typography>Login</Typography>}
             RightComponent={
               canExit ? (
                 <IconButton onClick={handleClose}>
@@ -58,69 +88,55 @@ export const LoginDialog: FC<LoginDialogProps> = ({
         <Grid container direction="row">
           <Grid item xs={12}>
             <Box flexDirection="column" display="flex" m={5}>
-              <TextField
-                fullWidth
-                onChange={(event) => setUsername(event.target.value)}
-                variant="outlined"
-                label={messages.username}
-              />
-              <Box mt={2} />
-              <TextField
-                fullWidth
-                onChange={(event) => setPassword(event.target.value)}
-                variant="outlined"
-                label={messages.password}
-              />
+              <form>
+                <TextField
+                  autoComplete="username"
+                  fullWidth
+                  onChange={(event) => setUsername(event.target.value)}
+                  variant="outlined"
+                  label={messages.username}
+                  onKeyPress={onKeyPress}
+                />
+                <Box mt={2} />
+                <TextField
+                  autoComplete="current-password"
+                  type="password"
+                  onKeyPress={onKeyPress}
+                  fullWidth
+                  onChange={(event) => setPassword(event.target.value)}
+                  variant="outlined"
+                  label={messages.password}
+                />
+              </form>
             </Box>
             <Grid item xs={12}>
               <LoadingButton
                 pending={isLoading}
-                disabled={!(username && password)}
+                disabled={!isFilled}
                 fullWidth
                 endIcon={<ChevronRight />}
                 variant="contained"
                 color="primary"
-                onClick={async () => {
-                  const authenticated = await tryLogin({ username, password });
-
-                  if (authenticated) {
-                    login(username, password);
-                    handleClose();
-                    setPassword("");
-                    setUsername("");
-                  }
-                }}
+                onClick={onNormalLogin}
               >
                 {messages.signIn}
               </LoadingButton>
+              <Box mt={1} />
+              <Button
+                disabled={isLoading}
+                fullWidth
+                endIcon={<ChevronRight />}
+                variant="contained"
+                color="primary"
+                onClick={onGuestLogin}
+              >
+                {messages.continueGuest}
+              </Button>
             </Grid>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Box mt={1} />
-            <Button
-              disabled={isLoading}
-              fullWidth
-              endIcon={<ChevronRight />}
-              variant="contained"
-              color="primary"
-              onClick={async () => {
-                const authenticated = await tryLogin({
-                  username: "guest",
-                  password: "tonga-guest-road-skin-frisk",
-                });
-
-                if (authenticated) {
-                  guestLogin();
-                  handleClose();
-                }
-              }}
-            >
-              {messages.continueGuest}
-            </Button>
           </Grid>
         </Grid>
       </Grid>
+
       <Snackbar
         anchorOrigin={{
           vertical: "bottom",

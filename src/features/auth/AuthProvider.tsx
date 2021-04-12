@@ -8,34 +8,28 @@ enum AuthActionType {
 type AuthActionShapes =
   | {
       type: AuthActionType.login;
-      payload: { username: string; password: string };
+      payload: { username: string };
     }
   | { type: AuthActionType.logout };
 
 interface AuthActions {
-  login: (username: string, password: string) => AuthActionShapes;
+  login: (username: string) => AuthActionShapes;
   logout: () => AuthActionShapes;
 }
 
 const AuthAction: AuthActions = {
-  login: (username, password) => ({
+  login: (username) => ({
     type: AuthActionType.login,
-    payload: { username, password },
+    payload: { username },
   }),
   logout: () => ({ type: AuthActionType.logout }),
 };
 
 interface AuthStateContextState {
   username: string;
-  password: string;
 }
 
-const initialState = (): AuthStateContextState => ({
-  // username: `hufflepuff`,
-  // password: `d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1`,
-  username: "",
-  password: "",
-});
+const initialState = (): AuthStateContextState => ({ username: "" });
 
 const reducer = (
   state: AuthStateContextState = initialState(),
@@ -44,11 +38,8 @@ const reducer = (
   switch (action.type) {
     case AuthActionType.login:
       const { payload } = action;
-      const { username, password } = payload;
-      return {
-        username,
-        password,
-      };
+      const { username } = payload;
+      return { username };
     case AuthActionType.logout:
       return initialState();
     default:
@@ -59,12 +50,12 @@ const reducer = (
 export const useAuthContextState = () => {
   const [{ username }, dispatch] = useReducer(reducer, initialState());
 
-  const login = useCallback((username: string, password: string) => {
-    dispatch(AuthAction.login(username, password));
+  const login = useCallback((username: string) => {
+    dispatch(AuthAction.login(username));
   }, []);
 
   const guestLogin = useCallback(() => {
-    dispatch(AuthAction.login("guest", "guest"));
+    dispatch(AuthAction.login("Guest"));
   }, []);
 
   const logout = useCallback(() => {
@@ -76,14 +67,14 @@ export const useAuthContextState = () => {
 
 interface AuthState {
   username: string;
-  login: (username: string, password: string) => void;
+  login: (username: string) => void;
   logout: () => void;
   guestLogin: () => void;
 }
 
 const authStateInitialState: () => AuthState = () => ({
   username: "",
-  login: (username: string, password: string) => {},
+  login: (username: string) => {},
   logout: () => {},
   guestLogin: () => {},
 });
