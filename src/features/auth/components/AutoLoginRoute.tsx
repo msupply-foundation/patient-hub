@@ -7,10 +7,7 @@ export const AutoLoginRoute: FC<{ path: string }> = ({ path, children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { guestLogin, username } = useAuth();
   const login = async () => {
-    const authenticated = await tryLogin({
-      username: "guest",
-      password: "tonga-guest-road-skin-frisk",
-    });
+        const authenticated = await tryGuestLogin();
     if (authenticated) {
       guestLogin();
     }
