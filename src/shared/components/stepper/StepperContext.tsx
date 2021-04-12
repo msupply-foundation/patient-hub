@@ -77,7 +77,7 @@ const reducer = (
         return {
           ...state,
           currentStep: currentStep + 1,
-          completed: { ...completed, [nextStep]: true },
+          completed: { ...completed, [currentStep]: true },
         };
       }
 
