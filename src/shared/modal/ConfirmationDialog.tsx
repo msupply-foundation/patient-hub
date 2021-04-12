@@ -6,16 +6,15 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import { AppBar } from "../components";
-import { Box, createStyles, makeStyles, Typography } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { Theme } from "../containers/ThemeProvider";
+import { stylesFactory } from "../utils";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    icon: {
-      color: theme.palette.success.main,
-    },
-  })
-);
+const useStyles = stylesFactory((theme: Theme) => ({
+  icon: {
+    color: theme.palette.success.main,
+  },
+}));
 
 interface ConfirmationDialogProps {
   open: boolean;
@@ -51,7 +50,12 @@ export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
         <DialogContentText>{content}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary" autoFocus variant="outlined">
+        <Button
+          onClick={handleClose}
+          color="primary"
+          autoFocus
+          variant="outlined"
+        >
           {confirmButtonText}
         </Button>
       </DialogActions>

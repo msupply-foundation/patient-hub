@@ -1,5 +1,6 @@
-import { Box, useMediaQuery } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
+import { useIsSmallScreen } from "../hooks";
 
 type FieldProps = {
   description?: string;
@@ -8,9 +9,7 @@ type FieldProps = {
 };
 
 export const DescriptionField = (props: FieldProps) => {
-  const isSmallScreen = useMediaQuery((theme: any) =>
-    theme.breakpoints.down("sm")
-  );
+  const isSmallScreen = useIsSmallScreen();
 
   const { description = "", variant = "subtitle2" } = props;
   if (!description) return null;
@@ -24,7 +23,7 @@ export const DescriptionField = (props: FieldProps) => {
       bgcolor="rgb(236, 243, 252)"
       p={isSmallScreen ? 1 : 2}
       m={isSmallScreen ? 1 : 2}
-      style={{borderRadius: 5}}
+      style={{ borderRadius: 5 }}
     >
       {props.description
         ?.split("\n")

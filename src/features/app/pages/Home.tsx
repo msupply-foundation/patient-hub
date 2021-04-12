@@ -1,37 +1,28 @@
-import {
-  Box,
-  Button,
-  createStyles,
-  Divider,
-  Grid,
-  Hidden,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Button, Divider, Grid, Hidden } from "@material-ui/core";
 import { ChevronRight } from "@material-ui/icons";
 
 import { useHistory } from "react-router-dom";
 import { useTranslations } from "../../../shared/hooks/useTranslations";
+import { stylesFactory } from "../../../shared/utils";
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    mainContainer: {
-      paddingRight: 20,
-      paddingLeft: 20,
-      height: "100%",
-    },
-    itemContainer: {
-      justifyContent: "center",
-      display: "flex",
-      alignItems: "center",
-    },
-    img: {
-      display: "flex",
-      marginLeft: "auto",
-      marginRight: "auto",
-      maxWidth: "50%",
-    },
-  })
-);
+const useStyles = stylesFactory({
+  mainContainer: {
+    paddingRight: 20,
+    paddingLeft: 20,
+    height: "100%",
+  },
+  itemContainer: {
+    justifyContent: "center",
+    display: "flex",
+    alignItems: "center",
+  },
+  img: {
+    display: "flex",
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: "50%",
+  },
+});
 
 export const Home = () => {
   const styles = useStyles();

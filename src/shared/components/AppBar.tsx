@@ -8,20 +8,17 @@ import {
 import { FC, ReactElement } from "react";
 import { useHistory } from "react-router-dom";
 import { Icon } from "./icons";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
-import { Theme } from "../../shared/containers/ThemeProvider";
+import { stylesFactory } from "../utils";
 interface AppBarProps {
   RightComponent?: ReactElement | null;
   LeftComponent?: ReactElement | null;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      backgroundColor: theme.palette.menubar.main,
-    },
-  })
-);
+const useStyles = stylesFactory((theme) => ({
+  root: {
+    backgroundColor: theme.palette.menubar.main,
+  },
+}));
 
 const Msupply: FC = () => (
   <Box>
