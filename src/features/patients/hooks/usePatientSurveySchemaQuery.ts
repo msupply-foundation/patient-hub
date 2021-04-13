@@ -16,7 +16,7 @@ export const getPatientSurveySchema = () => {
 
   return axios
     .get<PatientSchemaResponseData[]>(
-      `${url}/api/v4/patient_hub/form_schema?type=PatientSurvey`,
+      `${url}/api/v4/patient_hub/form_schema?type=PatientSurveyWeb`,
       { withCredentials: true }
     )
     .then(({ data }) => {
