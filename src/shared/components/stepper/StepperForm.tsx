@@ -3,14 +3,13 @@ import { Paper } from "@material-ui/core";
 import { stylesFactory } from "../../utils";
 import { JsonSchemaForm } from "../JsonSchemaForm";
 import { StepperContainer } from "./StepperContainer";
-import { useIsSchemaValid } from "../../hooks";
+import { useIsSchemaValid, useStep } from "../../hooks";
 
 interface StepperFormProps {
   uiSchema?: any;
   jsonSchema?: any;
-  formData: any;
-  onChange: (data: { formData: any }) => void;
-  onSubmit: () => void;
+  onSubmit: (data: any) => void;
+  step: number;
 }
 
 const useStyles = stylesFactory({
@@ -27,12 +26,12 @@ const useStyles = stylesFactory({
 export const StepperForm: FC<StepperFormProps> = ({
   uiSchema,
   jsonSchema,
-  formData,
-  onChange,
   onSubmit,
+  step,
 }) => {
   const classes = useStyles();
-  const isValid = useIsSchemaValid(jsonSchema, formData);
+  const { data, setData } = useStep(step);
+  const isValid = useIsSchemaValid(jsonSchema, data);
   const submitRef = useRef<HTMLInputElement | null>(null);
 
   const onNextHook = () => {
@@ -52,10 +51,10 @@ export const StepperForm: FC<StepperFormProps> = ({
         <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
 
         <JsonSchemaForm
-          formData={formData}
+          formData={data}
           jsonSchema={jsonSchema}
           uiSchema={uiSchema}
-          onChange={onChange}
+          onChange={({ formData }: { formData: any }) => setData(formData)}
         >
           <input ref={submitRef} type="submit" className={classes.input} />
         </JsonSchemaForm>

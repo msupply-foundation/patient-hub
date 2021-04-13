@@ -69,9 +69,10 @@ export const JsonSchemaForm: FC<Props> = ({
         // on the validator object.
         validator(newFormData);
 
-        // For errors, only accept a single error and prefer the error with the keyword
+        // For errors, each field can have multiple errors. It is not helpful to spam the user with them all, so
+        // only accept a single error. The loop ensures a preference for the error with the keyword
         // "errorMessage", which can be set on the JSON Schema as a custom user-defined
-        // error message.
+        // error message. Otherwise, the last error in the list of errors for a field is selected.
         const errorLookup: Record<string, string | undefined> = {};
 
         validator.errors?.forEach(({ message, dataPath, keyword }) => {

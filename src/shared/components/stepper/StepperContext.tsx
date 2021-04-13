@@ -1,4 +1,4 @@
-import { createContext, useCallback, useReducer } from "react";
+import { createContext, useCallback, useEffect, useReducer } from "react";
 
 interface StepperContextStateShape {
   labels: string[];
@@ -9,6 +9,9 @@ interface StepperContextStateShape {
   completed: Record<number, boolean>;
   onLastStep: boolean;
   onFirstStep: boolean;
+  data: Record<number, any>;
+  setData: (step: number) => (data: any) => void;
+  reset: () => void;
 }
 
 const stepperContextInitialState = () => ({
@@ -20,12 +23,16 @@ const stepperContextInitialState = () => ({
   labels: [],
   onLastStep: false,
   onFirstStep: false,
+  data: {},
+  setData: (step: number) => (data: any) => {},
+  reset: () => {},
 });
 
 interface StepperInternalStateShape {
   steps: number[];
   currentStep: number;
   completed: Record<number, boolean>;
+  data: Record<number, any>;
 }
 
 const stepperInternalInitialState = (
@@ -34,18 +41,26 @@ const stepperInternalInitialState = (
   steps: getStepsArray(labels.length),
   currentStep: 0,
   completed: {},
+  data: {},
 });
 
 enum StepperInternalActionTypes {
   next = "STEPPER/next",
   back = "STEPPER/back",
   toStep = "STEPPER/toStep",
+  update = "STEPPER/update",
+  reset = "STEPPER/reset",
 }
 
 type StepperInternalAction =
   | { type: StepperInternalActionTypes.next }
   | { type: StepperInternalActionTypes.back }
-  | { type: StepperInternalActionTypes.toStep; payload: { step: number } };
+  | { type: StepperInternalActionTypes.toStep; payload: { step: number } }
+  | { type: StepperInternalActionTypes.reset }
+  | {
+      type: StepperInternalActionTypes.update;
+      payload: { data: object; step: number };
+    };
 
 const next = (): StepperInternalAction => ({
   type: StepperInternalActionTypes.next,
@@ -58,6 +73,15 @@ const back = (): StepperInternalAction => ({
 const toStep = (step: number): StepperInternalAction => ({
   type: StepperInternalActionTypes.toStep,
   payload: { step },
+});
+
+const update = (step: number, data: any): StepperInternalAction => ({
+  type: StepperInternalActionTypes.update,
+  payload: { step, data },
+});
+
+const reset = (): StepperInternalAction => ({
+  type: StepperInternalActionTypes.reset,
 });
 
 const withinRange = (min: number, max: number, value: number) =>
@@ -104,6 +128,33 @@ const reducer = (
 
       return state;
     }
+
+    case StepperInternalActionTypes.update: {
+      const { data } = state;
+      const { step, data: updatedData } = action.payload;
+      const newData = { ...data, [step]: updatedData };
+
+      return { ...state, data: newData };
+    }
+
+    case StepperInternalActionTypes.reset: {
+      const { data } = state;
+
+      const newData: Record<number, any> = Object.keys(data).reduce(
+        (acc, _, i) => ({ ...acc, [i]: {} }),
+        {}
+      );
+
+      return {
+        ...state,
+        data: newData,
+        currentStep: 0,
+        completed: {} as Record<number, boolean>,
+        onLastStep: false,
+        onFirstStep: true,
+      };
+    }
+
     default:
       return state;
   }
@@ -113,7 +164,7 @@ const getStepsArray = (steps: number) =>
   Array.from({ length: steps }).map((_, i) => i);
 
 export const useStepperInternalState = (labels: string[]) => {
-  const [{ currentStep, completed }, dispatch] = useReducer(
+  const [{ currentStep, completed, data }, dispatch] = useReducer(
     reducer,
     stepperInternalInitialState(labels)
   );
@@ -133,7 +184,23 @@ export const useStepperInternalState = (labels: string[]) => {
   const onLastStep = currentStep === labels?.length - 1;
   const onFirstStep = currentStep === 0;
 
+  useEffect(() => {
+    labels.forEach((_, i) => {
+      dispatch(update(i, {}));
+    });
+  }, [labels]);
+
+  const setData = (step: number) => (data: any) => {
+    dispatch(update(step, data));
+  };
+
+  const resetState = () => {
+    dispatch(reset());
+  };
+
   return {
+    setData,
+    data,
     currentStep,
     next: nextStep,
     back: prevStep,
@@ -142,6 +209,7 @@ export const useStepperInternalState = (labels: string[]) => {
     onLastStep,
     onFirstStep,
     labels,
+    reset: resetState,
   };
 };
 
