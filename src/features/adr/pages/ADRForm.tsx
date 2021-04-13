@@ -5,6 +5,7 @@ import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
 import { stylesFactory } from "../../../shared/utils";
 import { useIsSchemaValid, useLoadingSpinner } from "../../../shared/hooks";
 import { useSubmitADR } from "./hooks";
+import { Box } from "@material-ui/core";
 
 const useStyles = stylesFactory({
   img: {
@@ -63,6 +64,8 @@ export const ADRForm: FC = () => {
       </JsonSchemaForm>
     </Paper>
   ) : (
-    <Skeleton height="100vh" variant="rectangular" />
+    <Box maxWidth={600} marginLeft="auto" marginRight="auto">
+      <Skeleton height="100vh" variant="rectangular" />
+    </Box>
   );
 };
