@@ -1,5 +1,6 @@
 import { Box, Button, Grid, MobileStepper, Paper } from "@material-ui/core";
-import { FC, useContext } from "react";
+import { FC, useContext, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { stylesFactory } from "../../utils";
 import { StepperContext } from "./StepperContext";
 
@@ -47,6 +48,8 @@ export const StepperContainer: FC<StepperContainerProps> = ({
     }
   };
 
+  const [ready, setReady] = useState(false);
+
   return (
     <>
       <Grid container justifyContent="center">
@@ -70,13 +73,20 @@ export const StepperContainer: FC<StepperContainerProps> = ({
                 >
                   BACK
                 </Button>
-                <Button
-                  disabled={!canContinue}
-                  onClick={onLastStep ? submitCallback : onNext}
-                  variant="outlined"
-                >
-                  {onLastStep ? "SUBMIT" : "NEXT"}
-                </Button>
+                {!ready && onLastStep ? (
+                  <ReCAPTCHA
+                    sitekey="6LeFCagaAAAAAM3_suPeXkMLmY77IDsy5f4s-fto"
+                    onChange={(val) => setReady(true)}
+                  />
+                ) : (
+                  <Button
+                    disabled={!canContinue}
+                    onClick={onLastStep ? submitCallback : onNext}
+                    variant="outlined"
+                  >
+                    {onLastStep ? "SUBMIT" : "NEXT"}
+                  </Button>
+                )}
               </Box>
             </Paper>
           </Box>
