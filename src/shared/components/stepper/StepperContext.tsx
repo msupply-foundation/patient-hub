@@ -1,4 +1,4 @@
-import { createContext, FC, useCallback, useReducer } from "react";
+import { createContext, useCallback, useReducer } from "react";
 
 interface StepperContextStateShape {
   labels: string[];
@@ -7,6 +7,8 @@ interface StepperContextStateShape {
   back: () => void;
   toStep: (step: number) => void;
   completed: Record<number, boolean>;
+  onLastStep: boolean;
+  onFirstStep: boolean;
 }
 
 const stepperContextInitialState = () => ({
@@ -16,6 +18,8 @@ const stepperContextInitialState = () => ({
   toStep: () => {},
   completed: {},
   labels: [],
+  onLastStep: false,
+  onFirstStep: false,
 });
 
 interface StepperInternalStateShape {
@@ -73,7 +77,7 @@ const reducer = (
         return {
           ...state,
           currentStep: currentStep + 1,
-          completed: { ...completed, [nextStep]: true },
+          completed: { ...completed, [currentStep]: true },
         };
       }
 
@@ -126,12 +130,17 @@ export const useStepperInternalState = (labels: string[]) => {
     dispatch(toStep(step));
   }, []);
 
+  const onLastStep = currentStep === labels?.length - 1;
+  const onFirstStep = currentStep === 0;
+
   return {
     currentStep,
     next: nextStep,
     back: prevStep,
     toStep: toSpecificStep,
     completed,
+    onLastStep,
+    onFirstStep,
     labels,
   };
 };

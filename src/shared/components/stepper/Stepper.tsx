@@ -16,10 +16,7 @@ const useStyles = stylesFactory({
   paper: { padding: 20, marginBottom: 20 },
 });
 
-export const PatientStepper: FC<{ labels: string[] }> = ({
-  children,
-  labels,
-}) => {
+export const Stepper: FC<{ labels: string[] }> = ({ children, labels }) => {
   const isSmallScreen = useIsSmallScreen();
   const classes = useStyles();
   const contextState = useStepperInternalState(labels);
@@ -27,26 +24,34 @@ export const PatientStepper: FC<{ labels: string[] }> = ({
 
   return (
     <StepperContext.Provider value={contextState}>
-      {!isSmallScreen ? (
-        <Grid container justifyContent="center">
-          <Grid item xs={12} md={8}>
-            <Box display={{ xs: "none", sm: "block" }}>
-              <Paper className={classes.paper}>
-                <MuiStepper activeStep={currentStep} style={{ flex: 1 }}>
-                  {labels.map((label, i) => (
-                    <Step completed={completed[i]}>
-                      <StepButton onClick={() => toStep(i)}>
-                        <StepLabel>{label}</StepLabel>
-                      </StepButton>
-                    </Step>
-                  ))}
-                </MuiStepper>
-              </Paper>
-            </Box>
+      <Box m={2}>
+        {!isSmallScreen ? (
+          <Grid container justifyContent="center">
+            <Grid item xs={12} md={8}>
+              <Box display={{ xs: "none", sm: "block" }}>
+                <Paper className={classes.paper}>
+                  <MuiStepper activeStep={currentStep} style={{ flex: 1 }}>
+                    {labels.map((label, i) => (
+                      <Step key={`${label}${i}`} completed={completed[i]}>
+                        <StepButton onClick={() => toStep(i)}>
+                          <StepLabel>{label}</StepLabel>
+                        </StepButton>
+                      </Step>
+                    ))}
+                  </MuiStepper>
+                </Paper>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      ) : null}
-      {React.Children.toArray(children)[contextState.currentStep]}
+        ) : null}
+        {React.Children.toArray(children).map((child, i) => {
+          return (
+            <Box key={i} display={i === currentStep ? "block" : "none"}>
+              {child}
+            </Box>
+          );
+        })}
+      </Box>
     </StepperContext.Provider>
   );
 };
