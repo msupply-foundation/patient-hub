@@ -1,45 +1,71 @@
-import { Box, Button, CircularProgress, Paper } from "@material-ui/core";
+import { Button, Paper, Skeleton } from "@material-ui/core";
 import { JsonSchemaForm } from "../../../shared/components";
-import { FC } from "react";
+import { FC, useRef, useState } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
+import { stylesFactory } from "../../../shared/utils";
+import { useIsSchemaValid, useLoadingSpinner } from "../../../shared/hooks";
+import { useSubmitADR } from "./hooks";
+import { Box } from "@material-ui/core";
 
-const SubmitForm = ({ formData }: { formData: any }, e: any) => {
-  console.log("Data submitted: ", formData);
-};
+const useStyles = stylesFactory({
+  img: {
+    display: "flex",
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: "100%",
+  },
+  input: { display: "none" },
+  paper: {
+    padding: 20,
+    maxWidth: 600,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+});
 
 export const ADRForm: FC = () => {
+  const classes = useStyles();
+  const submitRef = useRef<HTMLButtonElement | null>(null);
   const { isLoading, data } = useADRSchemaQuery();
+  const [formData, setFormData] = useState({});
+  const { toggleLoading } = useLoadingSpinner();
+  const isValid = useIsSchemaValid(data?.jsonSchema ?? {}, formData);
+  const { submit } = useSubmitADR();
 
-  return (
-    <Paper
-      style={{
-        marginLeft: "auto",
-        marginRight: "auto",
-        maxWidth: 600,
-        padding: 50,
-      }}
-    >
-      {!isLoading ? (
-        <JsonSchemaForm
-          jsonSchema={data?.jsonSchema ?? {}}
-          uiSchema={data?.uiSchema ?? {}}
-          onSubmit={SubmitForm}
+  const onSubmit = async () => {
+    if (!isValid) {
+      submitRef.current?.click();
+    } else {
+      toggleLoading();
+      await submit(formData);
+      toggleLoading();
+    }
+  };
+
+  return !isLoading ? (
+    <Paper className={classes.paper}>
+      <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
+
+      <JsonSchemaForm
+        formData={formData}
+        jsonSchema={data?.jsonSchema ?? {}}
+        uiSchema={data?.uiSchema ?? {}}
+        onChange={({ formData }: { formData: any }) => setFormData(formData)}
+      >
+        <Button
+          variant="contained"
+          ref={submitRef}
+          type="submit"
+          className={classes.input}
+          onClick={onSubmit}
         >
-          <Button variant="contained" color="primary" type="submit">
-            Submit
-          </Button>
-        </JsonSchemaForm>
-      ) : (
-        <Box
-          height="50vh"
-          justifyContent="center"
-          alignItems="center"
-          flex={1}
-          display="flex"
-        >
-          <CircularProgress />
-        </Box>
-      )}
+          Submit
+        </Button>
+      </JsonSchemaForm>
     </Paper>
+  ) : (
+    <Box maxWidth={600} marginLeft="auto" marginRight="auto">
+      <Skeleton height="100vh" variant="rectangular" />
+    </Box>
   );
 };

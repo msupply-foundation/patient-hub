@@ -6,9 +6,9 @@ import { AppBar, Footer, AccountStatus } from "./shared/components";
 import { useConfig, useTranslations } from "./shared/hooks";
 import { LoginPromptingRoute } from "./features/auth/components/LoginPromptingRoute";
 import { AutoLoginRoute } from "./features/auth/components/AutoLoginRoute";
-import { PatientForm } from "./features/patients/pages/PatientForm";
 import { ADRForm } from "./features/adr/pages/ADRForm";
 import { Home } from "./features/app/pages/Home";
+import { PatientRegistration } from "./features/patients/pages/PatientRegistration";
 
 export const App = () => {
   const { messages } = useTranslations();
@@ -16,11 +16,11 @@ export const App = () => {
   const { autologin = { patients: false } } = config;
   const patients = autologin.patients ? (
     <AutoLoginRoute path="/patients">
-      <PatientForm />
+      <PatientRegistration />
     </AutoLoginRoute>
   ) : (
     <LoginPromptingRoute path="/patients">
-      <PatientForm />
+      <PatientRegistration />
     </LoginPromptingRoute>
   );
   return (

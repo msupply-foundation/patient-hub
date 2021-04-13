@@ -6,6 +6,7 @@ import { useAuth } from "../../../auth/hooks/useAuth";
 interface ADRResponseData {
   ui_schema: Record<string, string>;
   json_schema: JSONSchema7;
+  ID: string;
 }
 
 export const getAdrSchema = () => {
@@ -19,9 +20,10 @@ export const getAdrSchema = () => {
       withCredentials: true,
     })
     .then(({ data }) => {
-      const { ui_schema: uiSchema, json_schema: jsonSchema } = data[0] ?? {};
+      const { ID: id, ui_schema: uiSchema, json_schema: jsonSchema } =
+        data[0] ?? {};
 
-      return { uiSchema, jsonSchema };
+      return { id, uiSchema, jsonSchema };
     });
 };
 
