@@ -6,3 +6,5 @@ export { useLoadingSpinner } from "./useLoadingSpinner";
 export { useIsSmallScreen } from "./useIsSmallScreen";
 export { useIsSchemaValid } from "./useSchemaValidator";
 export { useSchemaValidator } from "./useSchemaValidator";
+export { useStep } from "./useStepper";
+export { useStepper } from "./useStepper";

@@ -29,6 +29,7 @@
     "json-schema": "^0.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-google-recaptcha": "^2.1.0",
     "react-intl": "^5.15.5",
     "react-query": "^3.13.4",
     "react-router-dom": "^5.2.0",
@@ -63,6 +64,7 @@
   "homepage": "patient_hub",
   "devDependencies": {
     "@types/ajv-errors": "^1.0.3",
-    "@types/json-pointer": "^1.0.30"
+    "@types/json-pointer": "^1.0.30",
+    "@types/react-google-recaptcha": "^2.1.0"
   }
 }

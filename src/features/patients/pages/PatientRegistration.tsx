@@ -12,7 +12,6 @@ import { StepperForm } from "../../../shared/components/stepper/StepperForm";
 import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 export const PatientRegistration: FC = () => {
-  const [formData, setFormData] = useState<Record<number, any>>({});
   const { patientEvent } = usePatientEvent();
   const { toggleLoading } = useLoadingSpinner();
   const { open, close } = useModal(ModalKey.confirm);
@@ -29,26 +28,22 @@ export const PatientRegistration: FC = () => {
 
   const schemasLoading = patientSchemaIsLoading && patientSurveySchemaIsLoading;
 
-  const onChange = (index: number) => ({ formData }: { formData: any }) => {
-    setFormData((state) => ({ ...state, [index]: formData }));
-  };
-
   const { createPatient, createNameNote } = usePatientApi();
 
-  const onSubmit = () => {
+  const handleClose = () => {
+    close();
+  };
+
+  const onSubmit = async (data: any) => {
     toggleLoading();
-    createPatient(formData[0])
-      .then(({ data }) =>
-        createNameNote(data.ID, patientEvent?.id || "", formData[1])
-      )
-      .then(() => {
-        open({
-          handleClose: close,
-          content:
-            "Thank you for submitting your details and helping in the fight against COVID-19!",
-        });
-        toggleLoading();
-      });
+    const patientData = await createPatient(data[0]);
+    await createNameNote(patientData.data.ID, patientEvent?.id || "", data[1]);
+    toggleLoading();
+    open({
+      handleClose,
+      content:
+        "Thank you for submitting your details and helping in the fight against COVID-19!",
+    });
   };
 
   return (
@@ -56,17 +51,16 @@ export const PatientRegistration: FC = () => {
       {!schemasLoading ? (
         [
           <StepperForm
+            step={0}
             onSubmit={onSubmit}
-            onChange={onChange(0)}
-            formData={formData[0]}
             key="patient"
             jsonSchema={patientSchema?.jsonSchema ?? {}}
             uiSchema={patientSchema?.uiSchema ?? {}}
           />,
+
           <StepperForm
+            step={1}
             onSubmit={onSubmit}
-            onChange={onChange(1)}
-            formData={formData[1]}
             key="survey"
             jsonSchema={patientSurveySchema?.jsonSchema ?? {}}
             uiSchema={patientSurveySchema?.uiSchema ?? {}}
