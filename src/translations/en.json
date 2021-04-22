@@ -12,5 +12,14 @@
   "recordAnADR": "Record an adverse drug effect",
   "registerPatient": "Register a new patient",
   "pageNotFound": "Page Not Found",
-  "invalidUsernameOrPassword": "Invalid username or password"
+  "invalidUsernameOrPassword": "Invalid username or password",
+  "submit": "Submit",
+  "thanks": "Thank you for submitting your details and helping in the fight against COVID-19!",
+  "patientDetails": "Patient details",
+  "extraInfo": "Extra information",
+  "back": "Back",
+  "next": "Next",
+  "patientHub": "Patient Hub",
+  "success": "Success!",
+  "ok": "Ok"
 }

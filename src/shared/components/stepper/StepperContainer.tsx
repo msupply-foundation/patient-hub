@@ -1,7 +1,7 @@
 import { Box, Button, Grid, MobileStepper, Paper } from "@material-ui/core";
 import { FC, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { useStepper } from "../../hooks";
+import { useStepper, useTranslations } from "../../hooks";
 import { stylesFactory } from "../../utils";
 
 const useStyles = stylesFactory({
@@ -30,7 +30,7 @@ export const StepperContainer: FC<StepperContainerProps> = ({
     data,
     reset,
   } = useStepper();
-
+  const { messages } = useTranslations();
   const classes = useStyles();
 
   const onNext = () => {
@@ -70,7 +70,7 @@ export const StepperContainer: FC<StepperContainerProps> = ({
                   variant="outlined"
                   style={{ display: onFirstStep ? "none" : "block" }}
                 >
-                  BACK
+                  {messages.back}
                 </Button>
                 {!ready && onLastStep ? (
                   <ReCAPTCHA
@@ -83,7 +83,7 @@ export const StepperContainer: FC<StepperContainerProps> = ({
                     onClick={onLastStep ? submitCallback : onNext}
                     variant="outlined"
                   >
-                    {onLastStep ? "SUBMIT" : "NEXT"}
+                    {onLastStep ? messages.submit : messages.next}
                   </Button>
                 )}
               </Box>
@@ -104,7 +104,7 @@ export const StepperContainer: FC<StepperContainerProps> = ({
               onClick={onLastStep ? submitCallback : onNext}
               variant="outlined"
             >
-              {onLastStep ? "SUBMIT" : "NEXT"}
+              {onLastStep ? messages.submit : messages.next}
             </Button>
           }
           backButton={

@@ -3,7 +3,11 @@ import { JsonSchemaForm } from "../../../shared/components";
 import { FC, useRef, useState } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
 import { stylesFactory } from "../../../shared/utils";
-import { useIsSchemaValid, useLoadingSpinner } from "../../../shared/hooks";
+import {
+  useIsSchemaValid,
+  useLoadingSpinner,
+  useTranslations,
+} from "../../../shared/hooks";
 import { useSubmitADR } from "./hooks";
 import { Box } from "@material-ui/core";
 
@@ -24,6 +28,7 @@ const useStyles = stylesFactory({
 });
 
 export const ADRForm: FC = () => {
+  const { messages } = useTranslations();
   const classes = useStyles();
   const submitRef = useRef<HTMLButtonElement | null>(null);
   const { isLoading, data } = useADRSchemaQuery();
@@ -59,7 +64,7 @@ export const ADRForm: FC = () => {
           className={classes.input}
           onClick={onSubmit}
         >
-          Submit
+          {messages.submit}
         </Button>
       </JsonSchemaForm>
     </Paper>
