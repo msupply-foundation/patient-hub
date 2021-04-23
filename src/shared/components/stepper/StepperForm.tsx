@@ -20,7 +20,12 @@ const useStyles = stylesFactory({
     maxWidth: "100%",
   },
   input: { display: "none" },
-  paper: { padding: 20 },
+  paper: {
+    padding: 20,
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "flex-end",
+  },
 });
 
 export const StepperForm: FC<StepperFormProps> = ({
