@@ -2,7 +2,7 @@
 
 import { Switch, Route } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
-import { AppBar, Footer, AccountStatus } from "./shared/components";
+import { AppBar, AccountStatus } from "./shared/components";
 import { useConfig, useTranslations } from "./shared/hooks";
 import { LoginPromptingRoute } from "./features/auth/components/LoginPromptingRoute";
 import { AutoLoginRoute } from "./features/auth/components/AutoLoginRoute";
