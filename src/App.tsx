@@ -43,8 +43,6 @@ export const App = () => {
         </Switch>
         <Box height="30px" />
       </Box>
-
-      <Footer />
     </>
   );
 };
