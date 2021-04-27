@@ -6,12 +6,17 @@ import {
   usePatientSurveySchemaQuery,
   usePatientSchemaQuery,
 } from "../hooks";
-import { useLoadingSpinner, useModal } from "../../../shared/hooks";
+import {
+  useLoadingSpinner,
+  useModal,
+  useTranslations,
+} from "../../../shared/hooks";
 import { Stepper } from "../../../shared/components/stepper/Stepper";
 import { StepperForm } from "../../../shared/components/stepper/StepperForm";
 import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 export const PatientRegistration: FC = () => {
+  const { messages } = useTranslations();
   const { patientEvent } = usePatientEvent();
   const { toggleLoading } = useLoadingSpinner();
   const { open, close } = useModal(ModalKey.confirm);
@@ -41,13 +46,14 @@ export const PatientRegistration: FC = () => {
     toggleLoading();
     open({
       handleClose,
-      content:
-        "Thank you for submitting your details and helping in the fight against COVID-19!",
+      content: messages.thanks,
     });
   };
 
   return (
-    <Stepper labels={["Patient Details", "Extra Information"]}>
+    <Stepper
+      labels={[messages.patientDetails as string, messages.extraInfo as string]}
+    >
       {!schemasLoading ? (
         [
           <StepperForm

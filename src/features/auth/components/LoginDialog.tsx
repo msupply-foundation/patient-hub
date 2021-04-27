@@ -75,7 +75,7 @@ export const LoginDialog: FC<LoginDialogProps> = ({
       <Grid container direction="column">
         <Grid item xs={12}>
           <AppBar
-            LeftComponent={<Typography>Login</Typography>}
+            LeftComponent={<Typography>{messages.login}</Typography>}
             RightComponent={
               canExit ? (
                 <IconButton onClick={handleClose}>

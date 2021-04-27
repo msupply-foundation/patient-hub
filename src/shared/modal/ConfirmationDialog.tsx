@@ -9,6 +9,7 @@ import { AppBar } from "../components";
 import { Box, Typography } from "@material-ui/core";
 import { Theme } from "../containers/ThemeProvider";
 import { stylesFactory } from "../utils";
+import { useTranslations } from "../hooks";
 
 const useStyles = stylesFactory((theme: Theme) => ({
   icon: {
@@ -29,8 +30,9 @@ export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
   handleClose,
   title,
   content,
-  confirmButtonText = "Ok",
+  confirmButtonText,
 }) => {
+  const { messages } = useTranslations();
   const classes = useStyles();
 
   return (
@@ -56,7 +58,7 @@ export const ConfirmationDialog: FC<ConfirmationDialogProps> = ({
           autoFocus
           variant="outlined"
         >
-          {confirmButtonText}
+          {confirmButtonText ?? messages.ok}
         </Button>
       </DialogActions>
     </Dialog>

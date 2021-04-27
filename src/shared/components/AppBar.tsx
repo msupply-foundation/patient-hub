@@ -9,6 +9,7 @@ import { FC, ReactElement } from "react";
 import { useHistory } from "react-router-dom";
 import { Icon } from "./icons";
 import { stylesFactory } from "../utils";
+import { useTranslations } from "../hooks";
 interface AppBarProps {
   RightComponent?: ReactElement | null;
   LeftComponent?: ReactElement | null;
@@ -20,15 +21,18 @@ const useStyles = stylesFactory((theme) => ({
   },
 }));
 
-const Msupply: FC = () => (
-  <Box>
-    <Box flexDirection="row" display="flex">
-      <Typography color="primary">m</Typography>
-      <Typography>Supply</Typography>
+const Msupply: FC = () => {
+  const { messages } = useTranslations();
+  return (
+    <Box>
+      <Box flexDirection="row" display="flex">
+        <Typography color="primary">m</Typography>
+        <Typography>Supply</Typography>
+      </Box>
+      <Typography variant="caption">{messages.patientHub}</Typography>
     </Box>
-    <Typography variant="caption">Patient Hub</Typography>
-  </Box>
-);
+  );
+};
 
 export const AppBar: FC<AppBarProps> = ({
   RightComponent = null,

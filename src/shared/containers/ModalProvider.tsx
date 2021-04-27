@@ -5,6 +5,7 @@ import {
   LoginDialog,
   LoginDialogProps,
 } from "../../features/auth/components/LoginDialog";
+import { useTranslations } from "../hooks";
 import { LoadingSpinner, ConfirmationDialog } from "../modal";
 
 export enum ModalKey {
@@ -109,6 +110,7 @@ export const ModalProvider: FC = (props) => {
     reducer,
     initialState()
   );
+  const { messages } = useTranslations();
 
   const history = useHistory();
 
@@ -153,7 +155,7 @@ export const ModalProvider: FC = (props) => {
       />
       <ConfirmationDialog
         open={modalKey === ModalKey.confirm && isOpen}
-        title="Success!"
+        title={messages.success as string}
         handleClose={closeModal}
         {...modalProps}
       />
