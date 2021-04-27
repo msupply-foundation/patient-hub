@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Skeleton } from "@material-ui/core";
 import {
   usePatientApi,

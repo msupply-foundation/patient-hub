@@ -30,7 +30,7 @@ export const Home = () => {
   const history = useHistory();
 
   return (
-    <Box height="calc(100vh - 30px - 72px - 30px - 30px)">
+    <Box height="calc(100vh - 4px - 72px - 30px - 30px)">
       <Grid container className={styles.mainContainer}>
         <Grid item sm={5} xs={12} className={styles.itemContainer}>
           <img

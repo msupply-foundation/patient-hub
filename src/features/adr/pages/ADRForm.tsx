@@ -14,10 +14,13 @@ const useStyles = stylesFactory({
     marginRight: "auto",
     maxWidth: "100%",
   },
-  input: { display: "none" },
+
   paper: {
     padding: 20,
     maxWidth: 600,
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "flex-end",
     marginLeft: "auto",
     marginRight: "auto",
   },
@@ -56,7 +59,6 @@ export const ADRForm: FC = () => {
           variant="contained"
           ref={submitRef}
           type="submit"
-          className={classes.input}
           onClick={onSubmit}
         >
           Submit
