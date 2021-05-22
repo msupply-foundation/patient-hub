@@ -1,5 +1,4 @@
-import { Button, Paper, Skeleton } from "@material-ui/core";
-import { JsonSchemaForm } from "../../../shared/components";
+import { Skeleton } from "@material-ui/core";
 import { FC, useRef, useState } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
 import { stylesFactory } from "../../../shared/utils";
@@ -10,6 +9,9 @@ import {
 } from "../../../shared/hooks";
 import { useSubmitADR } from "./hooks";
 import { Box } from "@material-ui/core";
+import { Stepper } from "../../../shared/components/stepper/Stepper";
+import { StepperForm } from "../../../shared/components/stepper/StepperForm";
+import { PatientForm } from './PatientForm';
 
 const useStyles = stylesFactory({
   img: {
@@ -50,29 +52,44 @@ export const ADRForm: FC = () => {
     }
   };
 
-  return !isLoading ? (
-    <Paper className={classes.paper}>
-      <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
+  return  <Stepper
+  labels={[messages.patientDetails as string, messages.aefi as string]}
+>
+  {!isLoading ? (
+    [
+      <PatientForm
+        step={0}
+        onSubmit={onSubmit}
+        key="patient"
+      />,
 
-      <JsonSchemaForm
-        formData={formData}
+      <StepperForm
+        step={1}
+        onSubmit={onSubmit}
+        key="adr"
         jsonSchema={data?.jsonSchema ?? {}}
         uiSchema={data?.uiSchema ?? {}}
-        onChange={({ formData }: { formData: any }) => setFormData(formData)}
-      >
-        <Button
-          variant="contained"
-          ref={submitRef}
-          type="submit"
-          onClick={onSubmit}
-        >
-          {messages.submit}
-        </Button>
-      </JsonSchemaForm>
-    </Paper>
+      />,
+    ]
+      // <JsonSchemaForm
+      //   formData={formData}
+      //   jsonSchema={data?.jsonSchema ?? {}}
+      //   uiSchema={data?.uiSchema ?? {}}
+      //   onChange={({ formData }: { formData: any }) => setFormData(formData)}
+      // >
+      //   <Button
+      //     variant="contained"
+      //     ref={submitRef}
+      //     type="submit"
+      //     onClick={onSubmit}
+      //   >
+      //     {messages.submit}
+      //   </Button>
+      // </JsonSchemaForm>
   ) : (
     <Box maxWidth={600} marginLeft="auto" marginRight="auto">
       <Skeleton height="100vh" variant="rectangular" />
     </Box>
-  );
+  )}
+  </Stepper>
 };
