@@ -19,6 +19,7 @@ interface PatientFormProps {
 }
 
 const useStyles = stylesFactory({
+  fieldContainer: {paddingBottom: 10},
   img: {
     display: "flex",
     marginLeft: "auto",
@@ -52,7 +53,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const { data, setData } = useStep(step);
   //   const submitRef = useRef<HTMLInputElement | null>(null);
   const [searchTerm, setSearchTerm] = useState(initialSearchParams);
-  const onNextHook = () => !!data?.ID;
+  const onNextHook = () => !!data?.patient?.ID;
   const lookupPatients = (event: MouseEvent) => searchOnline(searchTerm);
   const onFirstNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm({ ...searchTerm, firstName: event.target.value });
@@ -84,42 +85,47 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
       onNextHook={onNextHook}
     >
       <Paper className={classes.paper}>
+        <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
         <Grid
           container
           direction="row"
-          alignItems="stretch"
-          justifyContent="flex-start"
+          justifyContent="space-around"
         >
           <Grid item>
-            <img
-              className={classes.img}
-              alt="logo"
-              src="/patient_hub/logo.png"
-            />
+          <Grid container direction="column" alignItems="stretch">
+            <Grid item className={classes.fieldContainer}>
+              <TextField
+                label="First name"
+                fullWidth
+                onChange={onFirstNameChange}
+              >
+                First name
+              </TextField>
+            </Grid>
+            <Grid item className={classes.fieldContainer}>
+              <TextField
+                label="Last name"
+                fullWidth
+                onChange={onLastNameChange}
+              >
+                Last name
+              </TextField>
+            </Grid>
+            <Grid item className={classes.fieldContainer}>
+              <TextField label="Date of birth" fullWidth onChange={onDoBChange}>
+                Date of Birth
+              </TextField>
+            </Grid>
+            <Grid item alignSelf="flex-end" className={classes.fieldContainer}>
+              <Button
+                variant="outlined"
+                onClick={lookupPatients}
+                disabled={!searchTerm || loading}
+              >
+                Lookup
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item>
-            <TextField
-              label="First name"
-              fullWidth
-              onChange={onFirstNameChange}
-            >
-              First name
-            </TextField>
-            <TextField label="Last name" fullWidth onChange={onLastNameChange}>
-              Last name
-            </TextField>
-            <TextField label="Date of birth" fullWidth onChange={onDoBChange}>
-              Date of Birth
-            </TextField>
-          </Grid>
-          <Grid>
-            <Button
-              variant="outlined"
-              onClick={lookupPatients}
-              disabled={!searchTerm || loading}
-            >
-              Lookup
-            </Button>
           </Grid>
           <Grid item>
             <PatientList
@@ -127,10 +133,11 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
               selectedId={data?.patient?.ID}
               onSelect={onSelect}
             />
-          </Grid>
-          <Grid className={classes.loadingIndicator}>
+            <Grid className={classes.loadingIndicator}>
             {loading && <CircularProgress size={20} />}
           </Grid>
+          </Grid>
+          
         </Grid>
       </Paper>
     </StepperContainer>
