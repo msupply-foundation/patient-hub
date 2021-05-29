@@ -7,6 +7,7 @@ import {
   TextField,
   Grid,
 } from "@material-ui/core";
+import { Waypoint } from 'react-waypoint';
 import { PatientList } from "../components/PatientList";
 
 import { stylesFactory } from "../../../shared/utils";
@@ -68,16 +69,22 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const {
     data: patientData,
     error,
-    gettingMore,
+    noMore,
     loading,
     searchedWithNoResults,
     searchOnline,
+    searchMore,
   } = usePatientLookup();
 
   const onSelect = (patient: Patient) => {
     const { ID, name } = patient;
     setData({ patient: { ID, name } });
   };
+
+  const onWaypoint = (x: any)=> { 
+    if (noMore || loading) return;
+    searchMore(searchTerm);
+  }
 
   return (
     <StepperContainer
@@ -136,11 +143,14 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
             {error ? (
               <Alert severity="error">{error.message}</Alert>
             ) : (
+              <>
               <PatientList
-                data={patientData?.data || []}
+                data={patientData || []}
                 selectedId={data?.patient?.ID}
                 onSelect={onSelect}
               />
+              <Waypoint onPositionChange={onWaypoint} />
+              </>
             )}
             <Grid className={classes.loadingIndicator}>
               {loading && <CircularProgress size={20} />}

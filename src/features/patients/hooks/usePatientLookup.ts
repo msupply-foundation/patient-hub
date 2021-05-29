@@ -5,9 +5,8 @@ import axios, { AxiosResponse } from "axios";
 // import { useFetch } from "./useFetch";
 // import { useThrottled } from "./useThrottled";
 import { getPatientUrl } from "../../../shared/utils";
-import { TypeAssertion } from "typescript";
 
-const BATCH_SIZE = 50;
+const BATCH_SIZE = 5;
 
 enum ParameterKeys {
   first = "first_name",
@@ -45,7 +44,6 @@ interface LookupState {
   loading: boolean;
   error: boolean;
   searchedWithNoResults: boolean;
-  gettingMore: boolean;
   noMore: boolean;
   limit: number;
   offset: number;
@@ -56,7 +54,6 @@ const initialState = (initialValue = []): LookupState => ({
   loading: false,
   error: false,
   searchedWithNoResults: false,
-  gettingMore: false,
   noMore: true,
   limit: BATCH_SIZE,
   offset: 0,
@@ -107,12 +104,17 @@ type LookupActionShapes =
     };
 
 interface LookupActions {
+  addMore: (data: AxiosResponse<any>) => LookupActionShapes;
   error: (error: any) => LookupActionShapes;
   noResult: () => LookupActionShapes;
   success: (data: AxiosResponse<any>) => LookupActionShapes;
 }
 
 const LookupAction: LookupActions = {
+  addMore: (data: AxiosResponse<any>) => ({
+    type: LookupActionType.addMore,
+    payload: { data },
+  }),
   error: (error) => ({ type: LookupActionType.error, payload: { error } }),
   noResult: () => ({ type: LookupActionType.noResults }),
   success: (data) => ({ type: LookupActionType.success, payload: { data } }),
@@ -135,11 +137,12 @@ const reducer = (state: LookupState, action: any) => {
 
       return {
         ...state,
-        data: data ?? [],
+        data: data?.data ?? [],
         loading: false,
         searchedWithNoResults: false,
       };
     }
+
     case LookupActionType.start: {
       const { loading } = state;
 
@@ -153,6 +156,7 @@ const reducer = (state: LookupState, action: any) => {
         noMore: false,
       };
     }
+
     case LookupActionType.noResults: {
       return {
         ...state,
@@ -170,7 +174,7 @@ const reducer = (state: LookupState, action: any) => {
     }
 
     case LookupActionType.gettingMore: {
-      return { ...state, gettingMore: true };
+      return { ...state, loading: true };
     }
 
     case LookupActionType.addMore: {
@@ -178,14 +182,18 @@ const reducer = (state: LookupState, action: any) => {
       const { data } = payload;
 
       const { offset, data: oldData } = state;
-      //   const newData = unionBy(data, oldData, "id");
       const newOffset = offset + BATCH_SIZE;
 
-      return { ...state, data: data, offset: newOffset, gettingMore: false };
+      return {
+        ...state,
+        data: [...oldData, ...data.data],
+        offset: newOffset,
+        loading: false,
+      };
     }
 
     case LookupActionType.noMore: {
-      return { ...state, gettingMore: false, noMore: true };
+      return { ...state, noMore: true, loading: false };
     }
 
     case LookupActionType.clear: {
@@ -245,14 +253,13 @@ const getPatientQueryString = ({
       value: dateOfBirth,
       type: PARAMETERS.dateOfBirth.type,
     },
-    // { key: PARAMETERS.offset.key, value: offset, type: PARAMETERS.offset.type },
-    // { key: PARAMETERS.limit.key, value: limit, type: PARAMETERS.limit.type },
+    { key: PARAMETERS.offset.key, value: offset, type: PARAMETERS.offset.type },
+    { key: PARAMETERS.limit.key, value: limit, type: PARAMETERS.limit.type },
   ];
   return getQueryString(queryParams);
 };
 
 export const getPatientRequestUrl = (params: any) => {
-  console.info("params", params);
   return `${getPatientUrl()}?${getPatientQueryString(params)}`;
 };
 
@@ -261,42 +268,44 @@ export const getPatientRequestUrl = (params: any) => {
  */
 export const usePatientLookup = () => {
   const [
-    {
-      data,
-      loading,
-      searchedWithNoResults,
-      error,
-      limit,
-      offset,
-      gettingMore,
-      noMore,
-    },
+    { data, loading, searchedWithNoResults, error, limit = BATCH_SIZE, noMore },
     dispatch,
   ] = useReducer(reducer, [], initialState);
 
   // TODO: new interface first last etc
   const searchOnline = (searchParams: any) => {
-    const paramsWithLimits = { ...searchParams, limit: BATCH_SIZE, offset: 0 };
+    const paramsWithLimits = { ...searchParams, limit };
 
     dispatch({ type: LookupActionType.clear });
     // refresh();
     dispatch({ type: LookupActionType.start });
     axios
-      .get(getPatientRequestUrl(searchParams), {
+      .get(getPatientRequestUrl(paramsWithLimits), {
         withCredentials: true,
       })
       .then((data) => dispatch(LookupAction.success(data)))
       .catch((error) => dispatch(LookupAction.error(error)));
-
-    //dispatch({ type: LookupActionType.more });
   };
+
+  const searchMore = (searchParams: any) => {
+    const paramsWithOffset = { ...searchParams, limit, offset: data.length };
+    dispatch({ type: LookupActionType.gettingMore });
+    axios
+      .get(getPatientRequestUrl(paramsWithOffset), {
+        withCredentials: true,
+      })
+      .then((data) => dispatch(LookupAction.addMore(data)))
+      .catch((error) => dispatch(LookupAction.error(error)));
+  };
+
   return {
     data,
     error,
-    gettingMore,
+    noMore,
     loading,
     searchedWithNoResults,
     searchOnline,
+    searchMore,
   };
   //     { data, loading, searchedWithNoResults, error, gettingMore },
   //     searchOnline,
