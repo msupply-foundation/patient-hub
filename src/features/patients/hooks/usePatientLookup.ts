@@ -1,5 +1,4 @@
 import { useEffect, useReducer } from "react";
-import Base64 from "base-64";
 import { format } from "date-fns";
 import axios, { AxiosResponse } from "axios";
 
@@ -9,16 +8,6 @@ import { getPatientUrl } from "../../../shared/utils";
 import { TypeAssertion } from "typescript";
 
 const BATCH_SIZE = 50;
-
-const getAuthHeader = (username: string, password: string) =>
-  `Basic ${Base64.encode(`${username}:${password}`)}`;
-
-const getAuthorizationHeader = () => {
-  const username = "Kawakawa";
-  const password =
-    "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1";
-  return getAuthHeader(username, password);
-};
 
 enum ParameterKeys {
   first = "first_name",
@@ -208,7 +197,6 @@ const reducer = (state: LookupState, action: any) => {
   }
 };
 
-const processPatientResponse = (x: any) => x;
 const getFormatter = (type: string): ((key: string, value: any) => string) => {
   switch (type) {
     case ParameterTypes.string:
@@ -295,9 +283,7 @@ export const usePatientLookup = () => {
     dispatch({ type: LookupActionType.start });
     axios
       .get(getPatientRequestUrl(searchParams), {
-        headers: {
-          Authorization: getAuthorizationHeader(),
-        },
+        withCredentials: true,
       })
       .then((data) => dispatch(LookupAction.success(data)))
       .catch((error) => dispatch(LookupAction.error(error)));

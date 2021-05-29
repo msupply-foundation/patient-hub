@@ -1,5 +1,6 @@
 import { ChangeEvent, FC, MouseEvent, useState } from "react";
 import {
+  Alert,
   Button,
   CircularProgress,
   Paper,
@@ -19,7 +20,7 @@ interface PatientFormProps {
 }
 
 const useStyles = stylesFactory({
-  fieldContainer: {paddingBottom: 10},
+  fieldContainer: { paddingBottom: 10 },
   img: {
     display: "flex",
     marginLeft: "auto",
@@ -86,58 +87,65 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
     >
       <Paper className={classes.paper}>
         <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-around"
-        >
+        <Grid container direction="row" justifyContent="space-around">
           <Grid item>
-          <Grid container direction="column" alignItems="stretch">
-            <Grid item className={classes.fieldContainer}>
-              <TextField
-                label="First name"
-                fullWidth
-                onChange={onFirstNameChange}
+            <Grid container direction="column" alignItems="stretch">
+              <Grid item className={classes.fieldContainer}>
+                <TextField
+                  label="First name"
+                  fullWidth
+                  onChange={onFirstNameChange}
+                >
+                  First name
+                </TextField>
+              </Grid>
+              <Grid item className={classes.fieldContainer}>
+                <TextField
+                  label="Last name"
+                  fullWidth
+                  onChange={onLastNameChange}
+                >
+                  Last name
+                </TextField>
+              </Grid>
+              <Grid item className={classes.fieldContainer}>
+                <TextField
+                  label="Date of birth"
+                  fullWidth
+                  onChange={onDoBChange}
+                >
+                  Date of Birth
+                </TextField>
+              </Grid>
+              <Grid
+                item
+                alignSelf="flex-end"
+                className={classes.fieldContainer}
               >
-                First name
-              </TextField>
-            </Grid>
-            <Grid item className={classes.fieldContainer}>
-              <TextField
-                label="Last name"
-                fullWidth
-                onChange={onLastNameChange}
-              >
-                Last name
-              </TextField>
-            </Grid>
-            <Grid item className={classes.fieldContainer}>
-              <TextField label="Date of birth" fullWidth onChange={onDoBChange}>
-                Date of Birth
-              </TextField>
-            </Grid>
-            <Grid item alignSelf="flex-end" className={classes.fieldContainer}>
-              <Button
-                variant="outlined"
-                onClick={lookupPatients}
-                disabled={!searchTerm || loading}
-              >
-                Lookup
-              </Button>
+                <Button
+                  variant="outlined"
+                  onClick={lookupPatients}
+                  disabled={!searchTerm || loading}
+                >
+                  Lookup
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-          </Grid>
           <Grid item>
-            <PatientList
-              data={patientData?.data || []}
-              selectedId={data?.patient?.ID}
-              onSelect={onSelect}
-            />
+            {error ? (
+              <Alert severity="error">{error.message}</Alert>
+            ) : (
+              <PatientList
+                data={patientData?.data || []}
+                selectedId={data?.patient?.ID}
+                onSelect={onSelect}
+              />
+            )}
             <Grid className={classes.loadingIndicator}>
-            {loading && <CircularProgress size={20} />}
+              {loading && <CircularProgress size={20} />}
+            </Grid>
           </Grid>
-          </Grid>
-          
         </Grid>
       </Paper>
     </StepperContainer>
