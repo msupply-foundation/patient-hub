@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, MouseEvent, useState } from "react";
+import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Button,
@@ -7,7 +7,7 @@ import {
   TextField,
   Grid,
 } from "@material-ui/core";
-import { Waypoint } from 'react-waypoint';
+import { Waypoint } from "react-waypoint";
 import { PatientList } from "../components/PatientList";
 
 import { stylesFactory } from "../../../shared/utils";
@@ -54,17 +54,16 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
   //   const submitRef = useRef<HTMLInputElement | null>(null);
-  const [searchTerm, setSearchTerm] = useState(initialSearchParams);
+  const [searchParams, setSearchParams] = useState(initialSearchParams);
   const onNextHook = () => !!data?.patient?.ID;
-  const lookupPatients = (event: MouseEvent) => searchOnline(searchTerm);
   const onFirstNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm({ ...searchTerm, firstName: event.target.value });
+    setSearchParams({ ...searchParams, firstName: event.target.value });
   };
   const onLastNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm({ ...searchTerm, lastName: event.target.value });
+    setSearchParams({ ...searchParams, lastName: event.target.value });
   };
   const onDoBChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm({ ...searchTerm, dateOfBirth: event.target.value });
+    setSearchParams({ ...searchParams, dateOfBirth: event.target.value });
   };
   const {
     data: patientData,
@@ -81,10 +80,36 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
     setData({ patient: { ID, name } });
   };
 
-  const onWaypoint = (x: any)=> { 
+  const onWaypoint = (x: any) => {
     if (noMore || loading) return;
-    searchMore(searchTerm);
-  }
+    searchMore(searchParams);
+  };
+
+  const hasNoSearchParams = () => {
+    const { firstName, lastName, dateOfBirth } = searchParams || {};
+    return !firstName && !lastName && !dateOfBirth;
+  };
+
+  const lookupPatients = useMemo(
+    () => () => {
+      if (loading || hasNoSearchParams()) return;
+      searchOnline(searchParams);
+    },
+    [searchOnline, hasNoSearchParams, loading, searchParams]
+  );
+
+  useEffect(() => {
+    const listener = (event: any) => {
+      if (event.code === "Enter" || event.code === "NumpadEnter") {
+        event.preventDefault();
+        lookupPatients();
+      }
+    };
+    document.addEventListener("keydown", listener);
+    return () => {
+      document.removeEventListener("keydown", listener);
+    };
+  }, [lookupPatients]);
 
   return (
     <StepperContainer
@@ -132,7 +157,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
                 <Button
                   variant="outlined"
                   onClick={lookupPatients}
-                  disabled={!searchTerm || loading}
+                  disabled={hasNoSearchParams() || loading}
                 >
                   Lookup
                 </Button>
@@ -144,12 +169,12 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
               <Alert severity="error">{error.message}</Alert>
             ) : (
               <>
-              <PatientList
-                data={patientData || []}
-                selectedId={data?.patient?.ID}
-                onSelect={onSelect}
-              />
-              <Waypoint onPositionChange={onWaypoint} />
+                <PatientList
+                  data={patientData || []}
+                  selectedId={data?.patient?.ID}
+                  onSelect={onSelect}
+                />
+                <Waypoint onPositionChange={onWaypoint} />
               </>
             )}
             <Grid className={classes.loadingIndicator}>

@@ -6,7 +6,7 @@ import axios, { AxiosResponse } from "axios";
 // import { useThrottled } from "./useThrottled";
 import { getPatientUrl } from "../../../shared/utils";
 
-const BATCH_SIZE = 5;
+const BATCH_SIZE = 25;
 
 enum ParameterKeys {
   first = "first_name",
