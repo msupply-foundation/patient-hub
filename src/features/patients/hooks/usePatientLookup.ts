@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import axios, { AxiosResponse } from "axios";
 
 // import { useFetch } from "./useFetch";
@@ -211,7 +211,8 @@ const getFormatter = (type: string): ((key: string, value: any) => string) => {
       return (key: string, string: string) =>
         `${key}=@${encodeURIComponent(string)}@`;
     case ParameterTypes.date:
-      return (key: string, date: Date) => `${key}=${format(date, "ddMMyyyy")}`;
+      return (key: string, date: Date) =>
+        isValid(date) ? `${key}=${format(date, "ddMMyyyy")}` : "";
     case ParameterTypes.number:
       return (key: string, number: number) => `${key}=${Number(number)}`;
     default:

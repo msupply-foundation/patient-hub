@@ -6,7 +6,12 @@ import {
   Paper,
   TextField,
   Grid,
+  TextFieldProps,
 } from "@material-ui/core";
+import { DatePicker } from "@material-ui/lab";
+import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
+import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
+import enLocale from "date-fns/locale/en-NZ";
 import { Waypoint } from "react-waypoint";
 import { PatientList } from "../components/PatientList";
 
@@ -14,6 +19,7 @@ import { stylesFactory } from "../../../shared/utils";
 import { StepperContainer } from "../../../shared/components/stepper/StepperContainer";
 import { useIsSchemaValid, useStep } from "../../../shared/hooks";
 import { usePatientLookup } from "../../patients/hooks";
+import { format, isValid, parse } from "date-fns";
 
 interface PatientFormProps {
   onSubmit: (data: any) => void;
@@ -42,14 +48,21 @@ const useStyles = stylesFactory({
 interface Patient {
   ID: string;
   name: string;
-  date_of_birth: Date;
+  date_of_birth?: Date;
 }
 
-const initialSearchParams = {
+type SearchParameters = {
+  firstName: string;
+  lastName: string;
+  dateOfBirth?: Date;
+};
+
+const initialSearchParams: SearchParameters = {
   firstName: "",
   lastName: "",
-  dateOfBirth: "",
+  dateOfBirth: undefined,
 };
+
 export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
@@ -62,9 +75,16 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const onLastNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchParams({ ...searchParams, lastName: event.target.value });
   };
-  const onDoBChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchParams({ ...searchParams, dateOfBirth: event.target.value });
+
+  const onDateChange = (
+    dateValue?: Date | null | undefined,
+    stringValue?: string
+  ) => {
+    const dateOfBirth =
+      dateValue || parse(stringValue || "", "dd/MM/yyyy", new Date());
+    setSearchParams({ ...searchParams, dateOfBirth });
   };
+
   const {
     data: patientData,
     error,
@@ -85,14 +105,14 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
     searchMore(searchParams);
   };
 
-  const hasNoSearchParams = () => {
+  const hasNoSearchParams = useMemo(() => {
     const { firstName, lastName, dateOfBirth } = searchParams || {};
-    return !firstName && !lastName && !dateOfBirth;
-  };
+    return !firstName && !lastName && !isValid(dateOfBirth);
+  }, [searchParams]);
 
   const lookupPatients = useMemo(
     () => () => {
-      if (loading || hasNoSearchParams()) return;
+      if (loading || hasNoSearchParams) return;
       searchOnline(searchParams);
     },
     [searchOnline, hasNoSearchParams, loading, searchParams]
@@ -141,13 +161,19 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
                 </TextField>
               </Grid>
               <Grid item className={classes.fieldContainer}>
-                <TextField
-                  label="Date of birth"
-                  fullWidth
-                  onChange={onDoBChange}
+                <LocalizationProvider
+                  dateAdapter={AdapterDateFns}
+                  locale={enLocale}
                 >
-                  Date of Birth
-                </TextField>
+                  <DatePicker
+                    label="Date of birth"
+                    value={searchParams.dateOfBirth}
+                    onChange={onDateChange}
+                    renderInput={(params: TextFieldProps) => (
+                      <TextField {...params} />
+                    )}
+                  />
+                </LocalizationProvider>
               </Grid>
               <Grid
                 item
@@ -157,7 +183,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
                 <Button
                   variant="outlined"
                   onClick={lookupPatients}
-                  disabled={hasNoSearchParams() || loading}
+                  disabled={hasNoSearchParams || loading}
                 >
                   Lookup
                 </Button>
