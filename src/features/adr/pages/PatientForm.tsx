@@ -65,7 +65,13 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
   const [searchParams, setSearchParams] = useState(initialSearchParams);
-  const onNextHook = () => !!data?.patient?.ID;
+  const onNextHook = () => {
+    if (!data?.patient?.ID) return false;
+
+    refresh();
+    setSearchParams(initialSearchParams);
+    return true;
+  };
   const onFirstNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchParams({ ...searchParams, firstName: event.target.value });
   };
@@ -90,6 +96,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
     searchedWithNoResults,
     searchOnline,
     searchMore,
+    refresh,
   } = usePatientLookup();
 
   const onSelect = (patient: Patient) => {
@@ -144,6 +151,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
                   label="First name"
                   fullWidth
                   onChange={onFirstNameChange}
+                  value={searchParams.firstName}
                 >
                   First name
                 </TextField>
@@ -153,6 +161,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
                   label="Last name"
                   fullWidth
                   onChange={onLastNameChange}
+                  value={searchParams.lastName}
                 >
                   Last name
                 </TextField>
@@ -187,15 +196,15 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item style={{flex: 1, marginLeft: 25}}>
-                <PatientList
-                  data={patientData || []}
-                  error={error}
-                  searchedWithNoResults={searchedWithNoResults}
-                  selectedId={data?.patient?.ID}
-                  onSelect={onSelect}
-                  onWaypoint={onWaypoint}
-                />
+          <Grid item style={{ flex: 1, marginLeft: 25 }}>
+            <PatientList
+              data={patientData || []}
+              error={error}
+              searchedWithNoResults={searchedWithNoResults}
+              selectedId={data?.patient?.ID}
+              onSelect={onSelect}
+              onWaypoint={onWaypoint}
+            />
             <Grid className={classes.loadingIndicator}>
               {loading && <CircularProgress size={20} />}
             </Grid>

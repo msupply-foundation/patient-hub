@@ -1,9 +1,7 @@
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import { format, isValid } from "date-fns";
 import axios, { AxiosResponse } from "axios";
 
-// import { useFetch } from "./useFetch";
-// import { useThrottled } from "./useThrottled";
 import { getPatientUrl } from "../../../shared/utils";
 
 const BATCH_SIZE = 25;
@@ -105,6 +103,7 @@ type LookupActionShapes =
 
 interface LookupActions {
   addMore: (data: AxiosResponse<any>) => LookupActionShapes;
+  clear: () => LookupActionShapes;
   error: (error: any) => LookupActionShapes;
   noResult: () => LookupActionShapes;
   success: (data: AxiosResponse<any>) => LookupActionShapes;
@@ -115,6 +114,7 @@ const LookupAction: LookupActions = {
     type: LookupActionType.addMore,
     payload: { data },
   }),
+  clear: () => ({ type: LookupActionType.clear }),
   error: (error) => ({ type: LookupActionType.error, payload: { error } }),
   noResult: () => ({ type: LookupActionType.noResults }),
   success: (data) => ({ type: LookupActionType.success, payload: { data } }),
@@ -304,7 +304,10 @@ export const usePatientLookup = () => {
       .catch((error) => dispatch(LookupAction.error(error)));
   };
 
+  const refresh = () => dispatch(LookupAction.clear());
+
   return {
+    refresh,
     data,
     error,
     noMore,
@@ -313,119 +316,4 @@ export const usePatientLookup = () => {
     searchOnline,
     searchMore,
   };
-  //     { data, loading, searchedWithNoResults, error, gettingMore },
-  //     searchOnline,
-  //     // getMorePatients,
-  //   ];
 };
-
-//   //   const {
-//   //     fetch,
-//   //     refresh,
-//   //     isLoading,
-//   //     response,
-//   //     error: fetchError,
-//   //   } = useFetch(getPatientUrl());
-
-//   //   // If response is empty, we are not loading, and there is no error,
-//   //   // then we have tried to fetch and had no results.
-//   //   // Has fetched guards against the initial state of not loading and a response being empty.
-//   //   useEffect(() => {
-//   //     const noResults = fetchError?.message === "No records found";
-//   //     if (noResults) {
-//   //       dispatch({ type: LookupActionType.noResults });
-//   //     }
-//   //   }, [fetchError]);
-
-//   //   // When isLoading is set as true, sync this with our merged state.
-//   //   useEffect(() => {
-//   //     if (isLoading) dispatch({ type: LookupActionType.start });
-//   //   }, [isLoading]);
-
-//   //   // When response changes and we have a new response, assign this as our set of data, merging
-//   //   // with our combined state.
-//   //   useEffect(() => {
-//   //     if (response)
-//   //       dispatch({ type: LookupActionType.success, payload: { data: response } });
-//   //   }, [response]);
-
-//   //   // Synchronizing this error with our merged state.
-//   //   useEffect(() => {
-//   //     if (fetchError && fetchError.message !== "No records found") {
-//   //       dispatch({ type: LookupActionType.error, payload: { error: fetchError } });
-//   //     }
-//   //   }, [fetchError]);
-
-//   // TODO: new interface first last etc
-//   const searchOnline = (searchParams: any) => {
-//     const paramsWithLimits = { ...searchParams, limit: BATCH_SIZE, offset: 0 };
-
-//     dispatch({ type: LookupActionType.clear });
-//     // refresh();
-//     dispatch({ type: LookupActionType.start });
-//     axios
-//       .get(getPatientRequestUrl(searchParams), {
-//         headers: { authorization: getAuthorizationHeader() },
-//       })
-//       .then((data) => dispatch(LookupAction.success(data)))
-//       .catch((error) => dispatch(LookupAction.error(error)));
-
-//     //dispatch({ type: LookupActionType.more });
-//   };
-
-//   //   const getMorePatients = async (searchParams: PatientSearchParameterType[]) => {
-//   //     if (!response || noMore) return;
-
-//   //     dispatch({ type: LookupActionType.gettingMore });
-//   //     const paramsWithLimits = { ...searchParams, limit, offset };
-
-//   //     const getMoreResponse = axios.get() await fetch(
-//   //       `${getPatientUrl()}${getPatientRequestUrl(paramsWithLimits)}`,
-//   //       {
-//   //         headers: { authorization: getAuthorizationHeader() },
-//   //       },
-//   //       {}
-//   //     );
-
-//   //     try {
-//   //       const morePatients = processPatientResponse({
-//   //         ...getMoreResponse,
-//   //         json: await getMoreResponse.json(),
-//   //       });
-//   //       dispatch({
-//   //         type: LookupActionType.addMore,
-//   //         payload: {
-//   //           data: morePatients,
-//   //         },
-//   //       });
-//   //     } catch {
-//   //       dispatch({ type: LookupActionType.noMore });
-//   //     }
-//   //   };
-
-//   //   // Throttle the get local patients such that the method will only be called 1/2 a second
-//   //   // after the last invocation, so when typing there is not constant queries happening each
-//   //   // press as there are potentially 100,00's of thousands of patients.
-//   //   const throttledGetLocalPatients = useThrottled(getLocalPatients, 500, [], {
-//   //     leading: false,
-//   //     trailing: true,
-//   //   });
-
-//   //   const throttledGetMorePatients = useThrottled(
-//   //     getMorePatients,
-//   //     1000,
-//   //     [limit, offset, response, noMore],
-//   //     {
-//   //       loading: false,
-//   //       trailing: true,
-//   //     }
-//   //   );
-
-//   //   const throttledSearchOnline = useThrottled(onPressSearchOnline, 500, []);
-
-//   return [
-//     { data, loading, searchedWithNoResults, error, gettingMore },
-//     searchOnline,
-//     // getMorePatients,
-//   ];
-// };

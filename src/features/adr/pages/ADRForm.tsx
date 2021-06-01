@@ -2,12 +2,17 @@ import { Skeleton } from "@material-ui/core";
 import { FC } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
 // import { stylesFactory } from "../../../shared/utils";
-import { useLoadingSpinner, useTranslations } from "../../../shared/hooks";
+import {
+  useLoadingSpinner,
+  useTranslations,
+  useModal,
+} from "../../../shared/hooks";
 import { useSubmitADR } from "./hooks";
 import { Box } from "@material-ui/core";
 import { Stepper } from "../../../shared/components/stepper/Stepper";
 import { StepperForm } from "../../../shared/components/stepper/StepperForm";
 import { PatientForm } from "./PatientForm";
+import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 // const useStyles = stylesFactory({
 //   img: {
@@ -30,16 +35,21 @@ import { PatientForm } from "./PatientForm";
 
 export const ADRForm: FC = () => {
   const { messages } = useTranslations();
-  // const classes = useStyles();
   const { isLoading, data } = useADRSchemaQuery();
   const { toggleLoading } = useLoadingSpinner();
   const { submit } = useSubmitADR();
+  const { open, close } = useModal(ModalKey.confirm);
+  const handleClose = () => close();
 
   const onSubmit = (data: any[]) => {
     const formData = { ...data[0], ...data[1] };
     toggleLoading();
     submit(formData);
     toggleLoading();
+    open({
+      handleClose,
+      content: messages.ADRSubmitted,
+    });
   };
 
   return (

@@ -23,5 +23,6 @@
   "success": "Success!",
   "ok": "Ok",
   "login": "Login",
-  "aefi": "AEFI"
+  "aefi": "AEFI",
+  "ADRSubmitted": "AEFI Submitted successfully!"
 }
