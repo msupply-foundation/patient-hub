@@ -284,7 +284,12 @@ export const usePatientLookup = () => {
       .get(getPatientRequestUrl(paramsWithLimits), {
         withCredentials: true,
       })
-      .then((data) => dispatch(LookupAction.success(data)))
+      .then((data) => {
+        const action = data.data.length
+          ? LookupAction.success(data)
+          : LookupAction.noResult();
+        dispatch(action);
+      })
       .catch((error) => dispatch(LookupAction.error(error)));
   };
 

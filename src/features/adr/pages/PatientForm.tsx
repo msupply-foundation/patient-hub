@@ -1,6 +1,5 @@
 import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
 import {
-  Alert,
   Button,
   CircularProgress,
   Paper,
@@ -12,14 +11,13 @@ import { DatePicker } from "@material-ui/lab";
 import AdapterDateFns from "@material-ui/lab/AdapterDateFns";
 import LocalizationProvider from "@material-ui/lab/LocalizationProvider";
 import enLocale from "date-fns/locale/en-NZ";
-import { Waypoint } from "react-waypoint";
 import { PatientList } from "../components/PatientList";
 
 import { stylesFactory } from "../../../shared/utils";
 import { StepperContainer } from "../../../shared/components/stepper/StepperContainer";
-import { useIsSchemaValid, useStep } from "../../../shared/hooks";
+import { useStep } from "../../../shared/hooks";
 import { usePatientLookup } from "../../patients/hooks";
-import { format, isValid, parse } from "date-fns";
+import { isValid, parse } from "date-fns";
 
 interface PatientFormProps {
   onSubmit: (data: any) => void;
@@ -54,19 +52,18 @@ interface Patient {
 type SearchParameters = {
   firstName: string;
   lastName: string;
-  dateOfBirth?: Date;
+  dateOfBirth: Date | null;
 };
 
 const initialSearchParams: SearchParameters = {
   firstName: "",
   lastName: "",
-  dateOfBirth: undefined,
+  dateOfBirth: null,
 };
 
 export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
-  //   const submitRef = useRef<HTMLInputElement | null>(null);
   const [searchParams, setSearchParams] = useState(initialSearchParams);
   const onNextHook = () => !!data?.patient?.ID;
   const onFirstNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -100,7 +97,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
     setData({ patient: { ID, name } });
   };
 
-  const onWaypoint = (x: any) => {
+  const onWaypoint = () => {
     if (noMore || loading) return;
     searchMore(searchParams);
   };
@@ -190,19 +187,15 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item>
-            {error ? (
-              <Alert severity="error">{error.message}</Alert>
-            ) : (
-              <>
+          <Grid item style={{flex: 1, marginLeft: 25}}>
                 <PatientList
                   data={patientData || []}
+                  error={error}
+                  searchedWithNoResults={searchedWithNoResults}
                   selectedId={data?.patient?.ID}
                   onSelect={onSelect}
+                  onWaypoint={onWaypoint}
                 />
-                <Waypoint onPositionChange={onWaypoint} />
-              </>
-            )}
             <Grid className={classes.loadingIndicator}>
               {loading && <CircularProgress size={20} />}
             </Grid>
