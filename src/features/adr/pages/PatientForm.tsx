@@ -15,14 +15,10 @@ import { PatientList } from "../components/PatientList";
 
 import { stylesFactory } from "../../../shared/utils";
 import { StepperContainer } from "../../../shared/components/stepper/StepperContainer";
-import { useStep } from "../../../shared/hooks";
+import { useStep, useTranslations } from "../../../shared/hooks";
 import { usePatientLookup } from "../../patients/hooks";
 import { isValid, parse } from "date-fns";
-
-interface PatientFormProps {
-  onSubmit: (data: any) => void;
-  step: number;
-}
+import { Patient, SearchParameters } from '../types';
 
 const useStyles = stylesFactory({
   fieldContainer: { paddingBottom: 10 },
@@ -42,18 +38,10 @@ const useStyles = stylesFactory({
   },
 });
 
-// TODO: move this out somewhere..
-interface Patient {
-  ID: string;
-  name: string;
-  date_of_birth?: Date;
+export interface PatientFormProps {
+  onSubmit: (data: any) => void;
+  step: number;
 }
-
-type SearchParameters = {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date | null;
-};
 
 const initialSearchParams: SearchParameters = {
   firstName: "",
@@ -65,6 +53,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
   const [searchParams, setSearchParams] = useState(initialSearchParams);
+  const { messages } = useTranslations();
   const onNextHook = () => {
     if (!data?.patient?.ID) return false;
 
@@ -148,22 +137,22 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
             <Grid container direction="column" alignItems="stretch">
               <Grid item className={classes.fieldContainer}>
                 <TextField
-                  label="First name"
+                  label={messages.firstName}
                   fullWidth
                   onChange={onFirstNameChange}
                   value={searchParams.firstName}
                 >
-                  First name
+                  {messages.firstName}
                 </TextField>
               </Grid>
               <Grid item className={classes.fieldContainer}>
                 <TextField
-                  label="Last name"
+                  label={messages.lastName}
                   fullWidth
                   onChange={onLastNameChange}
                   value={searchParams.lastName}
                 >
-                  Last name
+                  {messages.lastName}
                 </TextField>
               </Grid>
               <Grid item className={classes.fieldContainer}>
@@ -172,7 +161,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
                   locale={enLocale}
                 >
                   <DatePicker
-                    label="Date of birth"
+                    label={messages.dateOfBirth}
                     value={searchParams.dateOfBirth}
                     onChange={onDateChange}
                     renderInput={(params: TextFieldProps) => (
@@ -191,7 +180,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
                   onClick={lookupPatients}
                   disabled={hasNoSearchParams || loading}
                 >
-                  Lookup
+                  {messages.lookup}
                 </Button>
               </Grid>
             </Grid>

@@ -24,5 +24,11 @@
   "ok": "Ok",
   "login": "Login",
   "aefi": "AEFI",
-  "ADRSubmitted": "AEFI Submitted successfully!"
+  "ADRSubmitted": "AEFI Submitted successfully!",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "dateOfBirth": "Date of birth",
+  "lookup": "Lookup",
+  "noPatientResults": "No results for your search criteria",
+  "name": "Name"
 }

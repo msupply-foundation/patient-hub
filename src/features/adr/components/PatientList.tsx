@@ -8,8 +8,11 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
+import { useTranslations } from "../../../shared/hooks";
 import { stylesFactory } from "../../../shared/utils";
 import { format, parse } from "date-fns";
+
+import { Patient } from '../types';
 
 interface PatientListProps {
   data: Patient[];
@@ -24,12 +27,6 @@ const useStyles = stylesFactory({
   container: {},
 });
 
-interface Patient {
-  ID: string;
-  name: string;
-  date_of_birth: Date;
-}
-
 export const PatientList: FC<PatientListProps> = ({
   data,
   error,
@@ -38,15 +35,18 @@ export const PatientList: FC<PatientListProps> = ({
   selectedId,
   onWaypoint,
 }) => {
+  const { messages } = useTranslations();
   const classes = useStyles();
-  const formatDoB = (dob: Date) => {
+  const formatDoB = (dob?: Date) => {
+    if (!dob) return "";
+    
     const date = parse(`${dob}`.split("T")[0], "yyyy-MM-dd", new Date());
     return format(date, "dd/MM/yyyy");
   };
 
   if (error) return <Alert severity="error">{error.message}</Alert>;
 
-  if (searchedWithNoResults) return <Alert severity="warning">No results for your search criteria</Alert>;
+  if (searchedWithNoResults) return <Alert severity="warning">{messages.noPatientResults}</Alert>;
 
   if (!data.length) return null;
 
@@ -55,8 +55,8 @@ export const PatientList: FC<PatientListProps> = ({
       <Table stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
-            <TableCell style={{ minWidth: 250 }}>Name</TableCell>
-            <TableCell style={{ minWidth: 100 }}>Date of Birth</TableCell>
+            <TableCell style={{ minWidth: 250 }}>{messages.name}</TableCell>
+            <TableCell style={{ minWidth: 100 }}>{messages.dateOfBirth}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
