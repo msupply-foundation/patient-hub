@@ -18,7 +18,7 @@ import { StepperContainer } from "../../../shared/components/stepper/StepperCont
 import { useStep, useTranslations } from "../../../shared/hooks";
 import { usePatientLookup } from "../../patients/hooks";
 import { isValid, parse } from "date-fns";
-import { Patient, SearchParameters } from '../types';
+import { Patient, SearchParameters } from '../../patients/types';
 
 const useStyles = stylesFactory({
   fieldContainer: { paddingBottom: 10 },

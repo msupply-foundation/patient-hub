@@ -3,6 +3,7 @@ import { format, isValid } from "date-fns";
 import axios, { AxiosResponse } from "axios";
 
 import { getPatientUrl } from "../../../shared/utils";
+import { Patient, SearchParameters } from "../types";
 
 const BATCH_SIZE = 25;
 
@@ -38,9 +39,9 @@ export type PatientSearchParameterType = {
 };
 
 interface LookupState {
-  data: any[];
+  data: Patient[];
   loading: boolean;
-  error: boolean;
+  error?: Error;
   searchedWithNoResults: boolean;
   noMore: boolean;
   limit: number;
@@ -50,7 +51,7 @@ interface LookupState {
 const initialState = (initialValue = []): LookupState => ({
   data: initialValue,
   loading: false,
-  error: false,
+  error: undefined,
   searchedWithNoResults: false,
   noMore: true,
   limit: BATCH_SIZE,
@@ -69,58 +70,51 @@ enum LookupActionType {
   success = "LOOKUP/SUCCESS",
 }
 
-type LookupActionShapes =
-  | {
-      type: LookupActionType.addMore;
-      payload: { data: AxiosResponse<any> };
-    }
-  | {
-      type: LookupActionType.clear;
-    }
-  | {
-      type: LookupActionType.error;
-      payload: { error: boolean };
-    }
-  | {
-      type: LookupActionType.gettingMore;
-    }
-  | {
-      type: LookupActionType.more;
-    }
-  | {
-      type: LookupActionType.noMore;
-    }
-  | {
-      type: LookupActionType.noResults;
-    }
-  | {
-      type: LookupActionType.start;
-    }
-  | {
-      type: LookupActionType.success;
-      payload: { data: AxiosResponse<any> };
-    };
+type PayloadAction = {
+  type: LookupActionType.addMore | LookupActionType.success;
+  payload: { response: AxiosResponse<Patient[]> };
+};
+
+type Action = {
+  type:
+    | LookupActionType.clear
+    | LookupActionType.gettingMore
+    | LookupActionType.more
+    | LookupActionType.noMore
+    | LookupActionType.noResults
+    | LookupActionType.start;
+};
+
+type ErrorAction = {
+  type: LookupActionType.error;
+  payload: { error: Error };
+};
+
+type LookupActionShapes = PayloadAction | Action | ErrorAction;
 
 interface LookupActions {
-  addMore: (data: AxiosResponse<any>) => LookupActionShapes;
+  addMore: (response: AxiosResponse<Patient[]>) => LookupActionShapes;
   clear: () => LookupActionShapes;
-  error: (error: any) => LookupActionShapes;
+  error: (error: Error) => LookupActionShapes;
   noResult: () => LookupActionShapes;
-  success: (data: AxiosResponse<any>) => LookupActionShapes;
+  success: (response: AxiosResponse<Patient[]>) => LookupActionShapes;
 }
 
 const LookupAction: LookupActions = {
-  addMore: (data: AxiosResponse<any>) => ({
+  addMore: (response: AxiosResponse<Patient[]>) => ({
     type: LookupActionType.addMore,
-    payload: { data },
+    payload: { response },
   }),
   clear: () => ({ type: LookupActionType.clear }),
   error: (error) => ({ type: LookupActionType.error, payload: { error } }),
   noResult: () => ({ type: LookupActionType.noResults }),
-  success: (data) => ({ type: LookupActionType.success, payload: { data } }),
+  success: (response: AxiosResponse<Patient[]>) => ({
+    type: LookupActionType.success,
+    payload: { response },
+  }),
 };
 
-const reducer = (state: LookupState, action: any) => {
+const reducer = (state: LookupState, action: LookupActionShapes) => {
   const { type } = action;
 
   switch (type) {
@@ -132,12 +126,11 @@ const reducer = (state: LookupState, action: any) => {
     }
 
     case LookupActionType.success: {
-      const { payload } = action;
-      const { data } = payload;
-
+      const { payload } = action as PayloadAction;
+      const { response } = payload;
       return {
         ...state,
-        data: data?.data ?? [],
+        data: response?.data ?? [],
         loading: false,
         searchedWithNoResults: false,
       };
@@ -167,7 +160,7 @@ const reducer = (state: LookupState, action: any) => {
     }
 
     case LookupActionType.error: {
-      const { payload } = action;
+      const { payload } = action as ErrorAction;
       const { error } = payload;
 
       return { ...state, error, loading: false, searchedWithNoResults: false };
@@ -178,15 +171,15 @@ const reducer = (state: LookupState, action: any) => {
     }
 
     case LookupActionType.addMore: {
-      const { payload } = action;
-      const { data } = payload;
+      const { payload } = action as PayloadAction;
+      const { response } = payload;
 
-      const { offset, data: oldData } = state;
+      const { offset, data } = state;
       const newOffset = offset + BATCH_SIZE;
 
       return {
         ...state,
-        data: [...oldData, ...data.data],
+        data: [...data, ...response.data],
         offset: newOffset,
         loading: false,
       };
@@ -273,12 +266,10 @@ export const usePatientLookup = () => {
     dispatch,
   ] = useReducer(reducer, [], initialState);
 
-  // TODO: new interface first last etc
-  const searchOnline = (searchParams: any) => {
+  const searchOnline = (searchParams: SearchParameters) => {
     const paramsWithLimits = { ...searchParams, limit };
 
     dispatch({ type: LookupActionType.clear });
-    // refresh();
     dispatch({ type: LookupActionType.start });
     axios
       .get(getPatientRequestUrl(paramsWithLimits), {
@@ -293,7 +284,7 @@ export const usePatientLookup = () => {
       .catch((error) => dispatch(LookupAction.error(error)));
   };
 
-  const searchMore = (searchParams: any) => {
+  const searchMore = (searchParams: SearchParameters) => {
     const paramsWithOffset = { ...searchParams, limit, offset: data.length };
     dispatch({ type: LookupActionType.gettingMore });
     axios

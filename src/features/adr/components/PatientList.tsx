@@ -12,11 +12,11 @@ import { useTranslations } from "../../../shared/hooks";
 import { stylesFactory } from "../../../shared/utils";
 import { format, parse } from "date-fns";
 
-import { Patient } from '../types';
+import { Patient } from '../../patients/types';
 
 interface PatientListProps {
   data: Patient[];
-  error: Error | null;
+  error?: Error;
   onSelect: (patient: Patient) => void;
   onWaypoint: () => void;
   searchedWithNoResults: boolean;
@@ -39,7 +39,7 @@ export const PatientList: FC<PatientListProps> = ({
   const classes = useStyles();
   const formatDoB = (dob?: Date) => {
     if (!dob) return "";
-    
+
     const date = parse(`${dob}`.split("T")[0], "yyyy-MM-dd", new Date());
     return format(date, "dd/MM/yyyy");
   };
