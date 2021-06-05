@@ -54,13 +54,8 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const { data, setData } = useStep(step);
   const [searchParams, setSearchParams] = useState(initialSearchParams);
   const { messages } = useTranslations();
-  const onNextHook = () => {
-    if (!data?.patient?.ID) return false;
+  const onNextHook = () => !!data?.patient?.ID;
 
-    refresh();
-    setSearchParams(initialSearchParams);
-    return true;
-  };
   const onFirstNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchParams({ ...searchParams, firstName: event.target.value });
   };
@@ -85,7 +80,6 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
     searchedWithNoResults,
     searchOnline,
     searchMore,
-    refresh,
   } = usePatientLookup();
 
   const onSelect = (patient: Patient) => {

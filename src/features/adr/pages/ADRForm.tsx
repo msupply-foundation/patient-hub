@@ -1,7 +1,6 @@
 import { Skeleton } from "@material-ui/core";
 import { FC } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
-// import { stylesFactory } from "../../../shared/utils";
 import {
   useLoadingSpinner,
   useTranslations,
@@ -14,32 +13,16 @@ import { StepperForm } from "../../../shared/components/stepper/StepperForm";
 import { PatientForm } from "./PatientForm";
 import { ModalKey } from "../../../shared/containers/ModalProvider";
 
-// const useStyles = stylesFactory({
-//   img: {
-//     display: "flex",
-//     marginLeft: "auto",
-//     marginRight: "auto",
-//     maxWidth: "100%",
-//   },
-
-//   paper: {
-//     padding: 20,
-//     maxWidth: 600,
-//     minHeight: "100vh",
-//     display: "flex",
-//     alignItems: "flex-end",
-//     marginLeft: "auto",
-//     marginRight: "auto",
-//   },
-// });
-
 export const ADRForm: FC = () => {
   const { messages } = useTranslations();
   const { isLoading, data } = useADRSchemaQuery();
   const { toggleLoading } = useLoadingSpinner();
   const { submit } = useSubmitADR();
   const { open, close } = useModal(ModalKey.confirm);
-  const handleClose = () => close();
+  const handleClose = () => {
+    close();
+    window.location.reload();
+  };
 
   const onSubmit = (data: any[]) => {
     const formData = { ...data[0], ...data[1] };
