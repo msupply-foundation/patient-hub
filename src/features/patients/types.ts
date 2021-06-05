@@ -1,7 +1,9 @@
 export interface Patient {
   ID: string;
-  name: string;
   date_of_birth?: Date;
+  first?: string;
+  last?: string;
+  name: string;
 }
 
 export type SearchParameters = {

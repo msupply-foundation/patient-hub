@@ -30,5 +30,7 @@
   "dateOfBirth": "Date of birth",
   "lookup": "Lookup",
   "noPatientResults": "No results for your search criteria",
-  "name": "Name"
+  "name": "Name",
+  "patientDetails": "Patient Details",
+  "searchForPatient": "Patient Search"
 }

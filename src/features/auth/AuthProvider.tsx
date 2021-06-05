@@ -26,10 +26,11 @@ const AuthAction: AuthActions = {
 };
 
 interface AuthStateContextState {
+  isGuest: boolean;
   username: string;
 }
 
-const initialState = (): AuthStateContextState => ({ username: "" });
+const initialState = (): AuthStateContextState => ({ isGuest: false, username: "" });
 
 const reducer = (
   state: AuthStateContextState = initialState(),
@@ -39,7 +40,8 @@ const reducer = (
     case AuthActionType.login:
       const { payload } = action;
       const { username } = payload;
-      return { username };
+      const isGuest = username === "Guest"
+      return { isGuest, username };
     case AuthActionType.logout:
       return initialState();
     default:
@@ -48,7 +50,7 @@ const reducer = (
 };
 
 export const useAuthContextState = () => {
-  const [{ username }, dispatch] = useReducer(reducer, initialState());
+  const [{ isGuest, username }, dispatch] = useReducer(reducer, initialState());
 
   const login = useCallback((username: string) => {
     dispatch(AuthAction.login(username));
@@ -62,10 +64,11 @@ export const useAuthContextState = () => {
     dispatch(AuthAction.logout());
   }, []);
 
-  return { username, login, guestLogin, logout };
+  return { isGuest, username, login, guestLogin, logout };
 };
 
 interface AuthState {
+  isGuest: boolean;
   username: string;
   login: (username: string) => void;
   logout: () => void;
@@ -73,6 +76,7 @@ interface AuthState {
 }
 
 const authStateInitialState: () => AuthState = () => ({
+  isGuest: false,
   username: "",
   login: (username: string) => {},
   logout: () => {},
@@ -82,11 +86,11 @@ const authStateInitialState: () => AuthState = () => ({
 export const AuthContext = createContext(authStateInitialState());
 
 export const AuthProvider: FC = (props) => {
-  const { username, login, logout, guestLogin } = useAuthContextState();
+  const { isGuest, username, login, logout, guestLogin } = useAuthContextState();
 
   return (
     <AuthContext.Provider
-      value={{ username, login, logout, guestLogin }}
+      value={{ isGuest, username, login, logout, guestLogin }}
       {...props}
     />
   );
