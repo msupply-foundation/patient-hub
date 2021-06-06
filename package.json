@@ -65,7 +65,6 @@
   "homepage": "patient_hub",
   "devDependencies": {
     "@types/ajv-errors": "^1.0.3",
-    "@types/base-64": "^1.0.0",
     "@types/json-pointer": "^1.0.30",
     "@types/react-google-recaptcha": "^2.1.0"
   }
