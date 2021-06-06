@@ -9,7 +9,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
 import { useTranslations } from "../../../shared/hooks";
-import { stylesFactory } from "../../../shared/utils";
 import { format, parse } from "date-fns";
 
 import { Patient } from '../../patients/types';
@@ -23,10 +22,6 @@ interface PatientListProps {
   selectedId?: string;
 }
 
-const useStyles = stylesFactory({
-  container: {},
-});
-
 export const PatientList: FC<PatientListProps> = ({
   data,
   error,
@@ -36,7 +31,6 @@ export const PatientList: FC<PatientListProps> = ({
   onWaypoint,
 }) => {
   const { messages } = useTranslations();
-  const classes = useStyles();
   const formatDoB = (dob?: Date) => {
     if (!dob) return "";
 
@@ -51,7 +45,7 @@ export const PatientList: FC<PatientListProps> = ({
   if (!data.length) return null;
 
   return (
-    <TableContainer className={classes.container}>
+    <TableContainer>
       <Table stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
@@ -78,7 +72,7 @@ export const PatientList: FC<PatientListProps> = ({
           })}
         </TableBody>
       </Table>
-      <Waypoint onPositionChange={onWaypoint} />
+      <Waypoint onEnter={onWaypoint} scrollableAncestor={window} />
     </TableContainer>
   );
 };
