@@ -12,6 +12,11 @@ import { useTranslations } from "../../../shared/hooks";
 import { format, parse } from "date-fns";
 
 import { Patient } from '../../patients/types';
+import { stylesFactory } from "../../../shared/utils";
+
+const useStyles = stylesFactory({
+  container: { height: "50vh", overflow: "scroll" }
+});
 
 interface PatientListProps {
   data: Patient[];
@@ -31,6 +36,7 @@ export const PatientList: FC<PatientListProps> = ({
   onWaypoint,
 }) => {
   const { messages } = useTranslations();
+  const classes = useStyles();
   const formatDoB = (dob?: Date) => {
     if (!dob) return "";
 
@@ -45,7 +51,7 @@ export const PatientList: FC<PatientListProps> = ({
   if (!data.length) return null;
 
   return (
-    <TableContainer>
+    <TableContainer className={classes.container}>
       <Table stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
@@ -72,7 +78,7 @@ export const PatientList: FC<PatientListProps> = ({
           })}
         </TableBody>
       </Table>
-      <Waypoint onEnter={onWaypoint} scrollableAncestor={window} />
+      <Waypoint onEnter={onWaypoint} />
     </TableContainer>
   );
 };

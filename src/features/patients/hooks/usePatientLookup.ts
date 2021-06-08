@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from "axios";
 import { getPatientUrl } from "../../../shared/utils";
 import { Patient, SearchParameters } from "../types";
 
-const BATCH_SIZE = 25;
+const BATCH_SIZE = 10;
 
 enum ParameterKeys {
   first = "first_name",

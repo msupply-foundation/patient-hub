@@ -17,7 +17,7 @@ const useStyles = stylesFactory({
   },
   paper: {
     padding: 20,
-    minHeight: "100vh",
+    minHeight: "50vh",
     display: "flex",
     alignItems: "flex-start",
   },
