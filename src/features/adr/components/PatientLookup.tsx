@@ -116,52 +116,45 @@ export const PatientLookup: FC<PatientLookupProps> = ({
           <Typography variant="h6">{messages.searchForPatient}</Typography>
           <Divider />
         </Box>
-        <Grid item direction="column" alignItems="stretch">
-          <Box mb={1} mt={1}>
-            <TextField
-              label={messages.firstName}
-              fullWidth
-              onChange={onFirstNameChange}
-              value={searchParams.firstName}
+        <Box mb={1} mt={1}>
+          <TextField
+            label={messages.firstName}
+            fullWidth
+            onChange={onFirstNameChange}
+            value={searchParams.firstName}
+          />
+        </Box>
+        <Box mb={1} mt={1}>
+          <TextField
+            label={messages.lastName}
+            fullWidth
+            onChange={onLastNameChange}
+            value={searchParams.lastName}
+          >
+            {messages.lastName}
+          </TextField>
+        </Box>
+        <Box mb={1} mt={1}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
+            <DatePicker
+              label={messages.dateOfBirth}
+              value={searchParams.dateOfBirth}
+              onChange={onDateChange}
+              renderInput={(params: TextFieldProps) => (
+                <TextField {...params} />
+              )}
             />
-          </Box>
-          <Box mb={1} mt={1}>
-            <TextField
-              label={messages.lastName}
-              fullWidth
-              onChange={onLastNameChange}
-              value={searchParams.lastName}
-            >
-              {messages.lastName}
-            </TextField>
-          </Box>
-          <Box mb={1} mt={1}>
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              locale={enLocale}
-            >
-              <DatePicker
-                label={messages.dateOfBirth}
-                value={searchParams.dateOfBirth}
-                onChange={onDateChange}
-                renderInput={(params: TextFieldProps) => (
-                  <TextField {...params} />
-                )}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Grid item alignSelf="flex-end" xs={12}>
-            <Box mb={1} mt={1}>
-              <Button
-                variant="outlined"
-                onClick={lookupPatients}
-                disabled={hasNoSearchParams || loading}
-              >
-                {messages.lookup}
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+          </LocalizationProvider>
+        </Box>
+        <Box mb={1} mt={1}>
+          <Button
+            variant="outlined"
+            onClick={lookupPatients}
+            disabled={hasNoSearchParams || loading}
+          >
+            {messages.lookup}
+          </Button>
+        </Box>
       </Grid>
       <Grid item flex={1} xs={12} md={6} xl={1}>
         <PatientList
