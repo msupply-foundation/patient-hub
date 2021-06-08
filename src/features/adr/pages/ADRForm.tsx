@@ -25,7 +25,8 @@ export const ADRForm: FC = () => {
   };
 
   const onSubmit = (data: any[]) => {
-    const formData = { ...data[0], ...data[1] };
+    const { patient } = data[0];
+    const formData = { ...data[1], patient };
     toggleLoading();
     submit(formData);
     toggleLoading();
