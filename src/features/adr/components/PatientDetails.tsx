@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, useEffect } from "react";
 import {
   Box,
   Divider,
@@ -34,20 +34,19 @@ export const PatientDetails: FC<PatientDetailsProps> = ({
   const { messages } = useTranslations();
   const classes = useStyles();
 
-  const onPatientChange = () => {
-    setCanContinue(!!patient.last && !!patient.first);
-  };
+  useEffect(
+    () => setCanContinue(!!patient.last && !!patient.first),
+    [setCanContinue, patient]
+  );
 
   const onLastNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     const last = event.target.value;
     setPatient({ ...patient, last });
-    onPatientChange();
   };
 
   const onFirstNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     const first = event.target.value;
     setPatient({ ...patient, first });
-    onPatientChange();
   };
 
   const onDateChange = (
