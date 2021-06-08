@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FC, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -16,7 +16,7 @@ import enLocale from "date-fns/locale/en-NZ";
 import { PatientList } from "../components/PatientList";
 
 import { stylesFactory } from "../../../shared/utils";
-import { useTranslations } from "../../../shared/hooks";
+import { useEnterHandler, useTranslations } from "../../../shared/hooks";
 import { usePatientLookup } from "../../patients/hooks";
 import { isValid, parse } from "date-fns";
 import { Patient, SearchParameters } from "../../patients/types";
@@ -45,7 +45,6 @@ export const PatientLookup: FC<PatientLookupProps> = ({
   const classes = useStyles();
   const [searchParams, setSearchParams] = useState(initialSearchParams);
   const { messages } = useTranslations();
-
   const onFirstNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchParams({ ...searchParams, firstName: event.target.value });
   };
@@ -96,18 +95,7 @@ export const PatientLookup: FC<PatientLookupProps> = ({
     [searchOnline, hasNoSearchParams, loading, searchParams]
   );
 
-  useEffect(() => {
-    const listener = (event: any) => {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
-        event.preventDefault();
-        lookupPatients();
-      }
-    };
-    document.addEventListener("keydown", listener);
-    return () => {
-      document.removeEventListener("keydown", listener);
-    };
-  }, [lookupPatients]);
+  useEnterHandler(lookupPatients);
 
   return (
     <Grid container direction="row" justifyContent="space-around">
