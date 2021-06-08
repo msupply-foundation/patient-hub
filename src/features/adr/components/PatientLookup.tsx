@@ -22,7 +22,6 @@ import { isValid, parse } from "date-fns";
 import { Patient, SearchParameters } from "../../patients/types";
 
 const useStyles = stylesFactory({
-  fieldContainer: { paddingBottom: 10 },
   loadingIndicator: { textAlign: "center", padding: 15 },
 });
 
@@ -112,23 +111,21 @@ export const PatientLookup: FC<PatientLookupProps> = ({
 
   return (
     <Grid container direction="row" justifyContent="space-around">
-      <Grid item>
+      <Grid item xs={12} md={4} xl={1}>
         <Box mb={1} mt={1}>
           <Typography variant="h6">{messages.searchForPatient}</Typography>
           <Divider />
         </Box>
-        <Grid container direction="column" alignItems="stretch">
-          <Grid item className={classes.fieldContainer}>
+        <Grid item direction="column" alignItems="stretch">
+          <Box mb={1} mt={1}>
             <TextField
               label={messages.firstName}
               fullWidth
               onChange={onFirstNameChange}
               value={searchParams.firstName}
-            >
-              {messages.firstName}
-            </TextField>
-          </Grid>
-          <Grid item className={classes.fieldContainer}>
+            />
+          </Box>
+          <Box mb={1} mt={1}>
             <TextField
               label={messages.lastName}
               fullWidth
@@ -137,8 +134,8 @@ export const PatientLookup: FC<PatientLookupProps> = ({
             >
               {messages.lastName}
             </TextField>
-          </Grid>
-          <Grid item className={classes.fieldContainer}>
+          </Box>
+          <Box mb={1} mt={1}>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
               locale={enLocale}
@@ -152,19 +149,21 @@ export const PatientLookup: FC<PatientLookupProps> = ({
                 )}
               />
             </LocalizationProvider>
-          </Grid>
-          <Grid item alignSelf="flex-end" className={classes.fieldContainer}>
-            <Button
-              variant="outlined"
-              onClick={lookupPatients}
-              disabled={hasNoSearchParams || loading}
-            >
-              {messages.lookup}
-            </Button>
+          </Box>
+          <Grid item alignSelf="flex-end" xs={12}>
+            <Box mb={1} mt={1}>
+              <Button
+                variant="outlined"
+                onClick={lookupPatients}
+                disabled={hasNoSearchParams || loading}
+              >
+                {messages.lookup}
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </Grid>
-      <Grid item style={{ flex: 1, marginLeft: 25 }}>
+      <Grid item flex={1} xs={12} md={6} xl={1}>
         <PatientList
           data={patientData || []}
           error={error}
