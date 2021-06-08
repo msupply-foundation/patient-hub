@@ -35,7 +35,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const [canContinue, setCanContinue] = useState(false);
 
   const onNextHook = () => canContinue;
-  const patient = data?.patient || {};
+  const patient = data?.patient || {first: "", last: "", date_of_birth: null};
   const setPatient = (patient: Patient) => setData({ patient });
 
   return (
