@@ -9,7 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
 import { useTranslations } from "../../../shared/hooks";
-import { format, parse } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 
 import { Patient } from '../../patients/types';
 import { stylesFactory } from "../../../shared/utils";
@@ -39,9 +39,11 @@ export const PatientList: FC<PatientListProps> = ({
   const classes = useStyles();
   const formatDoB = (dob?: Date) => {
     if (!dob) return "";
+    
+    const dateString = `${dob}`.split("T")[0];
+    const date = parse(dateString, "yyyy-MM-dd", new Date());
 
-    const date = parse(`${dob}`.split("T")[0], "yyyy-MM-dd", new Date());
-    return format(date, "dd/MM/yyyy");
+    return isValid(date) ? format(date, "dd/MM/yyyy") : "";
   };
 
   if (error) return <Alert severity="error">{error.message}</Alert>;
