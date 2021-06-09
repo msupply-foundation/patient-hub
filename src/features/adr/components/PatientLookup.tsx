@@ -99,7 +99,7 @@ export const PatientLookup: FC<PatientLookupProps> = ({
 
   return (
     <Grid container direction="row" justifyContent="space-around">
-      <Grid item xs={12} md={4} xl={1}>
+      <Grid item xs={12} md={3} xl={3}>
         <Box mb={1} mt={1}>
           <Typography variant="h6">{messages.searchForPatient}</Typography>
           <Divider />
@@ -144,7 +144,7 @@ export const PatientLookup: FC<PatientLookupProps> = ({
           </Button>
         </Box>
       </Grid>
-      <Grid item flex={1} xs={12} md={6} xl={1}>
+      <Grid item flex={1} xs={12} md={7}>
         <PatientList
           data={patientData || []}
           error={error}
