@@ -11,11 +11,11 @@ import TableRow from "@material-ui/core/TableRow";
 import { useTranslations } from "../../../shared/hooks";
 import { format, isValid, parse } from "date-fns";
 
-import { Patient } from '../../patients/types';
+import { Patient } from "../../patients/types";
 import { stylesFactory } from "../../../shared/utils";
 
 const useStyles = stylesFactory({
-  container: { height: "50vh", overflow: "scroll" }
+  container: { height: "50vh", overflow: "scroll" },
 });
 
 interface PatientListProps {
@@ -39,7 +39,7 @@ export const PatientList: FC<PatientListProps> = ({
   const classes = useStyles();
   const formatDoB = (dob?: Date) => {
     if (!dob) return "";
-    
+
     const dateString = `${dob}`.split("T")[0];
     const date = parse(dateString, "yyyy-MM-dd", new Date());
 
@@ -48,7 +48,8 @@ export const PatientList: FC<PatientListProps> = ({
 
   if (error) return <Alert severity="error">{error.message}</Alert>;
 
-  if (searchedWithNoResults) return <Alert severity="warning">{messages.noPatientResults}</Alert>;
+  if (searchedWithNoResults)
+    return <Alert severity="warning">{messages.noPatientResults}</Alert>;
 
   if (!data.length) return null;
 
@@ -58,7 +59,9 @@ export const PatientList: FC<PatientListProps> = ({
         <TableHead>
           <TableRow>
             <TableCell style={{ minWidth: 250 }}>{messages.name}</TableCell>
-            <TableCell style={{ minWidth: 100 }}>{messages.dateOfBirth}</TableCell>
+            <TableCell style={{ minWidth: 100 }}>
+              {messages.dateOfBirth}
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
