@@ -1,4 +1,5 @@
 export { useConfig } from "./useConfig";
+export { useEnterHandler } from "./useEnterHandler";
 export { useModal } from "./useModal";
 export { useToggle } from "./useToggle";
 export { useTranslations } from "./useTranslations";

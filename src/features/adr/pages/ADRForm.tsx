@@ -1,78 +1,64 @@
-import { Button, Paper, Skeleton } from "@material-ui/core";
-import { JsonSchemaForm } from "../../../shared/components";
-import { FC, useRef, useState } from "react";
+import { Skeleton } from "@material-ui/core";
+import { FC } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
-import { stylesFactory } from "../../../shared/utils";
 import {
-  useIsSchemaValid,
   useLoadingSpinner,
   useTranslations,
+  useModal,
 } from "../../../shared/hooks";
 import { useSubmitADR } from "./hooks";
 import { Box } from "@material-ui/core";
-
-const useStyles = stylesFactory({
-  img: {
-    display: "flex",
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: "100%",
-  },
-
-  paper: {
-    padding: 20,
-    maxWidth: 600,
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "flex-end",
-    marginLeft: "auto",
-    marginRight: "auto",
-  },
-});
+import { Stepper } from "../../../shared/components/stepper/Stepper";
+import { StepperForm } from "../../../shared/components/stepper/StepperForm";
+import { PatientForm } from "./PatientForm";
+import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 export const ADRForm: FC = () => {
   const { messages } = useTranslations();
-  const classes = useStyles();
-  const submitRef = useRef<HTMLButtonElement | null>(null);
   const { isLoading, data } = useADRSchemaQuery();
-  const [formData, setFormData] = useState({});
   const { toggleLoading } = useLoadingSpinner();
-  const isValid = useIsSchemaValid(data?.jsonSchema ?? {}, formData);
   const { submit } = useSubmitADR();
-
-  const onSubmit = async () => {
-    if (!isValid) {
-      submitRef.current?.click();
-    } else {
-      toggleLoading();
-      await submit(formData);
-      toggleLoading();
-    }
+  const { open, close } = useModal(ModalKey.confirm);
+  const handleClose = () => {
+    close();
+    window.location.reload();
   };
 
-  return !isLoading ? (
-    <Paper className={classes.paper}>
-      <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
+  const onSubmit = (data: any[]) => {
+    const { patient: lookupPatient = {} } = data[0];
+    const { patient: schemaPatient = {} } = data[1];
+    const patient = { ...lookupPatient, ...schemaPatient}
+    const formData = { ...data[1], patient };
+    toggleLoading();
+    submit(formData);
+    toggleLoading();
+    open({
+      handleClose,
+      content: messages.ADRSubmitted,
+    });
+  };
 
-      <JsonSchemaForm
-        formData={formData}
-        jsonSchema={data?.jsonSchema ?? {}}
-        uiSchema={data?.uiSchema ?? {}}
-        onChange={({ formData }: { formData: any }) => setFormData(formData)}
-      >
-        <Button
-          variant="contained"
-          ref={submitRef}
-          type="submit"
-          onClick={onSubmit}
-        >
-          {messages.submit}
-        </Button>
-      </JsonSchemaForm>
-    </Paper>
-  ) : (
-    <Box maxWidth={600} marginLeft="auto" marginRight="auto">
-      <Skeleton height="100vh" variant="rectangular" />
-    </Box>
+  return (
+    <Stepper
+      labels={[messages.patientDetails as string, messages.aefi as string]}
+    >
+      {!isLoading ? (
+        [
+          <PatientForm step={0} onSubmit={onSubmit} key="patient" />,
+
+          <StepperForm
+            step={1}
+            onSubmit={onSubmit}
+            key="adr"
+            jsonSchema={data?.jsonSchema ?? {}}
+            uiSchema={data?.uiSchema ?? {}}
+          />,
+        ]
+      ) : (
+        <Box maxWidth={600} marginLeft="auto" marginRight="auto">
+          <Skeleton height="100vh" variant="rectangular" />
+        </Box>
+      )}
+    </Stepper>
   );
 };

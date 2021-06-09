@@ -22,5 +22,16 @@
   "patientHub": "Patient Hub",
   "success": "Success!",
   "ok": "Ok",
-  "login": "Login"
+  "login": "Login",
+  "aefi": "AEFI",
+  "ADRSubmitted": "AEFI Submitted successfully!",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "dateOfBirth": "Date of birth",
+  "lookup": "Lookup",
+  "noPatientResults": "No results for your search criteria",
+  "name": "Name",
+  "searchForPatient": "Patient Search",
+  "cantFindPatient": "Unable to find patient?",
+  "addManualEntry": "Add Manual Entry"
 }
