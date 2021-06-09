@@ -31,6 +31,7 @@
   "lookup": "Lookup",
   "noPatientResults": "No results for your search criteria",
   "name": "Name",
-  "patientDetails": "Patient Details",
-  "searchForPatient": "Patient Search"
+  "searchForPatient": "Patient Search",
+  "cantFindPatient": "Unable to find patient?",
+  "addManualEntry": "Add Manual Entry"
 }
