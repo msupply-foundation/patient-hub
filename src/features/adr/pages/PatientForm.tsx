@@ -22,11 +22,11 @@ const useStyles = stylesFactory({
     maxWidth: "100%",
   },
   paper: {
-    padding: 20,
-    minHeight: "50vh",
-    display: "flex",
     alignItems: "flex-start",
+    display: "flex",
     flexWrap: "wrap",
+    minHeight: "50vh",
+    padding: 20,
   },
 });
 
