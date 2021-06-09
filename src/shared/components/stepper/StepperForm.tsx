@@ -25,6 +25,7 @@ const useStyles = stylesFactory({
     minHeight: "100vh",
     display: "flex",
     alignItems: "flex-end",
+    flexWrap: "wrap",
   },
 });
 
