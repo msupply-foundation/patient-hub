@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useMemo, useState } from "react";
+import { ChangeEvent, FC, useMemo, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -18,8 +18,12 @@ import { PatientList } from "../components/PatientList";
 import { stylesFactory } from "../../../shared/utils";
 import { useEnterHandler, useTranslations } from "../../../shared/hooks";
 import { usePatientLookup } from "../../patients/hooks";
+import { useAuth } from "../../auth/hooks";
 import { isValid, parse } from "date-fns";
 import { Patient, SearchParameters } from "../../patients/types";
+
+import { useModal } from "../../../shared/hooks";
+import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 const useStyles = stylesFactory({
   loadingIndicator: { textAlign: "center", padding: 15 },
@@ -62,14 +66,20 @@ export const PatientLookup: FC<PatientLookupProps> = ({
   };
 
   const {
+    authenticated,
+    authenticationRequired,
     data: patientData,
     error,
     noMore,
     loading,
+    refresh,
     searchedWithNoResults,
     searchOnline,
     searchMore,
   } = usePatientLookup();
+
+  const { isOpen, open } = useModal(ModalKey.login);
+  const { isGuest, username } = useAuth();
 
   const onSelect = (patient: Patient) => {
     const { ID, name } = patient;
@@ -90,12 +100,37 @@ export const PatientLookup: FC<PatientLookupProps> = ({
   const lookupPatients = useMemo(
     () => () => {
       if (loading || hasNoSearchParams) return;
+      if (isGuest) {
+        refresh();
+        return;
+      }
       searchOnline(searchParams);
     },
-    [searchOnline, hasNoSearchParams, loading, searchParams]
+    [searchOnline, hasNoSearchParams, loading, searchParams, isGuest, refresh]
   );
 
   useEnterHandler(lookupPatients);
+
+  // if authentication is required, show login modal
+  useEffect(() => {
+    if (authenticationRequired) {
+      open();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authenticationRequired, username]);
+
+  // if currently searching and the modal state changes and we have a valid user
+  useEffect(() => {
+    if (!username || isOpen || !loading) return;
+    // if the user has logged in as guest this time, refresh to display the guest version
+    if (isGuest) window.location.reload();
+
+    // the user has logged in again, search again
+    authenticated();
+    searchOnline(searchParams);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   return (
     <Grid container direction="row" justifyContent="space-around">

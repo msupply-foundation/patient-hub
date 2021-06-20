@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from "axios";
 
 import { getPatientUrl } from "../../../shared/utils";
 import { Patient, SearchParameters } from "../types";
+import { useAuthContextState } from "../../auth/AuthProvider";
 
 const BATCH_SIZE = 10;
 
@@ -39,6 +40,7 @@ export type PatientSearchParameterType = {
 };
 
 interface LookupState {
+  authenticationRequired: boolean;
   data: Patient[];
   loading: boolean;
   error?: Error;
@@ -49,6 +51,7 @@ interface LookupState {
 }
 
 const initialState = (initialValue = []): LookupState => ({
+  authenticationRequired: false,
   data: initialValue,
   loading: false,
   error: undefined,
@@ -60,6 +63,7 @@ const initialState = (initialValue = []): LookupState => ({
 
 enum LookupActionType {
   addMore = "LOOKUP/ADD_MORE",
+  authenticationRequired = "LOOKUP/AUTHENTICATION_REQUIRED",
   clear = "LOOKUP/CLEAR",
   error = "LOOKUP/ERROR",
   gettingMore = "LOOKUP/GETTING_MORE",
@@ -86,10 +90,16 @@ type ErrorAction = {
   payload: { error: Error };
 };
 
-type LookupActionShapes = PayloadAction | Action | ErrorAction;
+type BooleanAction = {
+  type: LookupActionType.authenticationRequired;
+  payload: { value: boolean };
+};
+
+type LookupActionShapes = PayloadAction | Action | ErrorAction | BooleanAction;
 
 interface LookupActions {
   addMore: (response: AxiosResponse<Patient[]>) => LookupActionShapes;
+  authenticationRequired: (isRequired: boolean) => LookupActionShapes;
   clear: () => LookupActionShapes;
   error: (error: Error) => LookupActionShapes;
   gettingMore: () => LookupActionShapes;
@@ -102,6 +112,10 @@ const LookupAction: LookupActions = {
   addMore: (response: AxiosResponse<Patient[]>) => ({
     type: LookupActionType.addMore,
     payload: { response },
+  }),
+  authenticationRequired: (isRequired: boolean) => ({
+    type: LookupActionType.authenticationRequired,
+    payload: { value: isRequired },
   }),
   clear: () => ({ type: LookupActionType.clear }),
   error: (error) => ({ type: LookupActionType.error, payload: { error } }),
@@ -118,6 +132,14 @@ const reducer = (state: LookupState, action: LookupActionShapes) => {
   const { type } = action;
 
   switch (type) {
+    case LookupActionType.authenticationRequired: {
+      const { payload } = action as BooleanAction;
+      return {
+        ...state,
+        authenticationRequired: !!payload.value,
+      };
+    }
+
     case LookupActionType.success: {
       const { payload } = action as PayloadAction;
       const { response } = payload;
@@ -257,13 +279,21 @@ export const getPatientRequestUrl = (params: any) => {
  */
 export const usePatientLookup = () => {
   const [
-    { data, loading, searchedWithNoResults, error, limit = BATCH_SIZE, noMore },
+    {
+      authenticationRequired,
+      data,
+      error,
+      limit = BATCH_SIZE,
+      loading,
+      noMore,
+      searchedWithNoResults,
+    },
     dispatch,
   ] = useReducer(reducer, [], initialState);
+  const { logout } = useAuthContextState();
 
   const searchOnline = (searchParams: SearchParameters) => {
     const paramsWithLimits = { ...searchParams, limit };
-
     dispatch(LookupAction.clear());
     dispatch(LookupAction.start());
     axios
@@ -276,7 +306,16 @@ export const usePatientLookup = () => {
           : LookupAction.noResult();
         dispatch(action);
       })
-      .catch((error) => dispatch(LookupAction.error(error)));
+      .catch((error) => {
+        switch (error.response.status) {
+          case 401:
+            logout();
+            dispatch(LookupAction.authenticationRequired(true));
+            break;
+          default:
+            dispatch(LookupAction.error(error));
+        }
+      });
   };
 
   const searchMore = (searchParams: SearchParameters) => {
@@ -292,15 +331,19 @@ export const usePatientLookup = () => {
   };
 
   const refresh = () => dispatch(LookupAction.clear());
+  const authenticated = () =>
+    dispatch(LookupAction.authenticationRequired(false));
 
   return {
-    refresh,
+    authenticated,
+    authenticationRequired,
     data,
     error,
-    noMore,
     loading,
-    searchedWithNoResults,
-    searchOnline,
+    noMore,
+    refresh,
     searchMore,
+    searchOnline,
+    searchedWithNoResults,
   };
 };
