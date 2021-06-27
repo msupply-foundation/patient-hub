@@ -1,4 +1,5 @@
 import { FC, KeyboardEvent } from "react";
+
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import {
@@ -14,6 +15,7 @@ import { LoadingButton } from "@material-ui/lab";
 import { useTranslations } from "../../../shared/hooks/useTranslations";
 import { AppBar } from "../../../shared/components/AppBar";
 import { useLoginQuery, useLoginForm, useAuth } from "../hooks";
+import { useConfig } from "../../../shared/hooks";
 
 export interface LoginDialogProps {
   open: boolean;
@@ -26,16 +28,11 @@ export const LoginDialog: FC<LoginDialogProps> = ({
   handleClose,
   canExit = false,
 }) => {
-  const {
-    username,
-    password,
-    setUsername,
-    setPassword,
-    reset,
-    isFilled,
-  } = useLoginForm();
+  const { username, password, setUsername, setPassword, reset, isFilled } =
+    useLoginForm();
   const { tryLogin, tryGuestLogin, isLoading, error } = useLoginQuery();
   const { login, guestLogin } = useAuth();
+  const { allowGuestAccess } = useConfig();
   const { messages } = useTranslations();
 
   const onNormalLogin = async () => {
@@ -122,16 +119,18 @@ export const LoginDialog: FC<LoginDialogProps> = ({
                 {messages.signIn}
               </LoadingButton>
               <Box mt={1} />
-              <Button
-                disabled={isLoading}
-                fullWidth
-                endIcon={<ChevronRight />}
-                variant="contained"
-                color="primary"
-                onClick={onGuestLogin}
-              >
-                {messages.continueGuest}
-              </Button>
+              {allowGuestAccess && (
+                <Button
+                  disabled={isLoading}
+                  fullWidth
+                  endIcon={<ChevronRight />}
+                  variant="contained"
+                  color="primary"
+                  onClick={onGuestLogin}
+                >
+                  {messages.continueGuest}
+                </Button>
+              )}
             </Grid>
           </Grid>
         </Grid>

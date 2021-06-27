@@ -1,6 +1,6 @@
 import { AuthContext } from "../AuthProvider";
 import { useContext, useEffect } from "react";
-import { useModal } from "../../../shared/hooks";
+import { useConfig, useModal } from "../../../shared/hooks";
 import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 export const useAuth = () => {
@@ -9,11 +9,13 @@ export const useAuth = () => {
 };
 
 export const useLoginPrompt = () => {
-  const { username } = useAuth();
+  const { username, isGuest } = useAuth();
   const { open } = useModal(ModalKey.login);
+  const { allowGuestAccess } = useConfig();
+  const loginRequired = !username || (isGuest && !allowGuestAccess);
 
   useEffect(() => {
-    if (!username) open();
+    if (loginRequired) open();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
