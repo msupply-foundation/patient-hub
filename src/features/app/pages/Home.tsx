@@ -4,6 +4,7 @@ import { ChevronRight } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { useTranslations } from "../../../shared/hooks/useTranslations";
 import { stylesFactory } from "../../../shared/utils";
+import { useConfig } from "../../../shared/hooks";
 
 const useStyles = stylesFactory({
   mainContainer: {
@@ -28,6 +29,7 @@ export const Home = () => {
   const styles = useStyles();
   const { messages } = useTranslations();
   const history = useHistory();
+  const config = useConfig();
 
   return (
     <Box height="calc(100vh - 4px - 72px - 30px - 30px)">
@@ -48,27 +50,29 @@ export const Home = () => {
 
         <Grid item xs={12} sm={6} className={styles.itemContainer}>
           <Box>
-            <Button
-              fullWidth
-              endIcon={<ChevronRight />}
-              variant="contained"
-              color="primary"
-              onClick={() => history.push("/adverse-drug-reactions")}
-            >
-              {messages.recordAnADR}
-            </Button>
-
+            {!config.disableAdverseDrugReactions && (
+              <Button
+                fullWidth
+                endIcon={<ChevronRight />}
+                variant="contained"
+                color="primary"
+                onClick={() => history.push("/adverse-drug-reactions")}
+              >
+                {messages.recordAnADR}
+              </Button>
+            )}
             <Box mt={2} />
-
-            <Button
-              fullWidth
-              endIcon={<ChevronRight />}
-              variant="contained"
-              color="primary"
-              onClick={() => history.push("/patients")}
-            >
-              {messages.registerPatient}
-            </Button>
+            {!config.disableRegistration && (
+              <Button
+                fullWidth
+                endIcon={<ChevronRight />}
+                variant="contained"
+                color="primary"
+                onClick={() => history.push("/patients")}
+              >
+                {messages.registerPatient}
+              </Button>
+            )}
           </Box>
         </Grid>
       </Grid>

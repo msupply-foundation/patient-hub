@@ -9,6 +9,8 @@ export type AppConfig = {
     patients: boolean;
     adverseDrugReactions: boolean;
   };
+  disableAdverseDrugReactions?: boolean;
+  disableRegistration?: boolean;
 };
 
 declare global {
