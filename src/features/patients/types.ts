@@ -6,6 +6,8 @@ export interface Patient {
   name: string;
 }
 
+export interface PatientHistory {}
+
 export type SearchParameters = {
   firstName: string;
   lastName: string;

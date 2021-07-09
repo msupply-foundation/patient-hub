@@ -27,7 +27,7 @@ export const ADRForm: FC = () => {
   const onSubmit = (data: any[]) => {
     const { patient: lookupPatient = {} } = data[0];
     const { patient: schemaPatient = {} } = data[1];
-    const patient = { ...lookupPatient, ...schemaPatient}
+    const patient = { ...lookupPatient, ...schemaPatient };
     const formData = { ...data[1], patient };
     toggleLoading();
     submit(formData);

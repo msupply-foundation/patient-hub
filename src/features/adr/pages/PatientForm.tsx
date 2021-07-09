@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, Container, Paper, Typography } from "@material-ui/core";
 import { PatientDetails, PatientLookup } from "../components";
 
@@ -7,6 +7,7 @@ import { StepperContainer } from "../../../shared/components/stepper/StepperCont
 import { useStep, useTranslations } from "../../../shared/hooks";
 import { useAuth } from "../../auth/hooks";
 import { Patient } from "../../patients/types";
+import { usePatientHistory } from "../../patients/hooks";
 
 const useStyles = stylesFactory({
   footer: {
@@ -42,10 +43,25 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
   const [canContinue, setCanContinue] = useState(false);
   const [manualEntry, setManualEntry] = useState(isGuest);
   const { messages } = useTranslations();
+  const {
+    loading: historyLoading,
+    data: history,
+    searchOnline: historySearch,
+    searchedWithNoResults,
+  } = usePatientHistory();
+
+  useEffect(() => {
+    const { patient } = data;
+    setData({ patient, history });
+    console.info("** set data **", history);
+  }, [history]);
 
   const onNextHook = () => canContinue;
   const patient = data?.patient || { first: "", last: "", date_of_birth: null };
-  const setPatient = (patient: Patient) => setData({ patient });
+  const setPatient = (patient: Patient) => {
+    setData({ patient });
+    if (!historyLoading) historySearch(patient.ID);
+  };
 
   return (
     <StepperContainer

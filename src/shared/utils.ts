@@ -10,6 +10,8 @@ const getBaseUrl = () =>
 export const getUrl = (path: string) => `${getBaseUrl()}/patient_hub/${path}`;
 
 export const getPatientUrl = () => `${getBaseUrl()}/patient`;
+export const getPatientHistoryUrl = (id: string) =>
+  `${getBaseUrl()}/patient_history?id=${id}`;
 
 export const stylesFactory = (
   styles: StyleRules<{}, string> | ((t: Theme) => StyleRules<{}, string>)
