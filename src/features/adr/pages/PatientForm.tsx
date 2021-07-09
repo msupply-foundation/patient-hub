@@ -6,7 +6,7 @@ import { stylesFactory } from "../../../shared/utils";
 import { StepperContainer } from "../../../shared/components/stepper/StepperContainer";
 import { useStep, useTranslations } from "../../../shared/hooks";
 import { useAuth } from "../../auth/hooks";
-import { Patient, PatientHistory } from "../../patients/types";
+import { Patient, PatientHistory, Transaction } from "../../patients/types";
 import { usePatientHistory } from "../../patients/hooks";
 
 const useStyles = stylesFactory({
@@ -41,12 +41,17 @@ export interface PatientFormProps {
 const mapHistory = (history: PatientHistory[]) =>
   history
     .filter((h) => h.transLines.some((t) => t.itemLine.item.is_vaccine))
-    .map(
-      (h, index) =>
-        `${index}. ${h.transLines[0]?.item_name || ""} on ${
-          h.confirm_date
-        } by ${h.clinician.first_name} ${h.clinician.first_name}`
-    );
+    .map((h, index) => {
+      const transLine = h.transLines.length
+        ? h.transLines[0]
+        : ({} as Transaction);
+      const { medicineAdministrator, item_name = "" } = transLine;
+      const vaccinator = medicineAdministrator
+        ? `  Vaccinator: ${medicineAdministrator.first_name} ${medicineAdministrator.last_name}`
+        : "";
+
+      return `${index + 1}. ${item_name}  Date: ${h.confirm_date}${vaccinator}`;
+    });
 
 export const PatientForm: FC<PatientFormProps> = ({
   onSubmit,

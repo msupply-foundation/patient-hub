@@ -11,10 +11,11 @@ export interface Vaccinator {
   last_name: string;
 }
 export interface Transaction {
-  quantity: number;
-  item_name: string;
   ID: string;
   itemLine: ItemLine;
+  item_name: string;
+  medicineAdministrator?: Vaccinator;
+  quantity: number;
 }
 export interface ItemLine {
   item: Item;
@@ -26,7 +27,6 @@ export interface Item {
 }
 
 export interface PatientHistory {
-  clinician: Vaccinator;
   confirm_date: string;
   transLines: Transaction[];
 }
