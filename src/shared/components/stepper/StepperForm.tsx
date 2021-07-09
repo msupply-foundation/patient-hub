@@ -10,6 +10,7 @@ interface StepperFormProps {
   jsonSchema?: any;
   onSubmit: (data: any) => void;
   step: number;
+  title?: JSX.Element;
 }
 
 const useStyles = stylesFactory({
@@ -34,12 +35,12 @@ export const StepperForm: FC<StepperFormProps> = ({
   jsonSchema,
   onSubmit,
   step,
+  title,
 }) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
   const isValid = useIsSchemaValid(jsonSchema, data);
   const submitRef = useRef<HTMLInputElement | null>(null);
-
   const onNextHook = () => {
     if (!isValid) {
       submitRef.current?.click();
@@ -55,7 +56,7 @@ export const StepperForm: FC<StepperFormProps> = ({
     >
       <Paper className={classes.paper}>
         <img className={classes.img} alt="logo" src="/patient_hub/logo.png" />
-
+        {title}
         <JsonSchemaForm
           formData={data}
           jsonSchema={jsonSchema}

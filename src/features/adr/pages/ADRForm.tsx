@@ -5,6 +5,7 @@ import {
   useLoadingSpinner,
   useTranslations,
   useModal,
+  useStep,
 } from "../../../shared/hooks";
 import { useSubmitADR } from "./hooks";
 import { Box } from "@material-ui/core";
@@ -12,6 +13,15 @@ import { Stepper } from "../../../shared/components/stepper/Stepper";
 import { StepperForm } from "../../../shared/components/stepper/StepperForm";
 import { PatientForm } from "./PatientForm";
 import { ModalKey } from "../../../shared/containers/ModalProvider";
+
+import { Typography } from "@material-ui/core";
+
+const PatientName: FC = () => {
+  const { data = {} } = useStep(0);
+  const { patient = {} } = data;
+
+  return patient ? <Typography variant="h6">{patient.name}</Typography> : null;
+};
 
 export const ADRForm: FC = () => {
   const { messages } = useTranslations();
@@ -58,6 +68,7 @@ export const ADRForm: FC = () => {
             key="adr"
             jsonSchema={jsonSchema}
             uiSchema={data?.uiSchema ?? {}}
+            title={<PatientName />}
           />,
         ]
       ) : (

@@ -35,15 +35,24 @@ export interface PatientFormProps {
   onSubmit: (data: any) => void;
   step: number;
   jsonSchema: any;
+  patientName?: string;
 }
 
 const mapHistory = (history: PatientHistory[]) =>
-  history.map((h) => `${h.confirm_date}: ${h.transLines[0]?.item_name || ""}`);
+  history
+    .filter((h) => h.transLines.some((t) => t.itemLine.item.is_vaccine))
+    .map(
+      (h, index) =>
+        `${index}. ${h.transLines[0]?.item_name || ""} on ${
+          h.confirm_date
+        } by ${h.clinician.first_name} ${h.clinician.first_name}`
+    );
 
 export const PatientForm: FC<PatientFormProps> = ({
   onSubmit,
   step,
   jsonSchema,
+  patientName,
 }) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
@@ -61,26 +70,23 @@ export const PatientForm: FC<PatientFormProps> = ({
   const patient = data?.patient || { first: "", last: "", date_of_birth: null };
   const setPatient = (patient: Patient) => {
     setData({ patient });
+    patientName = `${patient.first} ${patient.last}`;
     if (!historyLoading) historySearch(patient.ID);
   };
 
   useEffect(() => {
-    // setData({ patient, history });
-    console.info("** set data **", history);
     const newHistory = history.length
       ? mapHistory(history)
       : ["No vaccinations recorded"];
 
     const { properties = {} } = jsonSchema;
-    const { vaccinations = {} } = properties;
-    const { properties: vaccinationProperties = {} } = vaccinations;
-    const { causes = {} } = vaccinationProperties;
+    const { causes = {} } = properties;
+    const { items = {} } = causes;
 
-    causes.enum = newHistory;
+    items.enum = newHistory;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, patient.ID]);
-  console.info("data ==>", data);
-  console.info("jsonSchema ==>", jsonSchema);
+
   return (
     <StepperContainer
       onSubmit={onSubmit}

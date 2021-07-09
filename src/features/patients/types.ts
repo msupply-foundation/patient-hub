@@ -15,7 +15,6 @@ export interface Transaction {
   item_name: string;
   ID: string;
   itemLine: ItemLine;
-  medicineAdministrator: Vaccinator;
 }
 export interface ItemLine {
   item: Item;
@@ -27,6 +26,7 @@ export interface Item {
 }
 
 export interface PatientHistory {
+  clinician: Vaccinator;
   confirm_date: string;
   transLines: Transaction[];
 }
