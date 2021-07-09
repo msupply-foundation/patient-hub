@@ -6,7 +6,7 @@ import { stylesFactory } from "../../../shared/utils";
 import { StepperContainer } from "../../../shared/components/stepper/StepperContainer";
 import { useStep, useTranslations } from "../../../shared/hooks";
 import { useAuth } from "../../auth/hooks";
-import { Patient } from "../../patients/types";
+import { Patient, PatientHistory } from "../../patients/types";
 import { usePatientHistory } from "../../patients/hooks";
 
 const useStyles = stylesFactory({
@@ -34,9 +34,17 @@ const useStyles = stylesFactory({
 export interface PatientFormProps {
   onSubmit: (data: any) => void;
   step: number;
+  jsonSchema: any;
 }
 
-export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
+const mapHistory = (history: PatientHistory[]) =>
+  history.map((h) => `${h.confirm_date}: ${h.transLines[0]?.item_name || ""}`);
+
+export const PatientForm: FC<PatientFormProps> = ({
+  onSubmit,
+  step,
+  jsonSchema,
+}) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
   const { isGuest } = useAuth();
@@ -47,14 +55,7 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
     loading: historyLoading,
     data: history,
     searchOnline: historySearch,
-    searchedWithNoResults,
   } = usePatientHistory();
-
-  useEffect(() => {
-    const { patient } = data;
-    setData({ patient, history });
-    console.info("** set data **", history);
-  }, [history]);
 
   const onNextHook = () => canContinue;
   const patient = data?.patient || { first: "", last: "", date_of_birth: null };
@@ -63,6 +64,23 @@ export const PatientForm: FC<PatientFormProps> = ({ onSubmit, step }) => {
     if (!historyLoading) historySearch(patient.ID);
   };
 
+  useEffect(() => {
+    // setData({ patient, history });
+    console.info("** set data **", history);
+    const newHistory = history.length
+      ? mapHistory(history)
+      : ["No vaccinations recorded"];
+
+    const { properties = {} } = jsonSchema;
+    const { vaccinations = {} } = properties;
+    const { properties: vaccinationProperties = {} } = vaccinations;
+    const { causes = {} } = vaccinationProperties;
+
+    causes.enum = newHistory;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history, patient.ID]);
+  console.info("data ==>", data);
+  console.info("jsonSchema ==>", jsonSchema);
   return (
     <StepperContainer
       onSubmit={onSubmit}

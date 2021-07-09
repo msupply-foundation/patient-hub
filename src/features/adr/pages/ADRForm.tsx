@@ -23,6 +23,7 @@ export const ADRForm: FC = () => {
     close();
     window.location.reload();
   };
+  const jsonSchema = data?.jsonSchema ?? {};
 
   const onSubmit = (data: any[]) => {
     const { patient: lookupPatient = {} } = data[0];
@@ -44,13 +45,18 @@ export const ADRForm: FC = () => {
     >
       {!isLoading ? (
         [
-          <PatientForm step={0} onSubmit={onSubmit} key="patient" />,
+          <PatientForm
+            step={0}
+            onSubmit={onSubmit}
+            key="patient"
+            jsonSchema={jsonSchema}
+          />,
 
           <StepperForm
             step={1}
             onSubmit={onSubmit}
             key="adr"
-            jsonSchema={data?.jsonSchema ?? {}}
+            jsonSchema={jsonSchema}
             uiSchema={data?.uiSchema ?? {}}
           />,
         ]
