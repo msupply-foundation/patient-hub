@@ -1,5 +1,5 @@
 import { Skeleton } from "@material-ui/core";
-import { FC } from "react";
+import { FC, useState, useMemo, useLayoutEffect } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
 import {
   useLoadingSpinner,
@@ -33,7 +33,27 @@ export const ADRForm: FC = () => {
     close();
     window.location.reload();
   };
-  const jsonSchema = data?.jsonSchema ?? {};
+  // const jsonSchema = data?.jsonSchema ?? {};
+  const [jsonSchema, setJsonSchema] = useState({});
+  // const [patientHistory, setPatientHistory] = useState([]);
+  // const jsonSchema = { version: 1, ...(data?.jsonSchema ?? { version: 0 }) };
+
+  // useLayoutEffect(() => setJsonSchema(data?.jsonSchema ?? {}), [data]);
+  // const ADR: FC = useMemo(
+  //   () => () =>
+  //     (
+  //       <StepperForm
+  //         step={1}
+  //         onSubmit={onSubmit}
+  //         key="adr"
+  //         jsonSchema={jsonSchema}
+  //         uiSchema={data?.uiSchema ?? {}}
+  //         title={<PatientName />}
+  //       />
+  //     ),
+  //   [jsonSchema]
+  // );
+  console.info("*** render ADRForm *** ");
 
   const onSubmit = (data: any[]) => {
     const { patient: lookupPatient = {} } = data[0];
@@ -59,9 +79,9 @@ export const ADRForm: FC = () => {
             step={0}
             onSubmit={onSubmit}
             key="patient"
-            jsonSchema={jsonSchema}
+            jsonSchema={data?.jsonSchema ?? {}}
+            setJsonSchema={setJsonSchema}
           />,
-
           <StepperForm
             step={1}
             onSubmit={onSubmit}

@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useLayoutEffect, useEffect, useState } from "react";
 import { Button, Container, Paper, Typography } from "@material-ui/core";
 import { PatientDetails, PatientLookup } from "../components";
 
@@ -36,6 +36,7 @@ export interface PatientFormProps {
   step: number;
   jsonSchema: any;
   patientName?: string;
+  setJsonSchema: any;
 }
 
 const mapHistory = (history: PatientHistory[]) =>
@@ -58,6 +59,7 @@ export const PatientForm: FC<PatientFormProps> = ({
   step,
   jsonSchema,
   patientName,
+  setJsonSchema,
 }) => {
   const classes = useStyles();
   const { data, setData } = useStep(step);
@@ -68,30 +70,41 @@ export const PatientForm: FC<PatientFormProps> = ({
   const {
     loading: historyLoading,
     data: history,
+    searched,
     searchOnline: historySearch,
   } = usePatientHistory();
 
   const onNextHook = () => canContinue;
   const patient = data?.patient || { first: "", last: "", date_of_birth: null };
   const setPatient = (patient: Patient) => {
+    if (data?.patient?.ID === patient.ID) return;
     setData({ patient });
     patientName = `${patient.first} ${patient.last}`;
     if (!historyLoading) historySearch(patient.ID);
   };
 
   useEffect(() => {
-    const newHistory = history.length
-      ? mapHistory(history)
-      : ["No vaccinations recorded"];
+    if (!jsonSchema) return;
 
     const { properties = {} } = jsonSchema;
     const { causes = {} } = properties;
     const { items = {} } = causes;
 
-    items.enum = newHistory;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history, patient.ID]);
+    if (!items) {
+      setJsonSchema(jsonSchema);
+      return;
+    }
 
+    items.enum = history.length
+      ? mapHistory(history)
+      : ["No vaccination history"];
+    // console.info("items", jsonSchema);
+    if(searched)    setJsonSchema(jsonSchema);
+    //setPatientHistory(mapHistory(history));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history, patient.ID, searched]);
+  console.info("*** render patient form ***");
   return (
     <StepperContainer
       onSubmit={onSubmit}

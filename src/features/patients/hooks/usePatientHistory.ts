@@ -9,7 +9,7 @@ interface LookupState {
   data: PatientHistory[];
   loading: boolean;
   error?: Error;
-  searchedWithNoResults: boolean;
+  searched: boolean;
 }
 
 enum LookupActionType {
@@ -56,7 +56,7 @@ const initialState = (initialValue = []): LookupState => ({
   data: initialValue,
   loading: false,
   error: undefined,
-  searchedWithNoResults: false,
+  searched: false,
 });
 
 const LookupAction: LookupActions = {
@@ -83,7 +83,7 @@ const reducer = (state: LookupState, action: LookupActionShapes) => {
         ...state,
         data,
         loading: false,
-        searchedWithNoResults: false,
+        searched: true,
       };
     }
     case LookupActionType.start: {
@@ -95,7 +95,7 @@ const reducer = (state: LookupState, action: LookupActionShapes) => {
         ...state,
         loading: true,
         data: [],
-        searchedWithNoResults: false,
+        searched: false,
         noMore: false,
       };
     }
@@ -104,7 +104,7 @@ const reducer = (state: LookupState, action: LookupActionShapes) => {
       return {
         ...state,
         data: [],
-        searchedWithNoResults: true,
+        searched: true,
         loading: false,
       };
     }
@@ -113,7 +113,7 @@ const reducer = (state: LookupState, action: LookupActionShapes) => {
       const { payload } = action as ErrorAction;
       const { error } = payload;
 
-      return { ...state, error, loading: false, searchedWithNoResults: true };
+      return { ...state, error, loading: false, searched: true };
     }
 
     case LookupActionType.clear: {
@@ -130,17 +130,22 @@ const reducer = (state: LookupState, action: LookupActionShapes) => {
  * patient history API.
  */
 export const usePatientHistory = () => {
-  const [{ data, error, loading, searchedWithNoResults }, dispatch] =
-    useReducer(reducer, [], initialState);
+  const [{ data, error, loading, searched }, dispatch] = useReducer(
+    reducer,
+    [],
+    initialState
+  );
 
   const searchOnline = (patientId: string) => {
     dispatch(LookupAction.clear());
     dispatch(LookupAction.start());
     axios
       .get(getPatientHistoryUrl(patientId), {
-        headers: {
-          authorization: getAuthorizationHeader(),
-        },
+        withCredentials: true,
+
+        // headers: {
+        //   authorization: getAuthorizationHeader(),
+        // },
       })
       .then((data) => {
         const action = data.data.length
@@ -153,5 +158,5 @@ export const usePatientHistory = () => {
       });
   };
 
-  return { data, loading, searchedWithNoResults, error, searchOnline };
+  return { data, loading, searched, error, searchOnline };
 };
