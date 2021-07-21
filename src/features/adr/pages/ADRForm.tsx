@@ -1,5 +1,5 @@
 import { Skeleton } from "@material-ui/core";
-import { FC, useState, useMemo, useLayoutEffect } from "react";
+import { FC, useState } from "react";
 import { useADRSchemaQuery } from "./hooks/useADRSchemaQuery";
 import {
   useLoadingSpinner,
@@ -33,58 +33,20 @@ export const ADRForm: FC = () => {
     close();
     window.location.reload();
   };
-  // const jsonSchema = data?.jsonSchema ?? {};
   const [jsonSchema, setJsonSchema] = useState({});
-  // const [patientHistory, setPatientHistory] = useState([]);
-  // const jsonSchema = { version: 1, ...(data?.jsonSchema ?? { version: 0 }) };
-
-  // useLayoutEffect(() => setJsonSchema(data?.jsonSchema ?? {}), [data]);
-  // const ADR: FC = useMemo(
-  //   () => () =>
-  //     (
-  //       <StepperForm
-  //         step={1}
-  //         onSubmit={onSubmit}
-  //         key="adr"
-  //         jsonSchema={jsonSchema}
-  //         uiSchema={data?.uiSchema ?? {}}
-  //         title={<PatientName />}
-  //       />
-  //     ),
-  //   [jsonSchema]
-  // );
-  console.info("*** render ADRForm *** ");
-
-  const onSubmit = useMemo(
-    () => (data: any[]) => {
-      const { patient: lookupPatient = {} } = data[0];
-      const { patient: schemaPatient = {} } = data[1];
-      const patient = { ...lookupPatient, ...schemaPatient };
-      const formData = { ...data[1], patient };
-      toggleLoading();
-      submit(formData);
-      toggleLoading();
-      open({
-        handleClose,
-        content: messages.ADRSubmitted,
-      });
-    },
-    [handleClose, open, submit, toggleLoading, messages.ADRSubmitted]
-  );
-
-  const PatientDetails: FC = useMemo(
-    () => () =>
-      (
-        <PatientForm
-          step={0}
-          onSubmit={onSubmit}
-          key="patient"
-          jsonSchema={data?.jsonSchema ?? {}}
-          setJsonSchema={setJsonSchema}
-        />
-      ),
-    [onSubmit, data, setJsonSchema]
-  );
+  const onSubmit = (data: any[]) => {
+    const { patient: lookupPatient = {} } = data[0];
+    const { patient: schemaPatient = {} } = data[1];
+    const patient = { ...lookupPatient, ...schemaPatient };
+    const formData = { ...data[1], patient };
+    toggleLoading();
+    submit(formData);
+    toggleLoading();
+    open({
+      handleClose,
+      content: messages.ADRSubmitted,
+    });
+  };
 
   return (
     <Stepper
@@ -92,7 +54,13 @@ export const ADRForm: FC = () => {
     >
       {!isLoading ? (
         [
-          <PatientDetails />,
+          <PatientForm
+            step={0}
+            onSubmit={onSubmit}
+            key="patient"
+            jsonSchema={data?.jsonSchema ?? {}}
+            setJsonSchema={setJsonSchema}
+          />,
           <StepperForm
             step={1}
             onSubmit={onSubmit}

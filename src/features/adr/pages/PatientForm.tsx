@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, Container, Paper, Typography } from "@material-ui/core";
 import { PatientDetails, PatientLookup } from "../components";
 
@@ -66,6 +66,9 @@ export const PatientForm: FC<PatientFormProps> = ({
   const { isGuest } = useAuth();
   const [canContinue, setCanContinue] = useState(false);
   const [manualEntry, setManualEntry] = useState(isGuest);
+  const [patient, setPatient] = useState(
+    data?.patient || { first: "", last: "", date_of_birth: null }
+  );
   const { messages } = useTranslations();
   const {
     loading: historyLoading,
@@ -75,10 +78,10 @@ export const PatientForm: FC<PatientFormProps> = ({
   } = usePatientHistory();
 
   const onNextHook = () => canContinue;
-  const patient = data?.patient || { first: "", last: "", date_of_birth: null };
-  const setPatient = (patient: Patient) => {
+  const setPatientData = (patient: Patient) => {
     if (data?.patient?.ID === patient.ID) return;
     setData({ patient });
+    setPatient(patient);
     patientName = `${patient.first} ${patient.last}`;
     if (!historyLoading) historySearch(patient.ID);
   };
@@ -98,13 +101,12 @@ export const PatientForm: FC<PatientFormProps> = ({
     items.enum = history.length
       ? mapHistory(history)
       : ["No vaccination history"];
-    // console.info("items", jsonSchema);
+
     if (searched) setJsonSchema(jsonSchema);
-    //setPatientHistory(mapHistory(history));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, patient.ID, searched]);
-  console.info("*** render patient form ***");
+
   return (
     <StepperContainer
       onSubmit={onSubmit}
@@ -117,14 +119,14 @@ export const PatientForm: FC<PatientFormProps> = ({
           <PatientDetails
             setCanContinue={setCanContinue}
             patient={patient}
-            setPatient={setPatient}
+            setPatient={setPatientData}
           />
         ) : (
           <>
             <PatientLookup
               setCanContinue={setCanContinue}
               patient={patient}
-              setPatient={setPatient}
+              setPatient={setPatientData}
             />
             <Container className={classes.footer}>
               <Typography mr={2}>{messages.cantFindPatient}</Typography>
