@@ -141,11 +141,10 @@ export const usePatientHistory = () => {
     dispatch(LookupAction.start());
     axios
       .get(getPatientHistoryUrl(patientId), {
-        withCredentials: true,
-
-        // headers: {
-        //   authorization: getAuthorizationHeader(),
-        // },
+        // withCredentials: true,
+        headers: {
+          authorization: getAuthorizationHeader(),
+        },
       })
       .then((data) => {
         const action = data.data.length
