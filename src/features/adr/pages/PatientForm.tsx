@@ -99,7 +99,7 @@ export const PatientForm: FC<PatientFormProps> = ({
       ? mapHistory(history)
       : ["No vaccination history"];
     // console.info("items", jsonSchema);
-    if(searched)    setJsonSchema(jsonSchema);
+    if (searched) setJsonSchema(jsonSchema);
     //setPatientHistory(mapHistory(history));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
