@@ -7,4 +7,6 @@ window["patientHubConfig"] = {
     adverseDrugReactions: false,
     patients: false,
   },
+  disableRegistration: false,
+  disableAdverseDrugReactions: false,
 };
