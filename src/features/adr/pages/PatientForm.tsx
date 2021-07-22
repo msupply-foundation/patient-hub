@@ -9,6 +9,7 @@ import { useAuth } from "../../auth/hooks";
 import { Patient, PatientHistory, Transaction } from "../../patients/types";
 import { usePatientHistory } from "../../patients/hooks";
 import { MessageFormatElement } from "react-intl";
+import { JSONSchema7, JSONSchema7Type } from "json-schema";
 
 const useStyles = stylesFactory({
   footer: {
@@ -51,17 +52,28 @@ const mapHistory = (
         ? h.transLines[0]
         : ({} as Transaction);
       const { medicineAdministrator, item_name = "" } = transLine;
+      const n = index + 1;
       const vaccinator = medicineAdministrator
         ? `  ${messages.vaccinator}: ${medicineAdministrator.first_name} ${medicineAdministrator.last_name}`
         : "";
+      const name = `${n}. ${item_name}  ${messages.date}: ${h.confirm_date}${vaccinator}`;
 
-      return {
-        name: `${index + 1}. ${item_name}  ${messages.date}: ${
-          h.confirm_date
-        }${vaccinator}`,
-        value: transLine.ID,
-      };
+      return { name, value: transLine.ID };
     });
+
+interface JSONSchemaItems {
+  enum?: JSONSchema7Type[];
+  enumNames?: JSONSchema7Type[];
+}
+
+const getItems = (jsonSchema?: JSONSchema7) => {
+  if (!jsonSchema) return undefined;
+
+  const { properties = {} } = jsonSchema;
+  const { causes = {} } = properties;
+  const { items } = causes as JSONSchema7;
+  return items as JSONSchemaItems;
+};
 
 export const PatientForm: FC<PatientFormProps> = ({
   onSubmit,
@@ -85,23 +97,17 @@ export const PatientForm: FC<PatientFormProps> = ({
     searched,
     searchOnline: historySearch,
   } = usePatientHistory();
-
+  const items = getItems(jsonSchema);
   const onNextHook = () => canContinue;
   const setPatientData = (patient: Patient) => {
     if (data?.patient?.ID === patient.ID) return;
     setData({ patient });
     setPatient(patient);
     patientName = `${patient.first} ${patient.last}`;
-    if (!historyLoading) historySearch(patient.ID);
+    if (!historyLoading && !!items) historySearch(patient.ID);
   };
 
   useEffect(() => {
-    if (!jsonSchema) return;
-
-    const { properties = {} } = jsonSchema;
-    const { causes = {} } = properties;
-    const { items = {} } = causes;
-
     if (!items) {
       setJsonSchema(jsonSchema);
       return;
@@ -112,7 +118,7 @@ export const PatientForm: FC<PatientFormProps> = ({
       : [{ name: messages.noVaccinationHistory, value: "" }];
 
     items.enum = mappedHistory.map((h) => h.value);
-    items.enumNames = mappedHistory.map((h) => h.name);
+    items.enumNames = mappedHistory.map((h) => h.name as string);
 
     if (searched) setJsonSchema(jsonSchema);
 

@@ -47,10 +47,10 @@ interface LookupActions {
   success: (response: AxiosResponse<PatientHistory[]>) => LookupActionShapes;
 }
 
-const getAuthorizationHeader = () =>
-  `Basic ${Base64.encode(
-    "Hufflepuff:1eba0718fd2ef2432005bdea0aa18facb4234782dfc1d4743dc3e0c91bd2c7eb"
-  )}`;
+// const getAuthorizationHeader = () =>
+//   `Basic ${Base64.encode(
+//     "Hufflepuff:1eba0718fd2ef2432005bdea0aa18facb4234782dfc1d4743dc3e0c91bd2c7eb"
+//   )}`;
 
 const initialState = (initialValue = []): LookupState => ({
   data: initialValue,
@@ -139,10 +139,10 @@ export const usePatientHistory = () => {
     dispatch(LookupAction.start());
     axios
       .get(getPatientHistoryUrl(patientId), {
-        // withCredentials: true,
-        headers: {
-          authorization: getAuthorizationHeader(),
-        },
+        withCredentials: true,
+        // headers: {
+        //   authorization: getAuthorizationHeader(),
+        // },
       })
       .then((data) => {
         const action = data.data.length
