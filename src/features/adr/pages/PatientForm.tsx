@@ -41,7 +41,7 @@ export interface PatientFormProps {
 
 const mapHistory = (history: PatientHistory[]) =>
   history
-    .filter((h) => h.transLines.some((t) => t.itemLine.item.is_vaccine))
+    .filter((h) => h.transLines.some((t) => t.itemLine?.item?.is_vaccine))
     .map((h, index) => {
       const transLine = h.transLines.length
         ? h.transLines[0]

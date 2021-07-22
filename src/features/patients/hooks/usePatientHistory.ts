@@ -71,11 +71,9 @@ const LookupAction: LookupActions = {
 };
 
 const reducer = (state: LookupState, action: LookupActionShapes) => {
-  const { type } = action;
-
-  switch (type) {
+  switch (action.type) {
     case LookupActionType.success: {
-      const { payload } = action as PayloadAction;
+      const { payload } = action;
       const { response } = payload;
       const data = response?.data ?? [];
 
@@ -110,7 +108,7 @@ const reducer = (state: LookupState, action: LookupActionShapes) => {
     }
 
     case LookupActionType.error: {
-      const { payload } = action as ErrorAction;
+      const { payload } = action;
       const { error } = payload;
 
       return { ...state, error, loading: false, searched: true };
