@@ -27,6 +27,7 @@ export interface Item {
 }
 
 export interface PatientHistory {
+  ID: string;
   confirm_date: string;
   transLines: Transaction[];
 }

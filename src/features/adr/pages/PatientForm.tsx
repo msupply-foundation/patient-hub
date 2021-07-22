@@ -8,6 +8,7 @@ import { useStep, useTranslations } from "../../../shared/hooks";
 import { useAuth } from "../../auth/hooks";
 import { Patient, PatientHistory, Transaction } from "../../patients/types";
 import { usePatientHistory } from "../../patients/hooks";
+import { MessageFormatElement } from "react-intl";
 
 const useStyles = stylesFactory({
   footer: {
@@ -39,7 +40,10 @@ export interface PatientFormProps {
   setJsonSchema: any;
 }
 
-const mapHistory = (history: PatientHistory[]) =>
+const mapHistory = (
+  history: PatientHistory[],
+  messages: Record<string, string> | Record<string, MessageFormatElement[]>
+) =>
   history
     .filter((h) => h.transLines.some((t) => t.itemLine?.item?.is_vaccine))
     .map((h, index) => {
@@ -48,10 +52,15 @@ const mapHistory = (history: PatientHistory[]) =>
         : ({} as Transaction);
       const { medicineAdministrator, item_name = "" } = transLine;
       const vaccinator = medicineAdministrator
-        ? `  Vaccinator: ${medicineAdministrator.first_name} ${medicineAdministrator.last_name}`
+        ? `  ${messages.vaccinator}: ${medicineAdministrator.first_name} ${medicineAdministrator.last_name}`
         : "";
 
-      return `${index + 1}. ${item_name}  Date: ${h.confirm_date}${vaccinator}`;
+      return {
+        name: `${index + 1}. ${item_name}  ${messages.date}: ${
+          h.confirm_date
+        }${vaccinator}`,
+        value: transLine.ID,
+      };
     });
 
 export const PatientForm: FC<PatientFormProps> = ({
@@ -98,9 +107,12 @@ export const PatientForm: FC<PatientFormProps> = ({
       return;
     }
 
-    items.enum = history.length
-      ? mapHistory(history)
-      : ["No vaccination history"];
+    const mappedHistory = history.length
+      ? mapHistory(history, messages)
+      : [{ name: messages.noVaccinationHistory, value: "" }];
+
+    items.enum = mappedHistory.map((h) => h.value);
+    items.enumNames = mappedHistory.map((h) => h.name);
 
     if (searched) setJsonSchema(jsonSchema);
 
