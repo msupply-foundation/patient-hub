@@ -33,5 +33,8 @@
   "name": "Name",
   "searchForPatient": "Patient Search",
   "cantFindPatient": "Unable to find patient?",
-  "addManualEntry": "Add Manual Entry"
+  "addManualEntry": "Add Manual Entry",
+  "vaccinator": "Vaccinator",
+  "noVaccinationHistory": "No vaccination history",
+  "date": "Date"
 }
