@@ -15,10 +15,17 @@ import { PatientForm } from "./PatientForm";
 import { ModalKey } from "../../../shared/containers/ModalProvider";
 
 import { Typography } from "@material-ui/core";
+import { useLayoutEffect } from "react";
+import { Patient } from "../../patients/types";
 
 const PatientName: FC = () => {
+  const [patient, setPatient] = useState<Patient>();
   const { data = {} } = useStep(0);
-  const { patient = {} } = data;
+  const { patient: newPatient } = data;
+
+  useLayoutEffect(() => {
+    if (newPatient) setPatient(newPatient);
+  }, [newPatient]);
 
   return patient ? <Typography variant="h6">{patient.name}</Typography> : null;
 };
