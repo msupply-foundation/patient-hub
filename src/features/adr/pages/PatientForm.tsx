@@ -100,7 +100,7 @@ export const PatientForm: FC<PatientFormProps> = ({
   const items = getItems(jsonSchema);
   const onNextHook = () => canContinue;
   const setPatientData = (patient: Patient) => {
-    if (data?.patient?.ID === patient.ID) return;
+    if (data?.patient?.ID && data?.patient?.ID === patient.ID) return;
     setData({ patient });
     setPatient(patient);
     patientName = `${patient.first} ${patient.last}`;
