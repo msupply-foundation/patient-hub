@@ -10,7 +10,7 @@ import { TextWidget } from "./TextWidget";
 // TODO: Fix typings for TextWidget
 export const TimeWidget: FC<WidgetProps> = (props: any) => {
   const { onChange, value } = props;
-  const [time, setTime] = useState(value);
+  const [time, setTime] = useState(value || "");
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -5,8 +5,13 @@ import TextField, {
 } from "@material-ui/core/TextField";
 
 import { WidgetProps, utils } from "@rjsf/core";
+import { JSONSchema7 } from "json-schema";
 
 const { getDisplayLabel } = utils;
+
+interface ErrorSchema extends JSONSchema7 {
+  errorMessage?: string;
+}
 
 export type TextWidgetProps = WidgetProps & TextFieldProps;
 
@@ -47,6 +52,11 @@ export const TextWidget = ({
   );
   const inputType =
     (type || schema.type) === "string" ? "text" : `${type || schema.type}`;
+
+  const { errorMessage } = schema as ErrorSchema;
+  if (textFieldProps.error && errorMessage) {
+    textFieldProps.helperText = errorMessage;
+  }
 
   return (
     <TextField
