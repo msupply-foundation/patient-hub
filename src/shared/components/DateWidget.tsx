@@ -15,12 +15,12 @@ export const DateWidget: FC<WidgetProps> = (props: any) => {
   const handleDateChange = (date: Date | null) => {
     if (isValid(date)) {
       const validDate = date || new Date();
-      props.onChange(format(validDate, "yyyy-MM-dd"));
+      props.onChange(format(validDate, "dd/MM/yyyy"));
     }
   };
 
   const getDateValue = () => {
-    const asDate = parse(value, "yyyy-MM-dd", new Date());
+    const asDate = parse(value, "dd/MM/yyyy", new Date());
     return isValid(asDate) ? asDate : null;
   };
 
