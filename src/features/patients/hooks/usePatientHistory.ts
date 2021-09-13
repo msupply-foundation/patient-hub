@@ -1,6 +1,6 @@
 import { useReducer } from "react";
 import axios, { AxiosResponse } from "axios";
-import Base64 from "base-64";
+// import Base64 from "base-64";
 
 import { getPatientHistoryUrl } from "../../../shared/utils";
 import { PatientHistory } from "../types";
