@@ -10,7 +10,7 @@ import enLocale from "date-fns/locale/en-NZ";
 
 // TODO: Fix typings for TextWidget
 export const DateWidget: FC<WidgetProps> = (props: any) => {
-  const { label, schema, value } = props;
+  const { label, options, schema, value } = props;
 
   const handleDateChange = (date: Date | null) => {
     if (isValid(date)) {
@@ -30,6 +30,8 @@ export const DateWidget: FC<WidgetProps> = (props: any) => {
         label={label || schema.title}
         value={getDateValue()}
         onChange={handleDateChange}
+        minDate={options.dateRange === "future" ? new Date() : null}
+        maxDate={options.dateRange === "past" ? new Date() : null}
         renderInput={(params: TextFieldProps) => (
           <TextWidget {...params} {...props} />
         )}
